@@ -1,0 +1,12 @@
+{
+  "Author": "GiR-Zippo",
+  "Name": "Hypnotoad Plugin",
+  "Punchline": "small plugin for LA textoutput",
+  "Description": "With this plugin the LA is able to write messages in game.",
+  "InternalName": "Hypnotoad",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "sample",
+    "plugin"
+  ]
+}

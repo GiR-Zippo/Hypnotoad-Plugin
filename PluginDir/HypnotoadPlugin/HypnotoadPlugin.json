@@ -1,0 +1,15 @@
+{
+  "Author": "GiR-Zippo",
+  "Name": "Hypnotoad Plugin",
+  "InternalName": "HypnotoadPlugin",
+  "AssemblyVersion": "0.0.0.1",
+  "Description": "With this plugin the LA is able to write messages in game.",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "sample",
+    "plugin"
+  ],
+  "DalamudApiLevel": 6,
+  "LoadPriority": 0,
+  "Punchline": "small plugin for LA textoutput"
+}

@@ -12,7 +12,7 @@ namespace HypnotoadPlugin
     public class Message
     {
         public MessageType msgType { get; set; } = MessageType.None;
-        public MessageChannelType msgChannel { get; set; } = MessageChannelType.None;
+        public int msgChannel { get; set; } = 0;
         public string message { get; set; } = "";
     }
 
@@ -90,7 +90,7 @@ namespace HypnotoadPlugin
                 _pipeClient.WriteAsync(new Message
                 {
                     msgType = MessageType.Handshake,
-                    msgChannel = MessageChannelType.None,
+                    msgChannel = 0,
                     message = Process.GetCurrentProcess().Id.ToString()
                 });
             }
@@ -98,9 +98,15 @@ namespace HypnotoadPlugin
 
         private void pipeClient_MessageReceived(object sender, H.Pipes.Args.ConnectionMessageEventArgs<Message> e)
         {
+            if (!Visible)
+            {
+                return;
+            }
+
             Message? inMsg = e.Message as Message;
             if (inMsg == null)
                 return;
+
             PluginLog.Debug(inMsg.message);
             if (Visible && inMsg.msgType == MessageType.Chat)
                 qt.Enqueue(inMsg);
@@ -176,14 +182,10 @@ namespace HypnotoadPlugin
                     try
                     {
                         Message msg = qt.Dequeue();
-                        string chan = "/s";
-                        if (msg.msgChannel == MessageChannelType.Say)
-                            chan = "/s";
-                        else if (msg.msgChannel == MessageChannelType.Group)
-                            chan = "/p";
-                        else if (msg.msgChannel == MessageChannelType.Yell)
-                            chan = "/y";
-                        TestPlugin.CBase.Functions.Chat.SendMessage(chan+" "+msg.message);
+                        ChatMessageChannelType chatMessageChannelType = ChatMessageChannelType.ParseByChannelCode(msg.msgChannel);
+                        if (chatMessageChannelType.Equals(ChatMessageChannelType.None))
+                            continue;
+                        TestPlugin.CBase.Functions.Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " "+msg.message);
                     }
                     catch (Exception ex)
                     {

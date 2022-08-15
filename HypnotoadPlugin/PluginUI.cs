@@ -142,7 +142,7 @@ namespace HypnotoadPlugin
 
             ImGui.SetNextWindowSize(new Vector2(300, 80), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(300, 80), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("Hypnotoad", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            if (ImGui.Begin("Hypnotoad", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoCollapse))
             {
                 //The connect Button
                 if (ImGui.Button("Connect"))

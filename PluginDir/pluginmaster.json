@@ -1,26 +1,26 @@
 [
-  {
-    "Author": "GiR-Zippo",
-    "Name": "HypnotoadPlugin",
-    "InternalName": "HypnotoadPlugin",
-    "AssemblyVersion": "0.0.0.2",
-    "Description": "small plugin for LA textoutput",
-    "ApplicableVersion": "any",
-    "RepoUrl": "",
-    "CategoryTags": [
-      "utility",
-      "other"
-    ],
-    "DalamudApiLevel": 6,
-    "LoadPriority": 0,
-    "IconUrl": "",
-    "Punchline": "Chat messages with the LightAmp",
-    "IsHide": "False",
-    "IsTestingExclusive": "False",
-    "DownloadCount": 61021,
-    "LastUpdate": "1660444092",
-    "DownloadLinkInstall": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
-    "DownloadLinkTesting": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
-    "DownloadLinkUpdate": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip"
-  },
+    {
+        "Author": "GiR-Zippo",
+        "Name": "HypnotoadPlugin",
+        "InternalName": "HypnotoadPlugin",
+        "AssemblyVersion": "0.0.0.3",
+        "Description": "small plugin for LA textoutput",
+        "ApplicableVersion": "any",
+        "RepoUrl": "",
+        "CategoryTags": [
+            "utility",
+            "other"
+        ],
+        "DalamudApiLevel": 6,
+        "LoadPriority": 0,
+        "IconUrl": "",
+        "Punchline": "Chat messages with the LightAmp",
+        "IsHide": "False",
+        "IsTestingExclusive": "False",
+        "DownloadCount": 61021,
+        "LastUpdate": "1661035852",
+        "DownloadLinkInstall": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
+        "DownloadLinkTesting": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
+        "DownloadLinkUpdate": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip"
+    }
 ]

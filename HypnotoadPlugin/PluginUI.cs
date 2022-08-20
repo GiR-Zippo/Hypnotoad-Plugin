@@ -107,7 +107,6 @@ namespace HypnotoadPlugin
             if (inMsg == null)
                 return;
 
-            PluginLog.Debug(inMsg.message);
             if (Visible && inMsg.msgType == MessageType.Chat)
                 qt.Enqueue(inMsg);
         }
@@ -184,8 +183,9 @@ namespace HypnotoadPlugin
                         Message msg = qt.Dequeue();
                         ChatMessageChannelType chatMessageChannelType = ChatMessageChannelType.ParseByChannelCode(msg.msgChannel);
                         if (chatMessageChannelType.Equals(ChatMessageChannelType.None))
-                            continue;
-                        TestPlugin.CBase.Functions.Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " "+msg.message);
+                            TestPlugin.CBase.Functions.Chat.SendMessage(msg.message);
+                        else
+                            TestPlugin.CBase.Functions.Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " " + msg.message);
                     }
                     catch (Exception ex)
                     {

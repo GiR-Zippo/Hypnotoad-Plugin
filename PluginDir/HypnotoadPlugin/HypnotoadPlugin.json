@@ -9,7 +9,7 @@
     "sample",
     "plugin"
   ],
-  "DalamudApiLevel": 6,
+  "DalamudApiLevel": 7,
   "LoadPriority": 0,
   "Punchline": "small plugin for LA textoutput"
 }

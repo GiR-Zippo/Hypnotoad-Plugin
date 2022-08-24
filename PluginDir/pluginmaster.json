@@ -11,7 +11,7 @@
             "utility",
             "other"
         ],
-        "DalamudApiLevel": 6,
+        "DalamudApiLevel": 7,
         "LoadPriority": 0,
         "IconUrl": "",
         "Punchline": "Chat messages with the LightAmp",

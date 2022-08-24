@@ -2,7 +2,7 @@
   "Author": "GiR-Zippo",
   "Name": "Hypnotoad Plugin",
   "InternalName": "HypnotoadPlugin",
-  "AssemblyVersion": "0.0.0.3",
+  "AssemblyVersion": "0.0.0.4",
   "Description": "With this plugin the LA is able to write messages in game.",
   "ApplicableVersion": "any",
   "Tags": [

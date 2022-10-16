@@ -35,13 +35,6 @@ namespace HypnotoadPlugin
             set { this.visible = value; }
         }
 
-        private bool settingsVisible = false;
-        public bool SettingsVisible
-        {
-            get { return this.settingsVisible; }
-            set { this.settingsVisible = value; }
-        }
-
         private bool ManuallyDisconnect = false;
         public bool ManuallyDisconnected
         {
@@ -129,7 +122,6 @@ namespace HypnotoadPlugin
             // draw delegates as low as possible.
 
             DrawMainWindow();
-            DrawSettingsWindow();
         }
 
         public void DrawMainWindow()
@@ -140,9 +132,18 @@ namespace HypnotoadPlugin
             }
 
             ImGui.SetNextWindowSize(new Vector2(300, 80), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(300, 80), new Vector2(float.MaxValue, float.MaxValue));
+            ImGui.SetNextWindowSizeConstraints(new Vector2(300, 90), new Vector2(float.MaxValue, float.MaxValue));
             if (ImGui.Begin("Hypnotoad", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoCollapse))
             {
+                // can't ref a property, so use a local copy
+                var configValue = this.configuration.Autoconnect;
+                if (ImGui.Checkbox("Autoconnect", ref configValue))
+                {
+                    this.configuration.Autoconnect = configValue;
+                    // can save immediately on change, if you don't want to provide a "Save and Close" button
+                    this.configuration.Save();
+                }
+
                 //The connect Button
                 if (ImGui.Button("Connect"))
                 {
@@ -162,15 +163,8 @@ namespace HypnotoadPlugin
 
                     ManuallyDisconnected = true;
                 }
-                ImGui.SameLine();
-                if (ImGui.Button("Show Settings"))
-                {
-                    SettingsVisible = true;
-                }
 
                 ImGui.Text($"Is connected to LA: {this._pipeClient.IsConnected}");
-
-                //ImGui.Text($"The random config bool is {this.configuration.SomePropertyToBeSavedAndWithADefault}");
 
                 ImGui.Spacing();
 
@@ -191,31 +185,6 @@ namespace HypnotoadPlugin
                     {
                         PluginLog.LogError($"exception: {ex}");
                     }
-                }
-
-
-            }
-            ImGui.End();
-        }
-
-        public void DrawSettingsWindow()
-        {
-            if (!SettingsVisible)
-            {
-                return;
-            }
-
-            ImGui.SetNextWindowSize(new Vector2(232, 75), ImGuiCond.Always);
-            if (ImGui.Begin("Settings", ref this.settingsVisible,
-                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
-            {
-                // can't ref a property, so use a local copy
-                var configValue = this.configuration.Autoconnect;
-                if (ImGui.Checkbox("Autoconnect", ref configValue))
-                {
-                    this.configuration.Autoconnect = configValue;
-                    // can save immediately on change, if you don't want to provide a "Save and Close" button
-                    this.configuration.Save();
                 }
             }
             ImGui.End();

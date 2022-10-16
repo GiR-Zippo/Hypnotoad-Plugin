@@ -71,6 +71,6 @@ public class TestPlugin : IDalamudPlugin
 
     private void DrawConfigUI()
     {
-        this.PluginUi.SettingsVisible = true;
+        this.PluginUi.Visible = true;
     }
 }

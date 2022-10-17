@@ -1,5 +1,7 @@
-﻿using Dalamud.Game.Command;
+﻿using Dalamud.Game;
+using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
+using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using System;
@@ -20,6 +22,10 @@ public class TestPlugin : IDalamudPlugin
     private Configuration Configuration { get; init; }
     private PluginUI PluginUi { get; init; }
 
+    [PluginService]
+    //[RequiredVersion("1.0")]
+    public static SigScanner SigScanner { get; private set; }
+
     public unsafe TestPlugin(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
     {
         this.PluginInterface = pluginInterface;
@@ -27,7 +33,7 @@ public class TestPlugin : IDalamudPlugin
 
         this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         this.Configuration.Initialize(this.PluginInterface);
-
+        OffsetManager.Setup(SigScanner);
         try
         {
             CBase = new XivCommonBase();

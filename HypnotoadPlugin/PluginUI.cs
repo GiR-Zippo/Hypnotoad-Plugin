@@ -6,6 +6,7 @@ using System;
 using System.Numerics;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 
 namespace HypnotoadPlugin
 {
@@ -100,7 +101,7 @@ namespace HypnotoadPlugin
             if (inMsg == null)
                 return;
 
-            if (Visible && inMsg.msgType == MessageType.Chat)
+            if (Visible && (inMsg.msgType == MessageType.Chat || inMsg.msgType == MessageType.Instrument))
                 qt.Enqueue(inMsg);
         }
 
@@ -175,11 +176,19 @@ namespace HypnotoadPlugin
                     try
                     {
                         Message msg = qt.Dequeue();
-                        ChatMessageChannelType chatMessageChannelType = ChatMessageChannelType.ParseByChannelCode(msg.msgChannel);
-                        if (chatMessageChannelType.Equals(ChatMessageChannelType.None))
-                            TestPlugin.CBase.Functions.Chat.SendMessage(msg.message);
-                        else
-                            TestPlugin.CBase.Functions.Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " " + msg.message);
+                        switch (msg.msgType)
+                        {
+                            case MessageType.Chat:
+                                ChatMessageChannelType chatMessageChannelType = ChatMessageChannelType.ParseByChannelCode(msg.msgChannel);
+                                if (chatMessageChannelType.Equals(ChatMessageChannelType.None))
+                                    TestPlugin.CBase.Functions.Chat.SendMessage(msg.message);
+                                else
+                                    TestPlugin.CBase.Functions.Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " " + msg.message);
+                                break;
+                            case MessageType.Instrument:
+                                PerformActions.DoPerformAction(Convert.ToUInt32(msg.message));
+                                break;
+                        }
                     }
                     catch (Exception ex)
                     {

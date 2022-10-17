@@ -9,7 +9,8 @@ namespace HypnotoadPlugin
         None,
         Handshake,
         Chat,
-        Instrument
+        Instrument,
+        AcceptReply
     }
 
     public readonly struct ChatMessageChannelType

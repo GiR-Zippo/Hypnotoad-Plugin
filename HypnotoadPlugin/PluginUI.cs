@@ -101,7 +101,9 @@ namespace HypnotoadPlugin
             if (inMsg == null)
                 return;
 
-            if (Visible && (inMsg.msgType == MessageType.Chat || inMsg.msgType == MessageType.Instrument))
+            if (Visible && (inMsg.msgType == MessageType.Chat || 
+                            inMsg.msgType == MessageType.Instrument ||
+                            inMsg.msgType == MessageType.AcceptReply ))
                 qt.Enqueue(inMsg);
         }
 
@@ -187,6 +189,9 @@ namespace HypnotoadPlugin
                                 break;
                             case MessageType.Instrument:
                                 PerformActions.DoPerformAction(Convert.ToUInt32(msg.message));
+                                break;
+                            case MessageType.AcceptReply:
+                                PerformActions.ConfirmReceiveReadyCheck();
                                 break;
                         }
                     }

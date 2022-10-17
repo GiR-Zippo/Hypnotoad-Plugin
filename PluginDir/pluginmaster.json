@@ -3,8 +3,8 @@
         "Author": "GiR-Zippo",
         "Name": "HypnotoadPlugin",
         "InternalName": "HypnotoadPlugin",
-        "AssemblyVersion": "0.0.0.4",
-        "Description": "small plugin for LA textoutput",
+        "AssemblyVersion": "0.0.0.5",
+        "Description": "small plugin for LA & BMP textoutput",
         "ApplicableVersion": "any",
         "RepoUrl": "",
         "CategoryTags": [
@@ -18,7 +18,7 @@
         "IsHide": "False",
         "IsTestingExclusive": "False",
         "DownloadCount": 61021,
-        "LastUpdate": "1661291493",
+        "LastUpdate": "1665976547",
         "DownloadLinkInstall": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
         "DownloadLinkTesting": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
         "DownloadLinkUpdate": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip"

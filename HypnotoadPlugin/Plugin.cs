@@ -6,7 +6,9 @@ using Dalamud.Logging;
 using Dalamud.Plugin;
 using System;
 using System.IO;
+using System.Windows;
 using XivCommon;
+using static HypnotoadPlugin.GfxSettings;
 
 namespace HypnotoadPlugin;
 
@@ -21,6 +23,7 @@ public class TestPlugin : IDalamudPlugin
     private CommandManager CommandManager { get; init; }
     private Configuration Configuration { get; init; }
     private PluginUI PluginUi { get; init; }
+    internal static AgentConfigSystem AgentConfigSystem { get; set; }
 
     [PluginService]
     //[RequiredVersion("1.0")]
@@ -28,6 +31,7 @@ public class TestPlugin : IDalamudPlugin
 
     public unsafe TestPlugin(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
     {
+        api.Initialize(this, pluginInterface);
         this.PluginInterface = pluginInterface;
         this.CommandManager = commandManager;
 
@@ -53,12 +57,16 @@ public class TestPlugin : IDalamudPlugin
             HelpMessage = "A useful message to display in /xlhelp"
         });
 
+        AgentConfigSystem = new AgentConfigSystem(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.AgentConfigSystem));
+
         this.PluginInterface.UiBuilder.Draw += DrawUI;
         this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
     }
 
     public void Dispose()
     {
+        TestPlugin.AgentConfigSystem.BackgroundFrameLimit = true;
+        TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
         this.PluginUi.Dispose();
         CBase.Dispose();
         this.CommandManager.RemoveHandler(commandName);

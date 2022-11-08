@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using static HypnotoadPlugin.GfxSettings;
 
 namespace HypnotoadPlugin
 {
@@ -103,7 +104,8 @@ namespace HypnotoadPlugin
 
             if (Visible && (inMsg.msgType == MessageType.Chat || 
                             inMsg.msgType == MessageType.Instrument ||
-                            inMsg.msgType == MessageType.AcceptReply ))
+                            inMsg.msgType == MessageType.AcceptReply ||
+                            inMsg.msgType == MessageType.SetGfx ))
                 qt.Enqueue(inMsg);
         }
 
@@ -192,6 +194,18 @@ namespace HypnotoadPlugin
                                 break;
                             case MessageType.AcceptReply:
                                 PerformActions.ConfirmReceiveReadyCheck();
+                                break;
+                            case MessageType.SetGfx:
+                                if (Convert.ToUInt32(msg.message) == 1)
+                                {
+                                    TestPlugin.AgentConfigSystem.BackgroundFrameLimit = false;
+                                    TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
+                                }
+                                else
+                                {
+                                    TestPlugin.AgentConfigSystem.BackgroundFrameLimit = true;
+                                    TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
+                                }
                                 break;
                         }
                     }

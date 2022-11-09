@@ -37,30 +37,11 @@ static class GfxSettings
             api.ToastGui.Toast += OnToast;
             PluginLog.Information($"graphic config saved and refreshed. func:{(long)refreshConfigGraphicState:X} agent:{Pointer:X} result:{result:X}");
         }
-        public static unsafe void EnableBackgroundFrameLimit() => _configModule->SetOption(ConfigOption.FPSInActive, 1);
-        public static unsafe void DisableBackgroundFrameLimit() => _configModule->SetOption(ConfigOption.FPSInActive, 0);
         public static unsafe AtkValue* GetOptionValue(ConfigOption option) => _configModule->GetValue(option);
         public static unsafe void SetOptionValue(ConfigOption option, int value) => _configModule->SetOption(option, value);
         public static unsafe void ToggleBoolOptionValue(ConfigOption option) => _configModule->SetOption(option, GetOptionValue(option)->Byte == 0 ? 1 : 0);
-        public unsafe bool BackgroundFrameLimit
-        {
-            get => GetOptionValue(ConfigOption.FPSInActive)->Byte == 1;
-            set
-            {
-                if (value)
-                {
-                    EnableBackgroundFrameLimit();
-                    RestoreObjQuantity();
-                }
-                else
-                {
-                    DisableBackgroundFrameLimit();
-                    SetMinimalObjQuantity();
-                }
 
-            }
-        }
-
+        private static int FPSInActive;
         private static int originalObjQuantity;
         private static int WaterWet_DX11;
         private static int OcclusionCulling_DX11;
@@ -92,41 +73,58 @@ static class GfxSettings
         private static int Glare_DX11;
         private static int DistortionWater_DX11;
 
-        public static unsafe void SetMinimalObjQuantity()
+        public unsafe bool CheckLowSettings()
         {
-            originalObjQuantity             = _configModule->GetIntValue(ConfigOption.DisplayObjectLimitType);
-            WaterWet_DX11                   = _configModule->GetIntValue(ConfigOption.WaterWet_DX11);
-            OcclusionCulling_DX11           = _configModule->GetIntValue(ConfigOption.OcclusionCulling_DX11);
-            LodType_DX11                    = _configModule->GetIntValue(ConfigOption.LodType_DX11);
-            ReflectionType_DX11             = _configModule->GetIntValue(ConfigOption.ReflectionType_DX11);
-            AntiAliasing_DX11               = _configModule->GetIntValue(ConfigOption.AntiAliasing_DX11);
-            TranslucentQuality_DX11         = _configModule->GetIntValue(ConfigOption.TranslucentQuality_DX11);
-            GrassQuality_DX11               = _configModule->GetIntValue(ConfigOption.GrassQuality_DX11);
-            ParallaxOcclusion_DX11          = _configModule->GetIntValue(ConfigOption.ParallaxOcclusion_DX11);
-            Tessellation_DX11               = _configModule->GetIntValue(ConfigOption.Tessellation_DX11);
-            GlareRepresentation_DX11        = _configModule->GetIntValue(ConfigOption.GlareRepresentation_DX11);
-            MapResolution_DX11              = _configModule->GetIntValue(ConfigOption.MapResolution_DX11);
-            ShadowVisibilityTypeSelf_DX11   = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeSelf_DX11);
-            ShadowVisibilityTypeParty_DX11  = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeParty_DX11);
-            ShadowVisibilityTypeOther_DX11  = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeOther_DX11);
-            ShadowVisibilityTypeEnemy_DX11  = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeEnemy_DX11);
-            ShadowLOD_DX11                  = _configModule->GetIntValue(ConfigOption.ShadowLOD_DX11);
-            ShadowTextureSizeType_DX11      = _configModule->GetIntValue(ConfigOption.ShadowTextureSizeType_DX11);
-            ShadowCascadeCountType_DX11     = _configModule->GetIntValue(ConfigOption.ShadowCascadeCountType_DX11);
-            ShadowSoftShadowType_DX11       = _configModule->GetIntValue(ConfigOption.ShadowSoftShadowType_DX11);
-            TextureFilterQuality_DX11       = _configModule->GetIntValue(ConfigOption.TextureFilterQuality_DX11);
-            TextureAnisotropicQuality_DX11  = _configModule->GetIntValue(ConfigOption.TextureAnisotropicQuality_DX11);
-            PhysicsTypeSelf_DX11            = _configModule->GetIntValue(ConfigOption.PhysicsTypeSelf_DX11);
-            PhysicsTypeParty_DX11           = _configModule->GetIntValue(ConfigOption.PhysicsTypeParty_DX11);
-            PhysicsTypeOther_DX11           = _configModule->GetIntValue(ConfigOption.PhysicsTypeOther_DX11);
-            PhysicsTypeEnemy_DX11           = _configModule->GetIntValue(ConfigOption.PhysicsTypeEnemy_DX11);
-            RadialBlur_DX11                 = _configModule->GetIntValue(ConfigOption.RadialBlur_DX11);
-            SSAO_DX11                       = _configModule->GetIntValue(ConfigOption.SSAO_DX11);
-            Glare_DX11                      = _configModule->GetIntValue(ConfigOption.Glare_DX11);
-            DistortionWater_DX11            = _configModule->GetIntValue(ConfigOption.DistortionWater_DX11);
+            if ((originalObjQuantity == 4)      &&
+                (WaterWet_DX11 == 0)            &&
+                (OcclusionCulling_DX11 == 1)    &&
+                (ReflectionType_DX11 == 3)      &&
+                (GrassQuality_DX11 == 3)        &&
+                (SSAO_DX11 == 4))
+                return true;
+            return false;
+        }
 
+        public unsafe void GetObjQuantity()
+        {
+            FPSInActive = _configModule->GetIntValue(ConfigOption.FPSInActive);
+            originalObjQuantity = _configModule->GetIntValue(ConfigOption.DisplayObjectLimitType);
+            WaterWet_DX11 = _configModule->GetIntValue(ConfigOption.WaterWet_DX11);
+            OcclusionCulling_DX11 = _configModule->GetIntValue(ConfigOption.OcclusionCulling_DX11);
+            LodType_DX11 = _configModule->GetIntValue(ConfigOption.LodType_DX11);
+            ReflectionType_DX11 = _configModule->GetIntValue(ConfigOption.ReflectionType_DX11);
+            AntiAliasing_DX11 = _configModule->GetIntValue(ConfigOption.AntiAliasing_DX11);
+            TranslucentQuality_DX11 = _configModule->GetIntValue(ConfigOption.TranslucentQuality_DX11);
+            GrassQuality_DX11 = _configModule->GetIntValue(ConfigOption.GrassQuality_DX11);
+            ParallaxOcclusion_DX11 = _configModule->GetIntValue(ConfigOption.ParallaxOcclusion_DX11);
+            Tessellation_DX11 = _configModule->GetIntValue(ConfigOption.Tessellation_DX11);
+            GlareRepresentation_DX11 = _configModule->GetIntValue(ConfigOption.GlareRepresentation_DX11);
+            MapResolution_DX11 = _configModule->GetIntValue(ConfigOption.MapResolution_DX11);
+            ShadowVisibilityTypeSelf_DX11 = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeSelf_DX11);
+            ShadowVisibilityTypeParty_DX11 = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeParty_DX11);
+            ShadowVisibilityTypeOther_DX11 = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeOther_DX11);
+            ShadowVisibilityTypeEnemy_DX11 = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeEnemy_DX11);
+            ShadowLOD_DX11 = _configModule->GetIntValue(ConfigOption.ShadowLOD_DX11);
+            ShadowTextureSizeType_DX11 = _configModule->GetIntValue(ConfigOption.ShadowTextureSizeType_DX11);
+            ShadowCascadeCountType_DX11 = _configModule->GetIntValue(ConfigOption.ShadowCascadeCountType_DX11);
+            ShadowSoftShadowType_DX11 = _configModule->GetIntValue(ConfigOption.ShadowSoftShadowType_DX11);
+            TextureFilterQuality_DX11 = _configModule->GetIntValue(ConfigOption.TextureFilterQuality_DX11);
+            TextureAnisotropicQuality_DX11 = _configModule->GetIntValue(ConfigOption.TextureAnisotropicQuality_DX11);
+            PhysicsTypeSelf_DX11 = _configModule->GetIntValue(ConfigOption.PhysicsTypeSelf_DX11);
+            PhysicsTypeParty_DX11 = _configModule->GetIntValue(ConfigOption.PhysicsTypeParty_DX11);
+            PhysicsTypeOther_DX11 = _configModule->GetIntValue(ConfigOption.PhysicsTypeOther_DX11);
+            PhysicsTypeEnemy_DX11 = _configModule->GetIntValue(ConfigOption.PhysicsTypeEnemy_DX11);
+            RadialBlur_DX11 = _configModule->GetIntValue(ConfigOption.RadialBlur_DX11);
+            SSAO_DX11 = _configModule->GetIntValue(ConfigOption.SSAO_DX11);
+            Glare_DX11 = _configModule->GetIntValue(ConfigOption.Glare_DX11);
+            DistortionWater_DX11 = _configModule->GetIntValue(ConfigOption.DistortionWater_DX11);
+        }
+
+        public unsafe void SetMinimalObjQuantity()
+        {
             //PluginLog.LogError($"exception: {_configModule->GetIntValue(ConfigOption.DistortionWater_DX11)}");
 
+            _configModule->SetOption(ConfigOption.FPSInActive, 0);
             _configModule->SetOption(ConfigOption.DisplayObjectLimitType, 4);
 
             _configModule->SetOption(ConfigOption.WaterWet_DX11, 0);
@@ -161,8 +159,9 @@ static class GfxSettings
 
         }
 
-        public static unsafe void RestoreObjQuantity()
+        public unsafe void RestoreObjQuantity()
         {
+            _configModule->SetOption(ConfigOption.FPSInActive,                      FPSInActive);
             _configModule->SetOption(ConfigOption.DisplayObjectLimitType,           originalObjQuantity);
             _configModule->SetOption(ConfigOption.WaterWet_DX11,                    WaterWet_DX11);
             _configModule->SetOption(ConfigOption.OcclusionCulling_DX11,            OcclusionCulling_DX11);

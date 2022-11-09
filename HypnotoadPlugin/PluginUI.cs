@@ -88,6 +88,13 @@ namespace HypnotoadPlugin
                     msgChannel = 0,
                     message = Process.GetCurrentProcess().Id.ToString()
                 });
+
+                _pipeClient.WriteAsync(new Message
+                {
+                    msgType = MessageType.SetGfx,
+                    msgChannel = 0,
+                    message = Process.GetCurrentProcess().Id.ToString() + ":" + TestPlugin.AgentConfigSystem.CheckLowSettings().ToString()
+                });
             }
         }
 
@@ -198,12 +205,13 @@ namespace HypnotoadPlugin
                             case MessageType.SetGfx:
                                 if (Convert.ToUInt32(msg.message) == 1)
                                 {
-                                    TestPlugin.AgentConfigSystem.BackgroundFrameLimit = false;
+                                    TestPlugin.AgentConfigSystem.GetObjQuantity();
+                                    TestPlugin.AgentConfigSystem.SetMinimalObjQuantity();
                                     TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
                                 }
                                 else
                                 {
-                                    TestPlugin.AgentConfigSystem.BackgroundFrameLimit = true;
+                                    TestPlugin.AgentConfigSystem.RestoreObjQuantity();
                                     TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
                                 }
                                 break;

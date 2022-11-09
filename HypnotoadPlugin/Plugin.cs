@@ -58,6 +58,7 @@ public class TestPlugin : IDalamudPlugin
         });
 
         AgentConfigSystem = new AgentConfigSystem(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.AgentConfigSystem));
+        TestPlugin.AgentConfigSystem.GetObjQuantity();
 
         this.PluginInterface.UiBuilder.Draw += DrawUI;
         this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -65,8 +66,9 @@ public class TestPlugin : IDalamudPlugin
 
     public void Dispose()
     {
-        TestPlugin.AgentConfigSystem.BackgroundFrameLimit = true;
+        TestPlugin.AgentConfigSystem.RestoreObjQuantity();
         TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
+
         this.PluginUi.Dispose();
         CBase.Dispose();
         this.CommandManager.RemoveHandler(commandName);

@@ -49,7 +49,7 @@ namespace HypnotoadPlugin
             this.configuration = configuration;
             this.goatImage = goatImage;
             _pipeClient = new PipeClient<Message>("LightAmp-DalamudBridge", formatter: new NewtonsoftJsonFormatter());
-            _pipeClient.Connected += pipeClient_Connected; ;
+            _pipeClient.Connected += pipeClient_Connected;
             _pipeClient.MessageReceived += pipeClient_MessageReceived;
             _pipeClient.Disconnected += pipeClient_Disconnected;
             this._reconnectTimer.Elapsed += reconnectTimer_Elapsed;

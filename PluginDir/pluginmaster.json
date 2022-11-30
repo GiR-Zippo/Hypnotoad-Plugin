@@ -3,7 +3,7 @@
         "Author": "GiR-Zippo, Meowchestra",
         "Name": "HypnotoadPlugin",
         "InternalName": "HypnotoadPlugin",
-        "AssemblyVersion": "0.0.0.9",
+        "AssemblyVersion": "0.0.1.0",
         "Description": "LightAmp & BardMusicPlayer companion for enhanced functionality.",
         "ApplicableVersion": "any",
         "RepoUrl": "",
@@ -18,7 +18,7 @@
         "IsHide": "False",
         "IsTestingExclusive": "False",
         "DownloadCount": 61021,
-        "LastUpdate": "1669828984",
+        "LastUpdate": "1669842257",
         "DownloadLinkInstall": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
         "DownloadLinkTesting": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
         "DownloadLinkUpdate": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip"

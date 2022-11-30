@@ -11,7 +11,8 @@ namespace HypnotoadPlugin
         Chat,
         Instrument,
         AcceptReply,
-        SetGfx
+        SetGfx,
+        StartEnsemble
     }
 
     public readonly struct ChatMessageChannelType

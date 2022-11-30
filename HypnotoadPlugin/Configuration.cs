@@ -14,7 +14,7 @@ namespace HypnotoadPlugin
         // the below exist just to make saving less cumbersome
 
         [NonSerialized]
-        private DalamudPluginInterface? pluginInterface;
+        private DalamudPluginInterface pluginInterface;
 
         public void Initialize(DalamudPluginInterface pluginInterface)
         {

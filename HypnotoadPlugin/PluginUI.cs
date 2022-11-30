@@ -6,8 +6,6 @@ using System;
 using System.Numerics;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using static HypnotoadPlugin.GfxSettings;
 using H.Pipes.Args;
 
 namespace HypnotoadPlugin
@@ -106,14 +104,15 @@ namespace HypnotoadPlugin
 
         private void pipeClient_MessageReceived(object sender, H.Pipes.Args.ConnectionMessageEventArgs<Message> e)
         {
-            Message? inMsg = e.Message as Message;
+            Message inMsg = e.Message as Message;
             if (inMsg == null)
                 return;
 
             if ((inMsg.msgType == MessageType.Chat || 
                  inMsg.msgType == MessageType.Instrument ||
                  inMsg.msgType == MessageType.AcceptReply ||
-                 inMsg.msgType == MessageType.SetGfx ))
+                 inMsg.msgType == MessageType.SetGfx ||
+                 inMsg.msgType == MessageType.StartEnsemble ))
                 qt.Enqueue(inMsg);
         }
 
@@ -215,6 +214,10 @@ namespace HypnotoadPlugin
                                 TestPlugin.AgentConfigSystem.RestoreObjQuantity();
                                 TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
                             }
+                            break;
+                        case MessageType.StartEnsemble:
+                            PerformActions.BeginReadyCheck();
+                            PerformActions.ConfirmBeginReadyCheck();
                             break;
                     }
                 }

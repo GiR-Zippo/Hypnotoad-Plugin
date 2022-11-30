@@ -1,10 +1,10 @@
 [
     {
-        "Author": "GiR-Zippo",
+        "Author": "GiR-Zippo, Meowchestra",
         "Name": "HypnotoadPlugin",
         "InternalName": "HypnotoadPlugin",
-        "AssemblyVersion": "0.0.0.8",
-        "Description": "small plugin for LA & BMP textoutput",
+        "AssemblyVersion": "0.0.0.9",
+        "Description": "LightAmp & BardMusicPlayer companion for enhanced functionality.",
         "ApplicableVersion": "any",
         "RepoUrl": "",
         "CategoryTags": [
@@ -14,11 +14,11 @@
         "DalamudApiLevel": 7,
         "LoadPriority": 0,
         "IconUrl": "",
-        "Punchline": "Chat messages with the LightAmp",
+        "Punchline": "Companion plugin for enhanced functionality.",
         "IsHide": "False",
         "IsTestingExclusive": "False",
         "DownloadCount": 61021,
-        "LastUpdate": "1668036175",
+        "LastUpdate": "1668036275",
         "DownloadLinkInstall": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
         "DownloadLinkTesting": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip",
         "DownloadLinkUpdate": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/PluginDir/HypnotoadPlugin/latest.zip"

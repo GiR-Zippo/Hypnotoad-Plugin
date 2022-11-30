@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using static HypnotoadPlugin.GfxSettings;
+using H.Pipes.Args;
 
 namespace HypnotoadPlugin
 {
@@ -50,6 +51,7 @@ namespace HypnotoadPlugin
             this.configuration = configuration;
             this.goatImage = goatImage;
             _pipeClient = new PipeClient<Message>("LightAmp-DalamudBridge", formatter: new NewtonsoftJsonFormatter());
+            _pipeClient.Connected += pipeClient_Connected; ;
             _pipeClient.MessageReceived += pipeClient_MessageReceived;
             _pipeClient.Disconnected += pipeClient_Disconnected;
             this._reconnectTimer.Elapsed += reconnectTimer_Elapsed;
@@ -57,6 +59,23 @@ namespace HypnotoadPlugin
             this._reconnectTimer.Enabled = configuration.Autoconnect;
 
             Visible = true;
+        }
+
+        private void pipeClient_Connected(object sender, ConnectionEventArgs<Message> e)
+        {
+            _pipeClient.WriteAsync(new Message
+            {
+                msgType = MessageType.Handshake,
+                msgChannel = 0,
+                message = Process.GetCurrentProcess().Id.ToString()
+            });
+
+            _pipeClient.WriteAsync(new Message
+            {
+                msgType = MessageType.SetGfx,
+                msgChannel = 0,
+                message = Process.GetCurrentProcess().Id.ToString() + ":" + TestPlugin.AgentConfigSystem.CheckLowSettings().ToString()
+            });
         }
 
         private void pipeClient_Disconnected(object sender, H.Pipes.Args.ConnectionEventArgs<Message> e)
@@ -82,37 +101,19 @@ namespace HypnotoadPlugin
             if (!_pipeClient.IsConnecting)
             {
                 _pipeClient.ConnectAsync();
-                _pipeClient.WriteAsync(new Message
-                {
-                    msgType = MessageType.Handshake,
-                    msgChannel = 0,
-                    message = Process.GetCurrentProcess().Id.ToString()
-                });
-
-                _pipeClient.WriteAsync(new Message
-                {
-                    msgType = MessageType.SetGfx,
-                    msgChannel = 0,
-                    message = Process.GetCurrentProcess().Id.ToString() + ":" + TestPlugin.AgentConfigSystem.CheckLowSettings().ToString()
-                });
             }
         }
 
         private void pipeClient_MessageReceived(object sender, H.Pipes.Args.ConnectionMessageEventArgs<Message> e)
         {
-            if (!Visible)
-            {
-                return;
-            }
-
             Message? inMsg = e.Message as Message;
             if (inMsg == null)
                 return;
 
-            if (Visible && (inMsg.msgType == MessageType.Chat || 
-                            inMsg.msgType == MessageType.Instrument ||
-                            inMsg.msgType == MessageType.AcceptReply ||
-                            inMsg.msgType == MessageType.SetGfx ))
+            if ((inMsg.msgType == MessageType.Chat || 
+                 inMsg.msgType == MessageType.Instrument ||
+                 inMsg.msgType == MessageType.AcceptReply ||
+                 inMsg.msgType == MessageType.SetGfx ))
                 qt.Enqueue(inMsg);
         }
 
@@ -138,92 +139,90 @@ namespace HypnotoadPlugin
 
         public void DrawMainWindow()
         {
-            if (!Visible)
+            if (Visible)
             {
-                return;
+                ImGui.SetNextWindowSize(new Vector2(300, 80), ImGuiCond.FirstUseEver);
+                ImGui.SetNextWindowSizeConstraints(new Vector2(300, 90), new Vector2(float.MaxValue, float.MaxValue));
+                if (ImGui.Begin("Hypnotoad", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoCollapse))
+                {
+                    // can't ref a property, so use a local copy
+                    var configValue = this.configuration.Autoconnect;
+                    if (ImGui.Checkbox("Autoconnect", ref configValue))
+                    {
+                        this.configuration.Autoconnect = configValue;
+                        // can save immediately on change, if you don't want to provide a "Save and Close" button
+                        this.configuration.Save();
+                    }
+
+                    //The connect Button
+                    if (ImGui.Button("Connect"))
+                    {
+                        if (this.configuration.Autoconnect)
+                            ManuallyDisconnect = false;
+                        _reconnectTimer.Interval = 500;
+                        _reconnectTimer.Enabled = true;
+                    }
+                    ImGui.SameLine();
+                    //The disconnect Button
+                    if (ImGui.Button("Disconnect"))
+                    {
+                        if (!_pipeClient.IsConnected)
+                            return;
+
+                        _pipeClient.DisconnectAsync();
+
+                        ManuallyDisconnected = true;
+                    }
+
+                    ImGui.Text($"Is connected to LA: {this._pipeClient.IsConnected}");
+
+                    ImGui.Spacing();
+
+                    ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
+                }
+                ImGui.End();
             }
 
-            ImGui.SetNextWindowSize(new Vector2(300, 80), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(300, 90), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("Hypnotoad", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoCollapse))
+            while (qt.Count > 0)
             {
-                // can't ref a property, so use a local copy
-                var configValue = this.configuration.Autoconnect;
-                if (ImGui.Checkbox("Autoconnect", ref configValue))
+                try
                 {
-                    this.configuration.Autoconnect = configValue;
-                    // can save immediately on change, if you don't want to provide a "Save and Close" button
-                    this.configuration.Save();
-                }
-
-                //The connect Button
-                if (ImGui.Button("Connect"))
-                {
-                    if (this.configuration.Autoconnect)
-                        ManuallyDisconnect = false;
-                    _reconnectTimer.Interval = 500;
-                    _reconnectTimer.Enabled = true;
-                }
-                ImGui.SameLine();
-                //The disconnect Button
-                if (ImGui.Button("Disconnect"))
-                {
-                    if (!_pipeClient.IsConnected)
-                        return;
-
-                    _pipeClient.DisconnectAsync();
-
-                    ManuallyDisconnected = true;
-                }
-
-                ImGui.Text($"Is connected to LA: {this._pipeClient.IsConnected}");
-
-                ImGui.Spacing();
-
-                ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
-
-                while (qt.Count > 0)
-                {
-                    try
+                    Message msg = qt.Dequeue();
+                    switch (msg.msgType)
                     {
-                        Message msg = qt.Dequeue();
-                        switch (msg.msgType)
-                        {
-                            case MessageType.Chat:
-                                ChatMessageChannelType chatMessageChannelType = ChatMessageChannelType.ParseByChannelCode(msg.msgChannel);
-                                if (chatMessageChannelType.Equals(ChatMessageChannelType.None))
-                                    TestPlugin.CBase.Functions.Chat.SendMessage(msg.message);
-                                else
-                                    TestPlugin.CBase.Functions.Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " " + msg.message);
-                                break;
-                            case MessageType.Instrument:
-                                PerformActions.DoPerformAction(Convert.ToUInt32(msg.message));
-                                break;
-                            case MessageType.AcceptReply:
-                                PerformActions.ConfirmReceiveReadyCheck();
-                                break;
-                            case MessageType.SetGfx:
-                                if (Convert.ToUInt32(msg.message) == 1)
-                                {
-                                    TestPlugin.AgentConfigSystem.GetObjQuantity();
-                                    TestPlugin.AgentConfigSystem.SetMinimalObjQuantity();
-                                    TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
-                                }
-                                else
-                                {
-                                    TestPlugin.AgentConfigSystem.RestoreObjQuantity();
-                                    TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
-                                }
-                                break;
-                        }
+                        case MessageType.Chat:
+                            ChatMessageChannelType chatMessageChannelType = ChatMessageChannelType.ParseByChannelCode(msg.msgChannel);
+                            if (chatMessageChannelType.Equals(ChatMessageChannelType.None))
+                                TestPlugin.CBase.Functions.Chat.SendMessage(msg.message);
+                            else
+                                TestPlugin.CBase.Functions.Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " " + msg.message);
+                            break;
+                        case MessageType.Instrument:
+                            PerformActions.DoPerformAction(Convert.ToUInt32(msg.message));
+                            break;
+                        case MessageType.AcceptReply:
+                            PerformActions.ConfirmReceiveReadyCheck();
+                            break;
+                        case MessageType.SetGfx:
+                            if (Convert.ToUInt32(msg.message) == 1)
+                            {
+                                TestPlugin.AgentConfigSystem.GetObjQuantity();
+                                TestPlugin.AgentConfigSystem.SetMinimalObjQuantity();
+                                TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
+                            }
+                            else
+                            {
+                                TestPlugin.AgentConfigSystem.RestoreObjQuantity();
+                                TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
+                            }
+                            break;
                     }
-                    catch (Exception ex)
-                    {
-                        PluginLog.LogError($"exception: {ex}");
-                    }
+                }
+                catch (Exception ex)
+                {
+                    PluginLog.LogError($"exception: {ex}");
                 }
             }
-            ImGui.End();
         }
     }
 }

@@ -1,9 +1,9 @@
 {
-  "Author": "GiR-Zippo",
-  "Name": "Hypnotoad Plugin",
+  "Author": "GiR-Zippo, Meowchestra",
+  "Name": "HypnotoadPlugin",
   "InternalName": "HypnotoadPlugin",
-  "AssemblyVersion": "0.0.0.8",
-  "Description": "With this plugin the LA is able to write messages in game.",
+  "AssemblyVersion": "0.0.0.9",
+  "Description": "LightAmp & BardMusicPlayer companion for enhanced functionality.",
   "ApplicableVersion": "any",
   "Tags": [
     "sample",
@@ -11,5 +11,5 @@
   ],
   "DalamudApiLevel": 7,
   "LoadPriority": 0,
-  "Punchline": "small plugin for LA textoutput"
+  "Punchline": "Companion plugin for enhanced functionality."
 }

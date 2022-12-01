@@ -56,7 +56,7 @@ namespace HypnotoadPlugin
             this._reconnectTimer.Interval = 2000;
             this._reconnectTimer.Enabled = configuration.Autoconnect;
 
-            Visible = true;
+            Visible = false;
         }
 
         private void pipeClient_Connected(object sender, ConnectionEventArgs<Message> e)

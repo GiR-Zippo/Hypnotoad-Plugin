@@ -2,19 +2,15 @@
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
-using System;
 using System.IO;
-using System.Windows;
-using XivCommon;
 using static HypnotoadPlugin.GfxSettings;
 
 namespace HypnotoadPlugin;
 
 public class TestPlugin : IDalamudPlugin
 {
-    public static XivCommonBase CBase;
+    //public static XivCommonBase CBase;
     public string Name => "Hypnotoad";
 
     private const string commandName = "/hypnotoad";
@@ -31,21 +27,13 @@ public class TestPlugin : IDalamudPlugin
 
     public unsafe TestPlugin(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
     {
-        api.Initialize(this, pluginInterface);
+        Api.Initialize(this, pluginInterface);
         this.PluginInterface = pluginInterface;
         this.CommandManager = commandManager;
 
         this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         this.Configuration.Initialize(this.PluginInterface);
         OffsetManager.Setup(SigScanner);
-        try
-        {
-            CBase = new XivCommonBase();
-        }
-        catch (Exception ex)
-        {
-            PluginLog.LogError($"exception: {ex}");
-        }
 
         // you might normally want to embed resources and load them from the manifest stream
         var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "toad.png");
@@ -70,7 +58,6 @@ public class TestPlugin : IDalamudPlugin
         TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
 
         this.PluginUi.Dispose();
-        CBase.Dispose();
         this.CommandManager.RemoveHandler(commandName);
     }
 

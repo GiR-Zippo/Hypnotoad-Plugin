@@ -192,9 +192,9 @@ namespace HypnotoadPlugin
                         case MessageType.Chat:
                             ChatMessageChannelType chatMessageChannelType = ChatMessageChannelType.ParseByChannelCode(msg.msgChannel);
                             if (chatMessageChannelType.Equals(ChatMessageChannelType.None))
-                                TestPlugin.CBase.Functions.Chat.SendMessage(msg.message);
+                                Chat.SendMessage(msg.message);
                             else
-                                TestPlugin.CBase.Functions.Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " " + msg.message);
+                                Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " " + msg.message);
                             break;
                         case MessageType.Instrument:
                             PerformActions.DoPerformAction(Convert.ToUInt32(msg.message));

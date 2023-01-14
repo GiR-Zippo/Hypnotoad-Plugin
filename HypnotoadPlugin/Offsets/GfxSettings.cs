@@ -29,12 +29,12 @@ static class GfxSettings
             {
                 PluginLog.Information($"[MidiBard] suppressing toast: {message}");
                 handled = true;
-                api.ToastGui.Toast -= OnToast;
+                Api.ToastGui.Toast -= OnToast;
             }
 
             var refreshConfigGraphicState = (delegate* unmanaged<IntPtr, long>)Offsets.ApplyGraphicConfigsFunc;
             var result = refreshConfigGraphicState(Pointer);
-            api.ToastGui.Toast += OnToast;
+            Api.ToastGui.Toast += OnToast;
             PluginLog.Information($"graphic config saved and refreshed. func:{(long)refreshConfigGraphicState:X} agent:{Pointer:X} result:{result:X}");
         }
         public static unsafe AtkValue* GetOptionValue(ConfigOption option) => _configModule->GetValue(option);

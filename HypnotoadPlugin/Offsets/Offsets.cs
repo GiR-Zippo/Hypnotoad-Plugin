@@ -1,13 +1,25 @@
 ﻿/*
- * Copyright(c) 2022 Ori @MidiBard2
+ * Copyright(c) 2022 Ori @MidiBard2, GiR-Zippo
+ *
+ * Contains all signatures, which are used by this plugin
+ * 
  */
 
-using FFXIVClientStructs.Attributes;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace HypnotoadPlugin;
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
+
+public static partial class Chat
+{
+    private static class Signatures
+    {
+        internal const string SendChat = "48 89 5C 24 ?? 57 48 83 EC 20 48 8B FA 48 8B D9 45 84 C9";
+        internal const string SanitiseString = "E8 ?? ?? ?? ?? EB 0A 48 8D 4C 24 ?? E8 ?? ?? ?? ?? 48 8D 8D";
+    }
+}
+
 public static class Offsets
 {
     [StaticAddress("48 8D 05 ?? ?? ?? ?? 48 89 03 48 8D 4B 40")]
@@ -31,12 +43,15 @@ public static class Offsets
     [Function("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 20 0F B6 FA 48 8B D9 84 D2 ")]
     public static IntPtr UpdateMetronome { get; private set; }
 
-    [Function("83 FA 04 77 4E")]
-    public static IntPtr UISetTone { get; private set; }
+    /*[Function("83 FA 04 77 4E")]
+        public static IntPtr UISetTone { get; private set; }*/
 
     [Function("48 8B C4 56 48 81 EC ?? ?? ?? ?? 48 89 58 10 ")]
     public static IntPtr ApplyGraphicConfigsFunc { get; private set; }
 
     [Function("48 89 ? ? ? 48 89 ? ? ? 57 48 83 EC ? 8B FA 41 0F ? ? 03 79")]
     public static IntPtr PressNote { get; private set; }
+
+
+
 }

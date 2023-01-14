@@ -2,14 +2,17 @@
   "Author": "GiR-Zippo, Meowchestra",
   "Name": "HypnotoadPlugin",
   "InternalName": "HypnotoadPlugin",
-  "AssemblyVersion": "0.0.1.1",
+  "AssemblyVersion": "0.0.1.2",
   "Description": "LightAmp & BardMusicPlayer companion for enhanced functionality.",
   "ApplicableVersion": "any",
   "Tags": [
     "sample",
     "plugin"
   ],
-  "DalamudApiLevel": 7,
+  "DalamudApiLevel": 8,
+  "LoadRequiredState": 0,
+  "LoadSync": false,
   "LoadPriority": 0,
-  "Punchline": "Companion plugin for enhanced functionality."
+  "Punchline": "Companion plugin for enhanced functionality.",
+  "AcceptsFeedback": true
 }

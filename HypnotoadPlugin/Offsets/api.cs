@@ -28,7 +28,7 @@ using Dalamud.Plugin;
 
 namespace HypnotoadPlugin;
 
-public class api
+public class Api
 {
     [PluginService]
     //[RequiredVersion("1.0")]
@@ -120,11 +120,11 @@ public class api
 
     private static PluginCommandManager<IDalamudPlugin> _pluginCommandManager;
 
-    public api() { }
+    public Api() { }
 
-    public api(IDalamudPlugin plugin) => _pluginCommandManager ??= new(plugin);
+    public Api(IDalamudPlugin plugin) => _pluginCommandManager ??= new(plugin);
 
-    public api(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface)
+    public Api(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface)
     {
         if (!pluginInterface.Inject(this))
         {
@@ -135,9 +135,9 @@ public class api
         _pluginCommandManager ??= new(plugin);
     }
 
-    public static api operator +(api container, object o)
+    public static Api operator +(Api container, object o)
     {
-        foreach (var f in typeof(api).GetProperties())
+        foreach (var f in typeof(Api).GetProperties())
         {
             if (f.PropertyType != o.GetType()) continue;
             if (f.GetValue(container) != null) break;
@@ -147,7 +147,7 @@ public class api
         throw new InvalidOperationException();
     }
 
-    public static void Initialize(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface) => _ = new api(plugin, pluginInterface);
+    public static void Initialize(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface) => _ = new Api(plugin, pluginInterface);
 
     public static void Dispose() => _pluginCommandManager?.Dispose();
 }
@@ -172,13 +172,13 @@ public class PluginCommandManager<T> : IDisposable where T : IDalamudPlugin
     private void AddCommandHandlers()
     {
         foreach (var (command, commandInfo) in _pluginCommands)
-            api.CommandManager.AddHandler(command, commandInfo);
+            Api.CommandManager.AddHandler(command, commandInfo);
     }
 
     private void RemoveCommandHandlers()
     {
         foreach (var (command, _) in _pluginCommands)
-            api.CommandManager.RemoveHandler(command);
+            Api.CommandManager.RemoveHandler(command);
     }
 
     private IEnumerable<(string, CommandInfo)> GetCommandInfoTuple(MethodInfo method)

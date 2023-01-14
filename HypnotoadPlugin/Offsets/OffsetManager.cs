@@ -53,6 +53,7 @@ public static class OffsetManager
                 address += sigAttribute.Offset;
                 propertyInfo.SetValue(null, address);
                 PluginLog.Information($"[{nameof(OffsetManager)}][{propertyInfo.Name}] {address.ToInt64():X}");
+                PluginLog.Information($"[{nameof(OffsetManager)}][{propertyInfo.Name}] {PerformActions.MainModuleRva(address)}");
             }
             catch (Exception e)
             {

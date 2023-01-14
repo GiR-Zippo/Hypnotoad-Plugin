@@ -6,8 +6,8 @@
   "Description": "LightAmp & BardMusicPlayer companion for enhanced functionality.",
   "ApplicableVersion": "any",
   "Tags": [
-    "sample",
-    "plugin"
+    "BardMusicPlayer",
+    "LightAmp"
   ],
   "DalamudApiLevel": 8,
   "LoadRequiredState": 0,

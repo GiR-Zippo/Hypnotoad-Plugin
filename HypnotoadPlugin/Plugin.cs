@@ -8,7 +8,7 @@ using static HypnotoadPlugin.GfxSettings;
 
 namespace HypnotoadPlugin;
 
-public class TestPlugin : IDalamudPlugin
+public class Hypnotoad : IDalamudPlugin
 {
     //public static XivCommonBase CBase;
     public string Name => "Hypnotoad";
@@ -25,7 +25,7 @@ public class TestPlugin : IDalamudPlugin
     //[RequiredVersion("1.0")]
     public static SigScanner SigScanner { get; private set; }
 
-    public unsafe TestPlugin(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
+    public unsafe Hypnotoad(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
     {
         Api.Initialize(this, pluginInterface);
         this.PluginInterface = pluginInterface;
@@ -46,7 +46,7 @@ public class TestPlugin : IDalamudPlugin
         });
 
         AgentConfigSystem = new AgentConfigSystem(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.AgentConfigSystem));
-        TestPlugin.AgentConfigSystem.GetObjQuantity();
+        Hypnotoad.AgentConfigSystem.GetObjQuantity();
 
         this.PluginInterface.UiBuilder.Draw += DrawUI;
         this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -54,8 +54,8 @@ public class TestPlugin : IDalamudPlugin
 
     public void Dispose()
     {
-        TestPlugin.AgentConfigSystem.RestoreObjQuantity();
-        TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
+        Hypnotoad.AgentConfigSystem.RestoreObjQuantity();
+        Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
 
         this.PluginUi.Dispose();
         this.CommandManager.RemoveHandler(commandName);

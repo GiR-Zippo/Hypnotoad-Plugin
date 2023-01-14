@@ -72,7 +72,7 @@ namespace HypnotoadPlugin
             {
                 msgType = MessageType.SetGfx,
                 msgChannel = 0,
-                message = Process.GetCurrentProcess().Id.ToString() + ":" + TestPlugin.AgentConfigSystem.CheckLowSettings().ToString()
+                message = Process.GetCurrentProcess().Id.ToString() + ":" + Hypnotoad.AgentConfigSystem.CheckLowSettings().ToString()
             });
         }
 
@@ -173,7 +173,7 @@ namespace HypnotoadPlugin
                         ManuallyDisconnected = true;
                     }
 
-                    ImGui.Text($"Is connected to LA: {this._pipeClient.IsConnected}");
+                    ImGui.Text($"Is connected: {this._pipeClient.IsConnected}");
 
                     ImGui.Spacing();
 
@@ -205,14 +205,14 @@ namespace HypnotoadPlugin
                         case MessageType.SetGfx:
                             if (Convert.ToUInt32(msg.message) == 1)
                             {
-                                TestPlugin.AgentConfigSystem.GetObjQuantity();
-                                TestPlugin.AgentConfigSystem.SetMinimalObjQuantity();
-                                TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
+                                Hypnotoad.AgentConfigSystem.GetObjQuantity();
+                                Hypnotoad.AgentConfigSystem.SetMinimalObjQuantity();
+                                Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                             }
                             else
                             {
-                                TestPlugin.AgentConfigSystem.RestoreObjQuantity();
-                                TestPlugin.AgentConfigSystem.ApplyGraphicSettings();
+                                Hypnotoad.AgentConfigSystem.RestoreObjQuantity();
+                                Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                             }
                             break;
                         case MessageType.StartEnsemble:

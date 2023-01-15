@@ -1,0 +1,71 @@
+name: Publish merge against develop
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+
+  build:
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: HypnotoadPlugin
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+
+    # Unit tests go here.
+
+    - name: Store artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: HypnotoadPlugin
+        path: .\HypnotoadPlugin\bin\x64\Release\HypnotoadPlugin\*
+        if-no-files-found: error
+        retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+      - name: Checkout Downloads
+        uses: actions/checkout@v3
+        with:
+          repository: BardMusicPlayer/Downloads
+          ssh-key: ${{ secrets.DEPLOY_KEY_DOWNLOADS }}
+      
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: HypnotoadPlugin
+          path: hypnotoad/
+      
+      - name: Update plugin repo json
+        run: |
+          echo -e "[" > hypnotoad/index.html
+          cat hypnotoad/HypnotoadPlugin.json | sed '$d' >> hypnotoad/index.html
+          rm hypnotoad/HypnotoadPlugin.json
+          echo ",\"LoadPriority\": 0,\"IconUrl\": \"https://dl.bardmusicplayer.com/hypnotoad/toad.png\",\"IsHide\": \"False\",\"IsTestingExclusive\": \"False\",\"DownloadCount\": 0,\"LastUpdate\": \"`date +%s`\",\"DownloadLinkInstall\": \"https://dl.bardmusicplayer.com/hypnotoad/latest.zip\",\"DownloadLinkTesting\": \"https://dl.bardmusicplayer.com/hypnotoad/latest.zip\",\"DownloadLinkUpdate\": \"https://dl.bardmusicplayer.com/hypnotoad/latest.zip\"}]" >> hypnotoad/index.html
+      
+      - name: Commit Downloads
+        run: |
+          git config --global user.email "doot@bardmusicplayer.com"
+          git config --global user.name "Bard Build Bot"
+          git add bmp/2/*
+          git commit -am"HypnotoadPlugin build ${{ github.run_number }} commit ${{ github.sha }}"
+          git push origin HEAD
+          
+
+

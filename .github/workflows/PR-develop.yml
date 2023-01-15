@@ -1,0 +1,27 @@
+name: Test PR against develop
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+
+  build:
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: HypnotoadPlugin
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 7.0.x
+
+    - name: Build with dotnet
+      run: dotnet build --configuration Debug
+
+    # Unit tests go here. Some day we may actually have unit test in Hypnotoad. ¯\_(ツ)_/¯

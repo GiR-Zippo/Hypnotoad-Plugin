@@ -7,7 +7,7 @@ on:
 jobs:
 
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     env:
       Solution_Name: HypnotoadPlugin
@@ -19,7 +19,7 @@ jobs:
     - name: Install .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 7.x.x
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
@@ -36,7 +36,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
     

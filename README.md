@@ -1,6 +1,6 @@
 # Hypnotoad Plugin
 
-BardMusicPlayer can be used in conjunction with the [Hypnotoad](https://github.com/BardMusicPlayer/Hypnotoad-Plugin) dalamud companion plugin for enhanced functionality.
+BardMusicPlayer & LightAmp can be used in conjunction with the [Hypnotoad](https://github.com/BardMusicPlayer/Hypnotoad-Plugin) dalamud companion plugin for enhanced functionality.
 
 * Output lyrics.
 * Chat while playing.

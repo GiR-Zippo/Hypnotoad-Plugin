@@ -1,10 +1,14 @@
-# HypnotoadPlugin
+# Hypnotoad Plugin
 
-Simple plugin for BardMusicPlayer & LightAmp to use the ingame chat
+BardMusicPlayer & LightAmp can be used in conjunction with the [Hypnotoad](https://github.com/BardMusicPlayer/Hypnotoad-Plugin) dalamud companion plugin for enhanced functionality.
 
-## Install
+* Output lyrics.
+* Chat while playing.
+* Direct instrument & ensemble ready / accept.
+* Set graphics toggle.
 
-Copy this url to your Dalamud and search for the hypnotoad
+## How to Install
+
+Copy this url to your dalamud settings experimental custom plugin repositories and search for the hypnotoad plugin.
 
 `https://dl.bardmusicplayer.com/hypnotoad/`
-

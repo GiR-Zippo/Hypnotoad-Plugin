@@ -7,6 +7,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace HypnotoadPlugin;
 [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
@@ -22,6 +23,9 @@ public static partial class Chat
 
 public static class Offsets
 {
+    [StaticAddress("48 8D 05 ?? ?? ?? ?? 48 8B F9 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 41 28 48 8B 49 48")]
+    public static IntPtr AgentPerformance { get; private set; }
+
     [StaticAddress("48 8D 05 ?? ?? ?? ?? 48 89 03 48 8D 4B 40")]
     public static IntPtr MetronomeAgent { get; private set; }
 
@@ -51,7 +55,31 @@ public static class Offsets
 
     [Function("48 89 ? ? ? 48 89 ? ? ? 57 48 83 EC ? 8B FA 41 0F ? ? 03 79")]
     public static IntPtr PressNote { get; private set; }
+}
 
+public sealed unsafe class AgentPerformance : AgentInterface
+{
+    public AgentPerformance(AgentInterface agentInterface) : base(agentInterface.Pointer, agentInterface.Id) { }
+    public static AgentPerformance Instance => Hypnotoad.AgentPerformance;
+    public new AgentPerformanceStruct* Struct => (AgentPerformanceStruct*)Pointer;
 
+    [StructLayout(LayoutKind.Explicit)]
+    public struct AgentPerformanceStruct
+    {
+        [FieldOffset(0)] public FFXIVClientStructs.FFXIV.Component.GUI.AgentInterface AgentInterface;
+        [FieldOffset(0x20)] public byte InPerformanceMode;
+        [FieldOffset(0x38)] public long PerformanceTimer1;
+        [FieldOffset(0x40)] public long PerformanceTimer2;
+        [FieldOffset(0x5C)] public int NoteOffset;
+        [FieldOffset(0x60)] public int CurrentPressingNote;
+        [FieldOffset(0xFC)] public int OctaveOffset;
+        [FieldOffset(0x1B0)] public int GroupTone;
+    }
 
+    internal int CurrentGroupTone => Struct->GroupTone;
+    internal bool InPerformanceMode => Struct->InPerformanceMode != 0;
+    internal bool notePressed => Struct->CurrentPressingNote != -100;
+    internal int noteNumber => Struct->CurrentPressingNote;
+    internal long PerformanceTimer1 => Struct->PerformanceTimer1;
+    internal long PerformanceTimer2 => Struct->PerformanceTimer2;
 }

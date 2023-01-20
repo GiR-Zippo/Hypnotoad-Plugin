@@ -20,9 +20,9 @@ public class Hypnotoad : IDalamudPlugin
     private Configuration Configuration { get; init; }
     private PluginUI PluginUi { get; init; }
     internal static AgentConfigSystem AgentConfigSystem { get; set; }
+    internal static AgentPerformance AgentPerformance { get; set; }
 
     [PluginService]
-    //[RequiredVersion("1.0")]
     public static SigScanner SigScanner { get; private set; }
 
     public unsafe Hypnotoad(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
@@ -46,6 +46,7 @@ public class Hypnotoad : IDalamudPlugin
         });
 
         AgentConfigSystem = new AgentConfigSystem(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.AgentConfigSystem));
+        AgentPerformance = new AgentPerformance(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.AgentPerformance));
         Hypnotoad.AgentConfigSystem.GetObjQuantity();
 
         this.PluginInterface.UiBuilder.Draw += DrawUI;

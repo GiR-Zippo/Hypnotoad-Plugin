@@ -227,15 +227,9 @@ unsafe class AgentManager
             {
                 var instance = Framework.Instance();
                 var agentModule = instance->UIModule->GetAgentModule();
-                var agentArray = &(agentModule->AgentArray);
-
-                for (var i = 0; i < 383; i++)
-                {
-                    var pointer = agentArray[i];
-                    if (pointer is null)
-                        continue;
-                    AgentTable.Add(new AgentInterface((IntPtr)pointer, i));
-                }
+                var i = 0;
+                foreach (var pointer in agentModule->AgentsSpan)
+                    AgentTable.Add(new AgentInterface((IntPtr)pointer.Value, i++));
             }
         }
         catch (Exception e)

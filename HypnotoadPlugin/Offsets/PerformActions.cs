@@ -2,20 +2,20 @@
  * Copyright(c) 2022 Ori @MidiBard2
  */
 
-using Dalamud.Logging;
 using System;
-using System.Runtime.InteropServices;
-using FFXIVClientStructs.FFXIV.Component.GUI;
-using Dalamud.Utility.Signatures;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Dalamud.Logging;
+using Dalamud.Utility.Signatures;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
-namespace HypnotoadPlugin;
+namespace HypnotoadPlugin.Offsets;
 
 public class PerformActions
 {
-    internal delegate void DoPerformActionDelegate(IntPtr performInfoPtr, uint instrumentId, int a3 = 0);
+    internal delegate void DoPerformActionDelegate(nint performInfoPtr, uint instrumentId, int a3 = 0);
     private static DoPerformActionDelegate doPerformAction { get; } = Marshal.GetDelegateForFunctionPointer<DoPerformActionDelegate>(Offsets.DoPerformAction);
     public static void DoPerformAction(uint instrumentId)
     {
@@ -24,13 +24,13 @@ public class PerformActions
     }
 
     private PerformActions() { }
-    private static unsafe IntPtr GetWindowByName(string s) => (IntPtr)AtkStage.GetSingleton()->RaptureAtkUnitManager->GetAddonByName(s);
+    private static unsafe nint GetWindowByName(string s) => (nint)AtkStage.GetSingleton()->RaptureAtkUnitManager->GetAddonByName(s);
     public static void init() => SignatureHelper.Initialise(new PerformActions());
     public static void SendAction(nint ptr, params ulong[] param)
     {
         if (param.Length % 2 != 0) 
             throw new ArgumentException("The parameter length must be an integer multiple of 2.");
-        if (ptr == IntPtr.Zero) 
+        if (ptr == nint.Zero) 
             throw new ArgumentException("input pointer is null");
 
         var paircount = param.Length / 2;
@@ -46,43 +46,37 @@ public class PerformActions
     public static bool SendAction(string name, params ulong[] param)
     {
         var ptr = GetWindowByName(name);
-        if (ptr == IntPtr.Zero) return false;
+        if (ptr == nint.Zero) return false;
         SendAction(ptr, param);
         return true;
     }
 
-    public static unsafe bool PressKey(int keynumber, ref int offset, ref int octave)
+    public static bool PressKey(int keynumber, ref int offset, ref int octave)
     {
-        if (TargetWindowPtr(out var miniMode, out var targetWindowPtr))
+        if (!TargetWindowPtr(out var miniMode, out var targetWindowPtr)) return false;
+        offset = 0;
+        octave = 0;
+
+        if (miniMode)
         {
-            offset = 0;
-            octave = 0;
-
-            if (miniMode)
-            {
-                keynumber = ConvertMiniKeyNumber(keynumber, ref offset, ref octave);
-            }
-
-            SendAction(targetWindowPtr, 3, 1, 4, (ulong)keynumber);
-
-            return true;
+            keynumber = ConvertMiniKeyNumber(keynumber, ref offset, ref octave);
         }
 
-        return false;
+        SendAction(targetWindowPtr, 3, 1, 4, (ulong)keynumber);
+
+        return true;
+
     }
 
-    public static unsafe bool ReleaseKey(int keynumber)
+    public static bool ReleaseKey(int keynumber)
     {
-        if (TargetWindowPtr(out var miniMode, out var targetWindowPtr))
-        {
-            if (miniMode) keynumber = ConvertMiniKeyNumber(keynumber);
+        if (!TargetWindowPtr(out var miniMode, out var targetWindowPtr)) return false;
+        if (miniMode) keynumber = ConvertMiniKeyNumber(keynumber);
 
-            SendAction(targetWindowPtr, 3, 2, 4, (ulong)keynumber);
+        SendAction(targetWindowPtr, 3, 2, 4, (ulong)keynumber);
 
-            return true;
-        }
+        return true;
 
-        return false;
     }
 
     private static int ConvertMiniKeyNumber(int keynumber)
@@ -108,30 +102,30 @@ public class PerformActions
         {
             case < 0:
                 keynumber += 12;
-                offset = -12;
-                octave = -1;
+                offset    =  -12;
+                octave    =  -1;
                 break;
             case > 12:
                 keynumber -= 12;
-                offset = 12;
-                octave = 1;
+                offset    =  12;
+                octave    =  1;
                 break;
         }
 
         return keynumber;
     }
 
-    private static bool TargetWindowPtr(out bool miniMode, out IntPtr targetWindowPtr)
+    private static bool TargetWindowPtr(out bool miniMode, out nint targetWindowPtr)
     {
         targetWindowPtr = GetWindowByName("PerformanceMode");
-        if (targetWindowPtr != IntPtr.Zero)
+        if (targetWindowPtr != nint.Zero)
         {
             miniMode = true;
             return true;
         }
 
         targetWindowPtr = GetWindowByName("PerformanceModeWide");
-        if (targetWindowPtr != IntPtr.Zero)
+        if (targetWindowPtr != nint.Zero)
         {
             miniMode = false;
             return true;
@@ -141,31 +135,30 @@ public class PerformActions
         return false;
     }
 
-    public static unsafe bool GuitarSwitchTone(int tone)
+    public static bool GuitarSwitchTone(int tone)
     {
         var ptr = GetWindowByName("PerformanceToneChange");
-        if (ptr == IntPtr.Zero) return false;
+        if (ptr == nint.Zero) return false;
 
         SendAction(ptr, 3, 0, 3, (ulong)tone);
         return true;
     }
 
-    public static unsafe bool BeginReadyCheck() => SendAction("PerformanceMetronome", 3, 2, 2, 0);
-    public static unsafe bool ConfirmBeginReadyCheck() => SendAction("PerformanceReadyCheck", 3, 2);
-    public static unsafe bool ConfirmReceiveReadyCheck() => SendAction("PerformanceReadyCheckReceive", 3, 2);
+    public static bool BeginReadyCheck() => SendAction("PerformanceMetronome", 3, 2, 2, 0);
+    public static bool ConfirmBeginReadyCheck() => SendAction("PerformanceReadyCheck", 3, 2);
+    public static bool ConfirmReceiveReadyCheck() => SendAction("PerformanceReadyCheckReceive", 3, 2);
 
-    public static string MainModuleRva(IntPtr ptr)
+    public static string MainModuleRva(nint ptr)
     {
         var modules = Process.GetCurrentProcess().Modules;
         List<ProcessModule> mh = new();
-        for (int i = 0; i < modules.Count; i++)
+        for (var i = 0; i < modules.Count; i++)
             mh.Add(modules[i]);
 
-        mh.Sort((x, y) => (long)x.BaseAddress > (long)y.BaseAddress ? -1 : 1);
-        foreach (var module in mh)
+        mh.Sort((x, y) => x.BaseAddress > (long)y.BaseAddress ? -1 : 1);
+        foreach (var module in mh.Where(module => module.BaseAddress <= (long)ptr))
         {
-            if ((long)module.BaseAddress <= (long)ptr)
-                return $"[{module.ModuleName}+0x{(long)ptr - (long)module.BaseAddress:X}]";
+            return $"[{module.ModuleName}+0x{ptr - (long)module.BaseAddress:X}]";
         }
         return $"[0x{(long)ptr:X}]";
     }
@@ -181,7 +174,6 @@ public class PerformActions
             if (PressKey(noteNum, ref Hypnotoad.AgentPerformance.Struct->NoteOffset, ref Hypnotoad.AgentPerformance.Struct->OctaveOffset))
             {
                 Hypnotoad.AgentPerformance.Struct->CurrentPressingNote = noteNum + 39;
-                return;
             }
 
         }
@@ -193,7 +185,6 @@ public class PerformActions
             if (ReleaseKey(noteNum))
             {
                 Hypnotoad.AgentPerformance.Struct->CurrentPressingNote = -100;
-                return;
             }
         }
     }

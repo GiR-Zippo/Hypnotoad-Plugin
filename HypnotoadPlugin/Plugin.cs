@@ -1,10 +1,11 @@
-﻿using Dalamud.Game;
+﻿using System.IO;
+using Dalamud.Game;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using System.IO;
-using static HypnotoadPlugin.GfxSettings;
+using HypnotoadPlugin.Offsets;
+using static HypnotoadPlugin.Offsets.GfxSettings;
 
 namespace HypnotoadPlugin;
 
@@ -25,56 +26,58 @@ public class Hypnotoad : IDalamudPlugin
     [PluginService]
     public static SigScanner SigScanner { get; private set; }
 
-    public unsafe Hypnotoad(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
+    public Hypnotoad(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
     {
         Api.Initialize(this, pluginInterface);
-        this.PluginInterface = pluginInterface;
-        this.CommandManager = commandManager;
+        PluginInterface = pluginInterface;
+        CommandManager  = commandManager;
 
-        this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        this.Configuration.Initialize(this.PluginInterface);
+        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Configuration.Initialize(PluginInterface);
         OffsetManager.Setup(SigScanner);
 
         // you might normally want to embed resources and load them from the manifest stream
         var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "toad.png");
-        var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
-        this.PluginUi = new PluginUI(this.Configuration, goatImage);
+        var goatImage = PluginInterface.UiBuilder.LoadImage(imagePath);
+        PluginUi = new PluginUI(Configuration, goatImage);
 
-        this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
         {
             HelpMessage = "A useful message to display in /xlhelp"
         });
 
-        AgentConfigSystem = new AgentConfigSystem(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.AgentConfigSystem));
-        AgentPerformance = new AgentPerformance(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.AgentPerformance));
-        Hypnotoad.AgentConfigSystem.GetObjQuantity();
+        AgentConfigSystem = new AgentConfigSystem(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.Offsets.AgentConfigSystem));
+        AgentPerformance  = new AgentPerformance(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.Offsets.AgentPerformance));
+        AgentConfigSystem.GetObjQuantity();
 
-        this.PluginInterface.UiBuilder.Draw += DrawUI;
-        this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+        PluginInterface.UiBuilder.Draw         += DrawUI;
+        PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+        //NetworkReader.Initialize();
     }
 
     public void Dispose()
     {
-        Hypnotoad.AgentConfigSystem.RestoreObjQuantity();
-        Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
+        //NetworkReader.Dispose();
+        AgentConfigSystem.RestoreObjQuantity();
+        AgentConfigSystem.ApplyGraphicSettings();
 
-        this.PluginUi.Dispose();
-        this.CommandManager.RemoveHandler(commandName);
+        PluginUi.Dispose();
+        CommandManager.RemoveHandler(commandName);
     }
 
     private void OnCommand(string command, string args)
     {
         // in response to the slash command, just display our main ui
-        this.PluginUi.Visible = true;
+        PluginUi.Visible = true;
     }
 
     private void DrawUI()
     {
-        this.PluginUi.Draw();
+        PluginUi.Draw();
     }
 
     private void DrawConfigUI()
     {
-        this.PluginUi.Visible = true;
+        PluginUi.Visible = true;
     }
 }

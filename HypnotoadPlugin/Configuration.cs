@@ -1,29 +1,28 @@
-﻿using Dalamud.Configuration;
+﻿using System;
+using Dalamud.Configuration;
 using Dalamud.Plugin;
-using System;
 
-namespace HypnotoadPlugin
+namespace HypnotoadPlugin;
+
+[Serializable]
+public class Configuration : IPluginConfiguration
 {
-    [Serializable]
-    public class Configuration : IPluginConfiguration
+    public int Version { get; set; } = 0;
+
+    public bool Autoconnect { get; set; } = true;
+
+    // the below exist just to make saving less cumbersome
+
+    [NonSerialized]
+    private DalamudPluginInterface pluginInterface;
+
+    public void Initialize(DalamudPluginInterface pluginInterface)
     {
-        public int Version { get; set; } = 0;
+        this.pluginInterface = pluginInterface;
+    }
 
-        public bool Autoconnect { get; set; } = true;
-
-        // the below exist just to make saving less cumbersome
-
-        [NonSerialized]
-        private DalamudPluginInterface pluginInterface;
-
-        public void Initialize(DalamudPluginInterface pluginInterface)
-        {
-            this.pluginInterface = pluginInterface;
-        }
-
-        public void Save()
-        {
-            this.pluginInterface!.SavePluginConfig(this);
-        }
+    public void Save()
+    {
+        pluginInterface!.SavePluginConfig(this);
     }
 }

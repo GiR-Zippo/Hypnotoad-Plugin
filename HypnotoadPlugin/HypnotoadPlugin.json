@@ -1,16 +1,14 @@
 {
-    "Author": "GiR-Zippo, Meowchestra, MoogleTroupe",
+    "Author": "GiR-Zippo, Meowchestra",
     "Name": "HypnotoadPlugin",
-    "Punchline": "BardMusicPlayer & LightAmp companion for enhanced functionality.",
-    "Description": "BardMusicPlayer & LightAmp companion for enhanced functionality.",
+    "Punchline": "LightAmp companion for enhanced functionality.",
+    "Description": "LightAmp companion for enhanced functionality.",
     "InternalName": "HypnotoadPlugin",
     "ApplicableVersion": "any",
     "Tags": [
-        "BardMusicPlayer",
         "LightAmp",
-		"BMP",
-		"Midi",
-		"Bard",
-		"Doot"
+        "Midi",
+        "Bard",
+        "Doot"
     ]
 }

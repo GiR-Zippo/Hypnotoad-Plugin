@@ -26,7 +26,7 @@ using Dalamud.Plugin;
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 // https://github.com/UnknownX7/DalamudRepoBrowser/blob/master/DalamudApi.cs
 
-namespace HypnotoadPlugin;
+namespace HypnotoadPlugin.Offsets;
 
 public class Api
 {
@@ -122,7 +122,7 @@ public class Api
 
     public Api() { }
 
-    public Api(IDalamudPlugin plugin) => _pluginCommandManager ??= new(plugin);
+    public Api(IDalamudPlugin plugin) => _pluginCommandManager ??= new PluginCommandManager<IDalamudPlugin>(plugin);
 
     public Api(IDalamudPlugin plugin, DalamudPluginInterface pluginInterface)
     {
@@ -132,7 +132,7 @@ public class Api
             return;
         }
 
-        _pluginCommandManager ??= new(plugin);
+        _pluginCommandManager ??= new PluginCommandManager<IDalamudPlugin>(plugin);
     }
 
     public static Api operator +(Api container, object o)
@@ -193,7 +193,7 @@ public class PluginCommandManager<T> : IDisposable where T : IDalamudPlugin
         var commandInfo = new CommandInfo(handlerDelegate)
         {
             HelpMessage = helpMessage?.HelpMessage ?? string.Empty,
-            ShowInHelp = doNotShowInHelp == null,
+            ShowInHelp  = doNotShowInHelp == null
         };
 
         // Create list of tuples that will be filled with one tuple per alias, in addition to the base command tuple.

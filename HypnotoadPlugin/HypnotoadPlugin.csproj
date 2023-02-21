@@ -1,102 +1,63 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Authors></Authors>
-    <Company></Company>
-    <Version>0.0.1.4</Version>
-    <Description>BardMusicPlayer &amp; LightAmp companion for enhanced functionality.</Description>
-    <Copyright></Copyright>
-    <PackageProjectUrl>https://github.com/BardMusicPlayer/Hypnotoad-Plugin</PackageProjectUrl>
-  </PropertyGroup>
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0-windows</TargetFramework>
-    <Platforms>x64</Platforms>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <Nullable>disable</Nullable>
-    <UseWpf>true</UseWpf>
     <LangVersion>latest</LangVersion>
+    <Platforms>x64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+
+    <Description>BardMusicPlayer &amp; LightAmp companion for enhanced functionality.</Description>
+    <PackageProjectUrl>https://github.com/BardMusicPlayer/Hypnotoad-Plugin</PackageProjectUrl>
+    <Version>0.0.1.10</Version>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="image\**" />
-    <EmbeddedResource Remove="image\**" />
-    <None Remove="image\**" />
-    <Page Remove="image\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="..\Data\toad.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
-  </ItemGroup>
 
   <PropertyGroup>
     <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
     <IsPublishable>True</IsPublishable>
   </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.10" />
-        <PackageReference Include="Fody" Version="6.6.4" PrivateAssets="all" />
-        <PackageReference Include="H.Formatters" Version="2.0.44" />
-        <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="13.0.44" />
-        <PackageReference Include="H.Pipes" Version="2.0.44" />
-        <PackageReference Include="H.Pipes.AccessControl" Version="2.0.44" />
-        <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-        <PackageReference Include="Resourcer.Fody" Version="1.8.0" PrivateAssets="all" />
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
-        <PackageReference Include="TinyIpc" Version="4.1.1" />
-        <PackageReference Include="XivCommon" Version="7.0.0-alpha.1" />
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Data\toad.png" CopyToOutputDirectory="PreserveNewest" Visible="false" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <Reference Include="Dalamud">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="FFXIVClientStructs">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\FFXIVClientStructs.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="ImGui.NET">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGui.NET.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="ImGuiScene">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\ImGuiScene.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="Lumina">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="Lumina.Excel">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.Excel.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-        <Reference Include="Newtonsoft.Json">
-            <HintPath>$(AppData)\XIVLauncher\addon\Hooks\dev\Newtonsoft.Json.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
-    </ItemGroup>
-    <Target Name="CleanOutDir" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-        <ItemGroup>
-            <!--<DeleteAssemblies Include="$(TargetDir)*.pdb" />-->
-            <DeleteAssemblies Include="$(TargetDir)$(AssemblyName).deps.json" />
-        </ItemGroup>
-        <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
-        <Delete Files="@(DeleteAssemblies)" />
-        <RemoveDir Directories="$(TargetDir)\ref\" />
-    </Target>
+  <ItemGroup>
+    <PackageReference Include="DalamudPackager" Version="2.1.10" />
+    <PackageReference Include="Fody" Version="6.6.4" PrivateAssets="all" />
+    <PackageReference Include="H.Formatters" Version="2.0.45" />
+    <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="13.0.45" />
+    <PackageReference Include="H.Pipes" Version="2.0.45" />
+    <PackageReference Include="H.Pipes.AccessControl" Version="2.0.45" />
+    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3-beta1" />
+    <PackageReference Include="Resourcer.Fody" Version="1.8.1" PrivateAssets="all" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+    <PackageReference Include="TinyIpc" Version="4.1.2" />
+    <PackageReference Include="XivCommon" Version="7.0.0-alpha.1" />
+  </ItemGroup>
 
-    <Target Name="PackagePlugin" AfterTargets="CleanOutDir" Condition="'$(Configuration)' == 'Release'">
-        <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" Exclude="*.pdb;" AssemblyName="$(AssemblyName)" />
-    </Target>
+  <ItemGroup>
+    <Reference Include="Dalamud" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll" Private="false" />
+    <Reference Include="FFXIVClientStructs" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\FFXIVClientStructs.dll" Private="false" />
+    <Reference Include="ImGui.NET" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\ImGui.NET.dll" Private="false" />
+    <Reference Include="ImGuiScene" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\ImGuiScene.dll" Private="false" />
+    <Reference Include="Lumina" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.dll" Private="false" />
+    <Reference Include="Lumina.Excel" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.Excel.dll" Private="false" />
+    <Reference Include="Newtonsoft.Json" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Newtonsoft.Json.dll" Private="false" />
+  </ItemGroup>
+
+  <Target Name="CleanOutDir" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <DeleteAssemblies Include="$(TargetDir)*.pdb" />
+      <DeleteAssemblies Include="$(TargetDir)$(AssemblyName).deps.json" />
+    </ItemGroup>
+    <Message Text="Deleting @(DeleteAssemblies)" Importance="high" />
+    <Delete Files="@(DeleteAssemblies)" />
+    <RemoveDir Directories="$(TargetDir)\ref\" />
+  </Target>
+
+  <Target Name="PackagePlugin" AfterTargets="CleanOutDir" Condition="'$(Configuration)' == 'Release'">
+    <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" Exclude="*.pdb;" AssemblyName="$(AssemblyName)" />
+  </Target>
 </Project>

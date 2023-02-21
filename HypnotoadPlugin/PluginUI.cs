@@ -28,8 +28,6 @@ class PluginUI : IDisposable
     private Queue<Message> qt = new();
     private Configuration configuration;
 
-    private TextureWrap goatImage;
-
     // this extra bool exists for ImGui, since you can't ref a property
     private bool visible;
     public bool Visible
@@ -41,10 +39,9 @@ class PluginUI : IDisposable
     public bool ManuallyDisconnected { get; set; }
 
     // passing in the image here just for simplicity
-    public PluginUI(Configuration configuration, TextureWrap goatImage)
+    public PluginUI(Configuration configuration)
     {
         this.configuration          =  configuration;
-        this.goatImage              =  goatImage;
 
         Pipe.Initialize();
         Pipe.Client.Connected += pipeClient_Connected;
@@ -150,7 +147,6 @@ class PluginUI : IDisposable
         Pipe.Client.DisconnectAsync();
         Pipe.Client.DisposeAsync();
         Pipe.Dispose();
-        goatImage.Dispose();
     }
 
     public void Draw()

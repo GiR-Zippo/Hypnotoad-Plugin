@@ -37,9 +37,7 @@ public class Hypnotoad : IDalamudPlugin
         OffsetManager.Setup(SigScanner);
 
         // you might normally want to embed resources and load them from the manifest stream
-        var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "toad.png");
-        var goatImage = PluginInterface.UiBuilder.LoadImage(imagePath);
-        PluginUi = new PluginUI(Configuration, goatImage);
+        PluginUi = new PluginUI(Configuration);
 
         CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
         {

@@ -1,0 +1,20 @@
+{
+  "Author": "GiR-Zippo, Meowchestra",
+  "Name": "HypnotoadPlugin",
+  "InternalName": "HypnotoadPlugin",
+  "AssemblyVersion": "0.0.1.10",
+  "Description": "LightAmp companion for enhanced functionality.",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "LightAmp",
+    "Midi",
+    "Bard",
+    "Doot"
+  ],
+  "DalamudApiLevel": 8,
+  "LoadRequiredState": 0,
+  "LoadSync": false,
+  "LoadPriority": 0,
+  "Punchline": "LightAmp companion for enhanced functionality.",
+  "AcceptsFeedback": true
+}

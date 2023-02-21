@@ -27,7 +27,6 @@ static class GfxSettings
         {
             void OnToast(ref SeString message, ref ToastOptions options, ref bool handled)
             {
-                PluginLog.Information($"[MidiBard] suppressing toast: {message}");
                 handled = true;
                 Api.ToastGui.Toast -= OnToast;
             }
@@ -35,7 +34,6 @@ static class GfxSettings
             var refreshConfigGraphicState = (delegate* unmanaged<IntPtr, long>)Offsets.ApplyGraphicConfigsFunc;
             var result = refreshConfigGraphicState(Pointer);
             Api.ToastGui.Toast += OnToast;
-            PluginLog.Information($"graphic config saved and refreshed. func:{(long)refreshConfigGraphicState:X} agent:{Pointer:X} result:{result:X}");
         }
         public static unsafe AtkValue* GetOptionValue(ConfigOption option) => _configModule->GetValue(option);
         public static unsafe void SetOptionValue(ConfigOption option, int value) => _configModule->SetOption(option, value);
@@ -122,8 +120,6 @@ static class GfxSettings
 
         public unsafe void SetMinimalObjQuantity()
         {
-            //PluginLog.LogError($"exception: {_configModule->GetIntValue(ConfigOption.DistortionWater_DX11)}");
-
             _configModule->SetOption(ConfigOption.FPSInActive, 0);
             _configModule->SetOption(ConfigOption.DisplayObjectLimitType, 4);
 
@@ -199,59 +195,53 @@ static class GfxSettings
     }
 }
 
-    public unsafe class AgentInterface
+public unsafe class AgentInterface
+{
+    public IntPtr Pointer { get; }
+    public IntPtr VTable { get; }
+    public int Id { get; }
+    public FFXIVClientStructs.FFXIV.Component.GUI.AgentInterface* Struct => (FFXIVClientStructs.FFXIV.Component.GUI.AgentInterface*)Pointer;
+
+    public AgentInterface(IntPtr pointer, int id)
     {
-        public IntPtr Pointer { get; }
-        public IntPtr VTable { get; }
-        public int Id { get; }
-        public FFXIVClientStructs.FFXIV.Component.GUI.AgentInterface* Struct => (FFXIVClientStructs.FFXIV.Component.GUI.AgentInterface*)Pointer;
+        Pointer = pointer;
+        Id = id;
+        VTable = Marshal.ReadIntPtr(Pointer);
+    }
 
-        public AgentInterface(IntPtr pointer, int id)
+    public override string ToString()
+    {
+        return $"{Id} {(long)Pointer:X} {(long)VTable:X}";
+    }
+}
+
+unsafe class AgentManager
+{
+    internal List<AgentInterface> AgentTable { get; } = new List<AgentInterface>(400);
+
+    private AgentManager()
+    {
+        try
         {
-            Pointer = pointer;
-            Id = id;
-            VTable = Marshal.ReadIntPtr(Pointer);
+            unsafe
+            {
+                var instance = Framework.Instance();
+                var agentModule = instance->UIModule->GetAgentModule();
+                var i = 0;
+                foreach (var pointer in agentModule->AgentsSpan)
+                    AgentTable.Add(new AgentInterface((IntPtr)pointer.Value, i++));
+            }
         }
-
-        public override string ToString()
+        catch (Exception e)
         {
-            return $"{Id} {(long)Pointer:X} {(long)VTable:X}";
+            PluginLog.Error(e.ToString());
         }
     }
 
-    unsafe class AgentManager
-    {
-        internal List<AgentInterface> AgentTable { get; } = new List<AgentInterface>(400);
+    public static AgentManager Instance { get; } = new AgentManager();
 
-        private AgentManager()
-        {
-            try
-            {
-                unsafe
-                {
-                    var instance = FFXIVClientStructs.FFXIV.Client.System.Framework.Framework.Instance();
-                    var agentModule = instance->UIModule->GetAgentModule();
-                    var agentArray = &(agentModule->AgentArray);
+    internal AgentInterface FindAgentInterfaceById(int id) => AgentTable[id];
 
-                    for (var i = 0; i < 383; i++)
-                    {
-                        var pointer = agentArray[i];
-                        if (pointer is null)
-                            continue;
-                        AgentTable.Add(new AgentInterface((IntPtr)pointer, i));
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                PluginLog.Error(e.ToString());
-            }
-        }
-
-        public static AgentManager Instance { get; } = new AgentManager();
-
-        internal AgentInterface FindAgentInterfaceById(int id) => AgentTable[id];
-
-        internal AgentInterface FindAgentInterfaceByVtable(IntPtr vtbl) => AgentTable.First(i => i.VTable == vtbl);
-    }
+    internal AgentInterface FindAgentInterfaceByVtable(IntPtr vtbl) => AgentTable.First(i => i.VTable == vtbl);
+}
 

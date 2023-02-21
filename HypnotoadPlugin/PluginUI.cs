@@ -102,18 +102,33 @@ namespace HypnotoadPlugin
             }
         }
 
-        private void pipeClient_MessageReceived(object sender, H.Pipes.Args.ConnectionMessageEventArgs<Message> e)
+        private void pipeClient_MessageReceived(object sender, ConnectionMessageEventArgs<Message> e)
         {
             Message inMsg = e.Message as Message;
             if (inMsg == null)
                 return;
-
-            if ((inMsg.msgType == MessageType.Chat || 
-                 inMsg.msgType == MessageType.Instrument ||
-                 inMsg.msgType == MessageType.AcceptReply ||
-                 inMsg.msgType == MessageType.SetGfx ||
-                 inMsg.msgType == MessageType.StartEnsemble ))
-                qt.Enqueue(inMsg);
+            
+            switch (inMsg.msgType)
+            {
+                case MessageType.NoteOn:
+                    PerformActions.PlayNote(Convert.ToInt16(inMsg.message), true);
+                    break;
+                case MessageType.NoteOff:
+                    PerformActions.PlayNote(Convert.ToInt16(inMsg.message), false);
+                    break;
+                case MessageType.ProgramChange:
+                    PerformActions.GuitarSwitchTone(Convert.ToInt32(inMsg.message));
+                    break;
+                case MessageType.Chat:
+                case MessageType.Instrument:
+                case MessageType.AcceptReply:
+                case MessageType.SetGfx:
+                case MessageType.StartEnsemble:
+                    qt.Enqueue(inMsg);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void Dispose()

@@ -1,9 +1,13 @@
 ﻿using System.IO;
+using Dalamud.Data;
 using Dalamud.Game;
+using Dalamud.Game.ClientState;
+using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+using HypnotoadPlugin.Network;
 using HypnotoadPlugin.Offsets;
 using static HypnotoadPlugin.Offsets.GfxSettings;
 
@@ -22,11 +26,12 @@ public class Hypnotoad : IDalamudPlugin
     private PluginUI PluginUi { get; init; }
     internal static AgentConfigSystem AgentConfigSystem { get; set; }
     internal static AgentPerformance AgentPerformance { get; set; }
+    internal static EnsembleManager EnsembleManager { get; set; }
 
     [PluginService]
     public static SigScanner SigScanner { get; private set; }
 
-    public Hypnotoad(DalamudPluginInterface pluginInterface, CommandManager commandManager, ChatGui chatGui)
+    public Hypnotoad(DalamudPluginInterface pluginInterface, ChatGui chatGui, DataManager data, CommandManager commandManager, ClientState clientState, PartyList partyList)
     {
         Api.Initialize(this, pluginInterface);
         PluginInterface = pluginInterface;
@@ -36,9 +41,6 @@ public class Hypnotoad : IDalamudPlugin
         Configuration.Initialize(PluginInterface);
         OffsetManager.Setup(SigScanner);
 
-        // you might normally want to embed resources and load them from the manifest stream
-        PluginUi = new PluginUI(Configuration);
-
         CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
         {
             HelpMessage = "A useful message to display in /xlhelp"
@@ -46,11 +48,19 @@ public class Hypnotoad : IDalamudPlugin
 
         AgentConfigSystem = new AgentConfigSystem(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.Offsets.AgentConfigSystem));
         AgentPerformance  = new AgentPerformance(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.Offsets.AgentPerformance));
+        EnsembleManager   = new EnsembleManager();
+
+        Collector.Instance.Initialize(data, clientState, partyList);
+
         AgentConfigSystem.GetObjQuantity();
 
-        PluginInterface.UiBuilder.Draw         += DrawUI;
-        PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
         //NetworkReader.Initialize();
+
+        // you might normally want to embed resources and load them from the manifest stream
+        PluginUi = new PluginUI(Configuration);
+
+        PluginInterface.UiBuilder.Draw += DrawUI;
+        PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
     }
 
     public void Dispose()
@@ -58,6 +68,8 @@ public class Hypnotoad : IDalamudPlugin
         //NetworkReader.Dispose();
         AgentConfigSystem.RestoreObjQuantity();
         AgentConfigSystem.ApplyGraphicSettings();
+        EnsembleManager.Dispose();
+        Collector.Instance.Dispose();
 
         PluginUi.Dispose();
         CommandManager.RemoveHandler(commandName);

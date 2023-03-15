@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Timers;
+using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.ClientState.Resolvers;
 using Dalamud.Logging;
+using Dalamud.Plugin;
 using H.Formatters;
 using H.Pipes;
 using H.Pipes.Args;
@@ -28,6 +32,9 @@ class PluginUI : IDisposable
     private Queue<Message> qt = new();
     private Configuration configuration;
 
+    private bool performanceModeOpen { get; set; } = false;
+
+
     // this extra bool exists for ImGui, since you can't ref a property
     private bool visible;
     public bool Visible
@@ -44,10 +51,10 @@ class PluginUI : IDisposable
         this.configuration          =  configuration;
 
         Pipe.Initialize();
-        Pipe.Client.Connected += pipeClient_Connected;
+        Pipe.Client.Connected       += pipeClient_Connected;
         Pipe.Client.MessageReceived += pipeClient_MessageReceived;
-        Pipe.Client.Disconnected += pipeClient_Disconnected;
-        _reconnectTimer.Elapsed += reconnectTimer_Elapsed;
+        Pipe.Client.Disconnected    += pipeClient_Disconnected;
+        _reconnectTimer.Elapsed     += reconnectTimer_Elapsed;
 
         _reconnectTimer.Interval    =  2000;
         _reconnectTimer.Enabled     =  configuration.Autoconnect;
@@ -78,6 +85,8 @@ class PluginUI : IDisposable
             msgChannel = 0,
             message    = Environment.ProcessId + ":" + GfxSettings.AgentConfigSystem.CheckLowSettings()
         });
+
+        Collector.Instance.UpdateClientStats();
     }
 
     private void pipeClient_Disconnected(object sender, ConnectionEventArgs<Message> e)
@@ -144,6 +153,12 @@ class PluginUI : IDisposable
     public void Dispose()
     {
         ManuallyDisconnected = true;
+
+        Pipe.Client.Connected -= pipeClient_Connected;
+        Pipe.Client.MessageReceived -= pipeClient_MessageReceived;
+        Pipe.Client.Disconnected -= pipeClient_Disconnected;
+        _reconnectTimer.Elapsed -= reconnectTimer_Elapsed;
+
         Pipe.Client.DisconnectAsync();
         Pipe.Client.DisposeAsync();
         Pipe.Dispose();
@@ -203,6 +218,21 @@ class PluginUI : IDisposable
             ImGui.End();
         }
 
+        //Check performance state
+        /*if (Hypnotoad.AgentPerformance.InPerformanceMode != performanceModeOpen)
+        {
+            performanceModeOpen = Hypnotoad.AgentPerformance.InPerformanceMode;
+            if (Pipe.Client != null && Pipe.Client.IsConnected)
+            {
+                Pipe.Client.WriteAsync(new Message
+                {
+                    msgType = MessageType.PerformanceModeState,
+                    message = Environment.ProcessId + ":" + Hypnotoad.AgentPerformance.Instrument.ToString()
+                });
+            }
+        }*/
+
+        //Do the in queue
         while (qt.Count > 0)
         {
             try

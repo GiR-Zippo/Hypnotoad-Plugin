@@ -5,7 +5,12 @@
  * 
  */
 
+using Dalamud.Hooking;
+using Dalamud.Logging;
+using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Sockets;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 
 namespace HypnotoadPlugin.Offsets;
@@ -44,14 +49,15 @@ public static class Offsets
     [Function("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC 20 0F B6 FA 48 8B D9 84 D2 ")]
     public static nint UpdateMetronome { get; private set; }
 
-    /*[Function("83 FA 04 77 4E")]
-        public static IntPtr UISetTone { get; private set; }*/
-
     [Function("48 8B C4 56 48 81 EC ?? ?? ?? ?? 48 89 58 10 ")]
     public static nint ApplyGraphicConfigsFunc { get; private set; }
 
     [Function("48 89 ? ? ? 48 89 ? ? ? 57 48 83 EC ? 8B FA 41 0F ? ? 03 79")]
     public static nint PressNote { get; private set; }
+
+    [Function("40 53 48 83 EC 20 48 8B D9 48 83 C1 78 E8 ? ? ? ? 48 8D 8B ? ? ? ? E8 ? ? ? ? 48 8D 53 20 ")]
+    public static IntPtr NetworkEnsembleStart { get; private set; }
+
 }
 
 public sealed unsafe class AgentPerformance : AgentInterface
@@ -65,6 +71,7 @@ public sealed unsafe class AgentPerformance : AgentInterface
     {
         [FieldOffset(0)] public FFXIVClientStructs.FFXIV.Component.GUI.AgentInterface AgentInterface;
         [FieldOffset(0x20)] public byte InPerformanceMode;
+        [FieldOffset(0x1F)] public byte Instrument;
         [FieldOffset(0x38)] public long PerformanceTimer1;
         [FieldOffset(0x40)] public long PerformanceTimer2;
         [FieldOffset(0x5C)] public int NoteOffset;
@@ -79,4 +86,36 @@ public sealed unsafe class AgentPerformance : AgentInterface
     internal int noteNumber => Struct->CurrentPressingNote;
     internal long PerformanceTimer1 => Struct->PerformanceTimer1;
     internal long PerformanceTimer2 => Struct->PerformanceTimer2;
+
+    internal byte Instrument => Struct->Instrument;
+    
+}
+
+internal class EnsembleManager : IDisposable
+{
+    private delegate long sub_1410F4EC0(IntPtr a1, IntPtr a2);
+    private Hook<sub_1410F4EC0> NetworkEnsembleHook;
+    internal EnsembleManager()
+    {
+        //Get the ensemble start
+        NetworkEnsembleHook = Hook<sub_1410F4EC0>.FromAddress(Offsets.NetworkEnsembleStart, (a1, a2) =>
+        {
+            //and pipe it
+            if (Pipe.Client != null && Pipe.Client.IsConnected)
+            {
+                Pipe.Client.WriteAsync(new Message
+                {
+                    msgType = MessageType.StartEnsemble,
+                    message = Environment.ProcessId + ":1"
+                });
+            }
+            return NetworkEnsembleHook.Original(a1, a2);
+        });
+        NetworkEnsembleHook.Enable();
+    }
+
+    public void Dispose()
+    {
+        NetworkEnsembleHook?.Dispose();
+    }
 }

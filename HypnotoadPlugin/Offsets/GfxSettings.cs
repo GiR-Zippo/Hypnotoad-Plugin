@@ -1,5 +1,6 @@
 ﻿/*
- * Copyright(c) 2022 Ori @MidiBard2
+ * Copyright(c) 2023 GiR-Zippo, Ori@MidiBard2
+ * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
  */
 
 using System;
@@ -11,7 +12,6 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace HypnotoadPlugin.Offsets;
 
@@ -20,7 +20,6 @@ internal static class GfxSettings
 
     internal class AgentConfigSystem : AgentInterface
     {
-        private static unsafe ConfigModule* _configModule = Framework.Instance()->UIModule->GetConfigModule();
         public AgentConfigSystem(AgentInterface agentInterface) : base(agentInterface.Pointer, agentInterface.Id) { }
 
         public unsafe void ApplyGraphicSettings()
@@ -35,41 +34,38 @@ internal static class GfxSettings
             var result = refreshConfigGraphicState(Pointer);
             Api.ToastGui.Toast += OnToast;
         }
-        public static unsafe AtkValue* GetOptionValue(ConfigOption option) => _configModule->GetValue(option);
-        public static unsafe void SetOptionValue(ConfigOption option, int value) => _configModule->SetOption(option, value);
-        public static unsafe void ToggleBoolOptionValue(ConfigOption option) => _configModule->SetOption(option, GetOptionValue(option)->Byte == 0 ? 1 : 0);
 
-        private static int FPSInActive;
-        private static int originalObjQuantity;
-        private static int WaterWet_DX11;
-        private static int OcclusionCulling_DX11;
-        private static int LodType_DX11;
-        private static int ReflectionType_DX11;
-        private static int AntiAliasing_DX11;
-        private static int TranslucentQuality_DX11;
-        private static int GrassQuality_DX11;
-        private static int ParallaxOcclusion_DX11;
-        private static int Tessellation_DX11;
-        private static int GlareRepresentation_DX11;
-        private static int MapResolution_DX11;
-        private static int ShadowVisibilityTypeSelf_DX11;
-        private static int ShadowVisibilityTypeParty_DX11;
-        private static int ShadowVisibilityTypeOther_DX11;
-        private static int ShadowVisibilityTypeEnemy_DX11;
-        private static int ShadowLOD_DX11;
-        private static int ShadowTextureSizeType_DX11;
-        private static int ShadowCascadeCountType_DX11;
-        private static int ShadowSoftShadowType_DX11;
-        private static int TextureFilterQuality_DX11;
-        private static int TextureAnisotropicQuality_DX11;
-        private static int PhysicsTypeSelf_DX11;
-        private static int PhysicsTypeParty_DX11;
-        private static int PhysicsTypeOther_DX11;
-        private static int PhysicsTypeEnemy_DX11;
-        private static int RadialBlur_DX11;
-        private static int SSAO_DX11;
-        private static int Glare_DX11;
-        private static int DistortionWater_DX11;
+        private static uint FPSInActive;
+        private static uint originalObjQuantity;
+        private static uint WaterWet_DX11;
+        private static uint OcclusionCulling_DX11;
+        private static uint LodType_DX11;
+        private static uint ReflectionType_DX11;
+        private static uint AntiAliasing_DX11;
+        private static uint TranslucentQuality_DX11;
+        private static uint GrassQuality_DX11;
+        private static uint ParallaxOcclusion_DX11;
+        private static uint Tessellation_DX11;
+        private static uint GlareRepresentation_DX11;
+        private static uint MapResolution_DX11;
+        private static uint ShadowVisibilityTypeSelf_DX11;
+        private static uint ShadowVisibilityTypeParty_DX11;
+        private static uint ShadowVisibilityTypeOther_DX11;
+        private static uint ShadowVisibilityTypeEnemy_DX11;
+        private static uint ShadowLOD_DX11;
+        private static uint ShadowTextureSizeType_DX11;
+        private static uint ShadowCascadeCountType_DX11;
+        private static uint ShadowSoftShadowType_DX11;
+        private static uint TextureFilterQuality_DX11;
+        private static uint TextureAnisotropicQuality_DX11;
+        private static uint PhysicsTypeSelf_DX11;
+        private static uint PhysicsTypeParty_DX11;
+        private static uint PhysicsTypeOther_DX11;
+        private static uint PhysicsTypeEnemy_DX11;
+        private static uint RadialBlur_DX11;
+        private static uint SSAO_DX11;
+        private static uint Glare_DX11;
+        private static uint DistortionWater_DX11;
 
         public static bool CheckLowSettings()
         {
@@ -83,111 +79,113 @@ internal static class GfxSettings
 
         public static unsafe void GetObjQuantity()
         {
-            FPSInActive                    = _configModule->GetIntValue(ConfigOption.FPSInActive);
-            originalObjQuantity            = _configModule->GetIntValue(ConfigOption.DisplayObjectLimitType);
-            WaterWet_DX11                  = _configModule->GetIntValue(ConfigOption.WaterWet_DX11);
-            OcclusionCulling_DX11          = _configModule->GetIntValue(ConfigOption.OcclusionCulling_DX11);
-            LodType_DX11                   = _configModule->GetIntValue(ConfigOption.LodType_DX11);
-            ReflectionType_DX11            = _configModule->GetIntValue(ConfigOption.ReflectionType_DX11);
-            AntiAliasing_DX11              = _configModule->GetIntValue(ConfigOption.AntiAliasing_DX11);
-            TranslucentQuality_DX11        = _configModule->GetIntValue(ConfigOption.TranslucentQuality_DX11);
-            GrassQuality_DX11              = _configModule->GetIntValue(ConfigOption.GrassQuality_DX11);
-            ParallaxOcclusion_DX11         = _configModule->GetIntValue(ConfigOption.ParallaxOcclusion_DX11);
-            Tessellation_DX11              = _configModule->GetIntValue(ConfigOption.Tessellation_DX11);
-            GlareRepresentation_DX11       = _configModule->GetIntValue(ConfigOption.GlareRepresentation_DX11);
-            MapResolution_DX11             = _configModule->GetIntValue(ConfigOption.MapResolution_DX11);
-            ShadowVisibilityTypeSelf_DX11  = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeSelf_DX11);
-            ShadowVisibilityTypeParty_DX11 = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeParty_DX11);
-            ShadowVisibilityTypeOther_DX11 = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeOther_DX11);
-            ShadowVisibilityTypeEnemy_DX11 = _configModule->GetIntValue(ConfigOption.ShadowVisibilityTypeEnemy_DX11);
-            ShadowLOD_DX11                 = _configModule->GetIntValue(ConfigOption.ShadowLOD_DX11);
-            ShadowTextureSizeType_DX11     = _configModule->GetIntValue(ConfigOption.ShadowTextureSizeType_DX11);
-            ShadowCascadeCountType_DX11    = _configModule->GetIntValue(ConfigOption.ShadowCascadeCountType_DX11);
-            ShadowSoftShadowType_DX11      = _configModule->GetIntValue(ConfigOption.ShadowSoftShadowType_DX11);
-            TextureFilterQuality_DX11      = _configModule->GetIntValue(ConfigOption.TextureFilterQuality_DX11);
-            TextureAnisotropicQuality_DX11 = _configModule->GetIntValue(ConfigOption.TextureAnisotropicQuality_DX11);
-            PhysicsTypeSelf_DX11           = _configModule->GetIntValue(ConfigOption.PhysicsTypeSelf_DX11);
-            PhysicsTypeParty_DX11          = _configModule->GetIntValue(ConfigOption.PhysicsTypeParty_DX11);
-            PhysicsTypeOther_DX11          = _configModule->GetIntValue(ConfigOption.PhysicsTypeOther_DX11);
-            PhysicsTypeEnemy_DX11          = _configModule->GetIntValue(ConfigOption.PhysicsTypeEnemy_DX11);
-            RadialBlur_DX11                = _configModule->GetIntValue(ConfigOption.RadialBlur_DX11);
-            SSAO_DX11                      = _configModule->GetIntValue(ConfigOption.SSAO_DX11);
-            Glare_DX11                     = _configModule->GetIntValue(ConfigOption.Glare_DX11);
-            DistortionWater_DX11           = _configModule->GetIntValue(ConfigOption.DistortionWater_DX11);
+            var configEntry = Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry;
+
+            FPSInActive                    = configEntry[(int)ConfigOption.FPSInActive].Value.UInt;
+            originalObjQuantity            = configEntry[(int)ConfigOption.DisplayObjectLimitType].Value.UInt;
+            WaterWet_DX11                  = configEntry[(int)ConfigOption.WaterWet_DX11].Value.UInt;
+            OcclusionCulling_DX11          = configEntry[(int)ConfigOption.OcclusionCulling_DX11].Value.UInt;
+            LodType_DX11                   = configEntry[(int)ConfigOption.LodType_DX11].Value.UInt;
+            ReflectionType_DX11            = configEntry[(int)ConfigOption.ReflectionType_DX11].Value.UInt;
+            AntiAliasing_DX11              = configEntry[(int)ConfigOption.AntiAliasing_DX11].Value.UInt;
+            TranslucentQuality_DX11        = configEntry[(int)ConfigOption.TranslucentQuality_DX11].Value.UInt;
+            GrassQuality_DX11              = configEntry[(int)ConfigOption.GrassQuality_DX11].Value.UInt;
+            ParallaxOcclusion_DX11         = configEntry[(int)ConfigOption.ParallaxOcclusion_DX11].Value.UInt;
+            Tessellation_DX11              = configEntry[(int)ConfigOption.Tessellation_DX11].Value.UInt;
+            GlareRepresentation_DX11       = configEntry[(int)ConfigOption.GlareRepresentation_DX11].Value.UInt;
+            MapResolution_DX11             = configEntry[(int)ConfigOption.MapResolution_DX11].Value.UInt;
+            ShadowVisibilityTypeSelf_DX11  = configEntry[(int)ConfigOption.ShadowVisibilityTypeSelf_DX11].Value.UInt;
+            ShadowVisibilityTypeParty_DX11 = configEntry[(int)ConfigOption.ShadowVisibilityTypeParty_DX11].Value.UInt;
+            ShadowVisibilityTypeOther_DX11 = configEntry[(int)ConfigOption.ShadowVisibilityTypeOther_DX11].Value.UInt;
+            ShadowVisibilityTypeEnemy_DX11 = configEntry[(int)ConfigOption.ShadowVisibilityTypeEnemy_DX11].Value.UInt;
+            ShadowLOD_DX11                 = configEntry[(int)ConfigOption.ShadowLOD_DX11].Value.UInt;
+            ShadowTextureSizeType_DX11     = configEntry[(int)ConfigOption.ShadowTextureSizeType_DX11].Value.UInt;
+            ShadowCascadeCountType_DX11    = configEntry[(int)ConfigOption.ShadowCascadeCountType_DX11].Value.UInt;
+            ShadowSoftShadowType_DX11      = configEntry[(int)ConfigOption.ShadowSoftShadowType_DX11].Value.UInt;
+            TextureFilterQuality_DX11      = configEntry[(int)ConfigOption.TextureFilterQuality_DX11].Value.UInt;
+            TextureAnisotropicQuality_DX11 = configEntry[(int)ConfigOption.TextureAnisotropicQuality_DX11].Value.UInt;
+            PhysicsTypeSelf_DX11           = configEntry[(int)ConfigOption.PhysicsTypeSelf_DX11].Value.UInt;
+            PhysicsTypeParty_DX11          = configEntry[(int)ConfigOption.PhysicsTypeParty_DX11].Value.UInt;
+            PhysicsTypeOther_DX11          = configEntry[(int)ConfigOption.PhysicsTypeOther_DX11].Value.UInt;
+            PhysicsTypeEnemy_DX11          = configEntry[(int)ConfigOption.PhysicsTypeEnemy_DX11].Value.UInt;
+            RadialBlur_DX11                = configEntry[(int)ConfigOption.RadialBlur_DX11].Value.UInt;
+            SSAO_DX11                      = configEntry[(int)ConfigOption.SSAO_DX11].Value.UInt;
+            Glare_DX11                     = configEntry[(int)ConfigOption.Glare_DX11].Value.UInt;
+            DistortionWater_DX11           = configEntry[(int)ConfigOption.DistortionWater_DX11].Value.UInt;
         }
 
         public static unsafe void SetMinimalObjQuantity()
         {
-            _configModule->SetOption(ConfigOption.FPSInActive, 0);
-            _configModule->SetOption(ConfigOption.DisplayObjectLimitType, 4);
+            var configEntry = Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry;
 
-            _configModule->SetOption(ConfigOption.WaterWet_DX11, 0);
-            _configModule->SetOption(ConfigOption.OcclusionCulling_DX11, 1);
-            _configModule->SetOption(ConfigOption.LodType_DX11, 1);
-            _configModule->SetOption(ConfigOption.ReflectionType_DX11, 3);
-            _configModule->SetOption(ConfigOption.AntiAliasing_DX11, 1);
-            _configModule->SetOption(ConfigOption.TranslucentQuality_DX11, 1);
-            _configModule->SetOption(ConfigOption.GrassQuality_DX11, 3);
-            _configModule->SetOption(ConfigOption.ParallaxOcclusion_DX11, 1);
-            _configModule->SetOption(ConfigOption.Tessellation_DX11, 1);
-            _configModule->SetOption(ConfigOption.GlareRepresentation_DX11, 1);
-            _configModule->SetOption(ConfigOption.MapResolution_DX11, 2);
-            _configModule->SetOption(ConfigOption.ShadowVisibilityTypeSelf_DX11, 1);
-            _configModule->SetOption(ConfigOption.ShadowVisibilityTypeParty_DX11, 1);
-            _configModule->SetOption(ConfigOption.ShadowVisibilityTypeOther_DX11, 1);
-            _configModule->SetOption(ConfigOption.ShadowVisibilityTypeEnemy_DX11, 1);
-            _configModule->SetOption(ConfigOption.ShadowLOD_DX11, 1);
-            _configModule->SetOption(ConfigOption.ShadowTextureSizeType_DX11, 2);
-            _configModule->SetOption(ConfigOption.ShadowCascadeCountType_DX11, 2);
-            _configModule->SetOption(ConfigOption.ShadowSoftShadowType_DX11, 1);
-            _configModule->SetOption(ConfigOption.TextureFilterQuality_DX11, 2);
-            _configModule->SetOption(ConfigOption.TextureAnisotropicQuality_DX11, 2);
-            _configModule->SetOption(ConfigOption.PhysicsTypeSelf_DX11, 2);
-            _configModule->SetOption(ConfigOption.PhysicsTypeParty_DX11, 2);
-            _configModule->SetOption(ConfigOption.PhysicsTypeOther_DX11, 2);
-            _configModule->SetOption(ConfigOption.PhysicsTypeEnemy_DX11, 2);
-            _configModule->SetOption(ConfigOption.RadialBlur_DX11, 0);
-            _configModule->SetOption(ConfigOption.SSAO_DX11, 4);
-            _configModule->SetOption(ConfigOption.Glare_DX11, 2);
-            _configModule->SetOption(ConfigOption.DistortionWater_DX11, 2);
-
+            configEntry[(int)ConfigOption.FPSInActive].SetValueUInt(0);
+            configEntry[(int)ConfigOption.DisplayObjectLimitType].SetValueUInt(4);
+            configEntry[(int)ConfigOption.WaterWet_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.OcclusionCulling_DX11].SetValueUInt( 1);
+            configEntry[(int)ConfigOption.LodType_DX11].SetValueUInt( 1);
+            configEntry[(int)ConfigOption.ReflectionType_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.AntiAliasing_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.TranslucentQuality_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.GrassQuality_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.ParallaxOcclusion_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.Tessellation_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.GlareRepresentation_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.MapResolution_DX11].SetValueUInt( 2);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeSelf_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeParty_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeOther_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeEnemy_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.ShadowLOD_DX11].SetValueUInt( 1);
+            configEntry[(int)ConfigOption.ShadowTextureSizeType_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.ShadowCascadeCountType_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.ShadowSoftShadowType_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.TextureFilterQuality_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.TextureAnisotropicQuality_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.PhysicsTypeSelf_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.PhysicsTypeParty_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.PhysicsTypeOther_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.PhysicsTypeEnemy_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.RadialBlur_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.SSAO_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.Glare_DX11].SetValueUInt( 0);
+            configEntry[(int)ConfigOption.DistortionWater_DX11].SetValueUInt( 0);
         }
 
         public static unsafe void RestoreObjQuantity()
         {
-            _configModule->SetOption(ConfigOption.FPSInActive,                      FPSInActive);
-            _configModule->SetOption(ConfigOption.DisplayObjectLimitType,           originalObjQuantity);
-            _configModule->SetOption(ConfigOption.WaterWet_DX11,                    WaterWet_DX11);
-            _configModule->SetOption(ConfigOption.OcclusionCulling_DX11,            OcclusionCulling_DX11);
-            _configModule->SetOption(ConfigOption.LodType_DX11,                     LodType_DX11);
-            _configModule->SetOption(ConfigOption.ReflectionType_DX11,              ReflectionType_DX11);
-            _configModule->SetOption(ConfigOption.AntiAliasing_DX11,                AntiAliasing_DX11);
-            _configModule->SetOption(ConfigOption.TranslucentQuality_DX11,          TranslucentQuality_DX11);
-            _configModule->SetOption(ConfigOption.GrassQuality_DX11,                GrassQuality_DX11);
-            _configModule->SetOption(ConfigOption.ParallaxOcclusion_DX11,           ParallaxOcclusion_DX11);
-            _configModule->SetOption(ConfigOption.Tessellation_DX11,                Tessellation_DX11);
-            _configModule->SetOption(ConfigOption.GlareRepresentation_DX11,         GlareRepresentation_DX11);
-            _configModule->SetOption(ConfigOption.MapResolution_DX11,               MapResolution_DX11);
-            _configModule->SetOption(ConfigOption.ShadowVisibilityTypeSelf_DX11,    ShadowVisibilityTypeSelf_DX11);
-            _configModule->SetOption(ConfigOption.ShadowVisibilityTypeParty_DX11,   ShadowVisibilityTypeParty_DX11);
-            _configModule->SetOption(ConfigOption.ShadowVisibilityTypeOther_DX11,   ShadowVisibilityTypeOther_DX11);
-            _configModule->SetOption(ConfigOption.ShadowVisibilityTypeEnemy_DX11,   ShadowVisibilityTypeEnemy_DX11);
-            _configModule->SetOption(ConfigOption.ShadowLOD_DX11,                   ShadowLOD_DX11);
-            _configModule->SetOption(ConfigOption.ShadowTextureSizeType_DX11,       ShadowTextureSizeType_DX11);
-            _configModule->SetOption(ConfigOption.ShadowCascadeCountType_DX11,      ShadowCascadeCountType_DX11);
-            _configModule->SetOption(ConfigOption.ShadowSoftShadowType_DX11,        ShadowSoftShadowType_DX11);
-            _configModule->SetOption(ConfigOption.TextureFilterQuality_DX11,        TextureFilterQuality_DX11);
-            _configModule->SetOption(ConfigOption.TextureAnisotropicQuality_DX11,   TextureAnisotropicQuality_DX11);
-            _configModule->SetOption(ConfigOption.PhysicsTypeSelf_DX11,             PhysicsTypeSelf_DX11);
-            _configModule->SetOption(ConfigOption.PhysicsTypeParty_DX11,            PhysicsTypeParty_DX11);
-            _configModule->SetOption(ConfigOption.PhysicsTypeOther_DX11,            PhysicsTypeOther_DX11);
-            _configModule->SetOption(ConfigOption.PhysicsTypeEnemy_DX11,            PhysicsTypeEnemy_DX11);
-            _configModule->SetOption(ConfigOption.RadialBlur_DX11,                  RadialBlur_DX11);
-            _configModule->SetOption(ConfigOption.SSAO_DX11,                        SSAO_DX11);
-            _configModule->SetOption(ConfigOption.Glare_DX11,                       Glare_DX11);
-            _configModule->SetOption(ConfigOption.DistortionWater_DX11,             DistortionWater_DX11);
+            var configEntry = Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry;
 
-
+            configEntry[(int)ConfigOption.FPSInActive].SetValueUInt(FPSInActive);
+            configEntry[(int)ConfigOption.DisplayObjectLimitType].SetValueUInt(originalObjQuantity);
+            configEntry[(int)ConfigOption.WaterWet_DX11].SetValueUInt(WaterWet_DX11);
+            configEntry[(int)ConfigOption.OcclusionCulling_DX11].SetValueUInt(OcclusionCulling_DX11);
+            configEntry[(int)ConfigOption.LodType_DX11].SetValueUInt(LodType_DX11);
+            configEntry[(int)ConfigOption.ReflectionType_DX11].SetValueUInt(ReflectionType_DX11);
+            configEntry[(int)ConfigOption.AntiAliasing_DX11].SetValueUInt(AntiAliasing_DX11);
+            configEntry[(int)ConfigOption.TranslucentQuality_DX11].SetValueUInt(TranslucentQuality_DX11);
+            configEntry[(int)ConfigOption.GrassQuality_DX11].SetValueUInt(GrassQuality_DX11);
+            configEntry[(int)ConfigOption.ParallaxOcclusion_DX11].SetValueUInt(ParallaxOcclusion_DX11);
+            configEntry[(int)ConfigOption.Tessellation_DX11].SetValueUInt(Tessellation_DX11);
+            configEntry[(int)ConfigOption.GlareRepresentation_DX11].SetValueUInt(GlareRepresentation_DX11);
+            configEntry[(int)ConfigOption.MapResolution_DX11].SetValueUInt(MapResolution_DX11);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeSelf_DX11].SetValueUInt(ShadowVisibilityTypeSelf_DX11);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeParty_DX11].SetValueUInt(ShadowVisibilityTypeParty_DX11);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeOther_DX11].SetValueUInt(ShadowVisibilityTypeOther_DX11);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeEnemy_DX11].SetValueUInt(ShadowVisibilityTypeEnemy_DX11);
+            configEntry[(int)ConfigOption.ShadowLOD_DX11].SetValueUInt(ShadowLOD_DX11);
+            configEntry[(int)ConfigOption.ShadowTextureSizeType_DX11].SetValueUInt(ShadowTextureSizeType_DX11);
+            configEntry[(int)ConfigOption.ShadowCascadeCountType_DX11].SetValueUInt(ShadowCascadeCountType_DX11);
+            configEntry[(int)ConfigOption.ShadowSoftShadowType_DX11].SetValueUInt(ShadowSoftShadowType_DX11);
+            configEntry[(int)ConfigOption.TextureFilterQuality_DX11].SetValueUInt(TextureFilterQuality_DX11);
+            configEntry[(int)ConfigOption.TextureAnisotropicQuality_DX11].SetValueUInt(TextureAnisotropicQuality_DX11);
+            configEntry[(int)ConfigOption.PhysicsTypeSelf_DX11].SetValueUInt(PhysicsTypeSelf_DX11);
+            configEntry[(int)ConfigOption.PhysicsTypeParty_DX11].SetValueUInt(PhysicsTypeParty_DX11);
+            configEntry[(int)ConfigOption.PhysicsTypeOther_DX11].SetValueUInt(PhysicsTypeOther_DX11);
+            configEntry[(int)ConfigOption.PhysicsTypeEnemy_DX11].SetValueUInt(PhysicsTypeEnemy_DX11);
+            configEntry[(int)ConfigOption.RadialBlur_DX11].SetValueUInt(RadialBlur_DX11);
+            configEntry[(int)ConfigOption.SSAO_DX11].SetValueUInt(SSAO_DX11);
+            configEntry[(int)ConfigOption.Glare_DX11].SetValueUInt(Glare_DX11);
+            configEntry[(int)ConfigOption.DistortionWater_DX11].SetValueUInt(DistortionWater_DX11);
         }
 
     }
@@ -234,8 +232,6 @@ internal unsafe class AgentManager
     }
 
     public static AgentManager Instance { get; } = new();
-
-    internal AgentInterface FindAgentInterfaceById(int id) => AgentTable[id];
 
     internal AgentInterface FindAgentInterfaceByVtable(nint vtbl) => AgentTable.First(i => i.VTable == vtbl);
 }

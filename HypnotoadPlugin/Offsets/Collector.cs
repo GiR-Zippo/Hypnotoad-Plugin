@@ -1,14 +1,13 @@
-﻿using Dalamud;
+﻿/*
+ * Copyright(c) 2023 GiR-Zippo 
+ * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
+ */
+
 using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Party;
-using Dalamud.Game.Network;
-using Dalamud.Logging;
-using FFXIVClientStructs.FFXIV.Client.Game.Event;
-using FFXIVClientStructs.FFXIV.Client.UI;
 using System;
 using System.Collections.Generic;
-using System.Reflection.PortableExecutable;
 
 namespace HypnotoadPlugin.Offsets
 {
@@ -27,7 +26,6 @@ namespace HypnotoadPlugin.Offsets
         public string playerRegion { get; }
         public override string ToString() => $"{playerName} [{playerWorld}, {playerRegion}]";
     }
-
 
     public class Collector
     {

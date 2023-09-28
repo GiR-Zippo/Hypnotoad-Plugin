@@ -15,13 +15,18 @@ using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace HypnotoadPlugin.Offsets;
 
-internal static class GfxSettings
+internal static class GameSettings
 {
-
+    /// <summary>
+    /// The agent for the client config
+    /// </summary>
     internal class AgentConfigSystem : AgentInterface
     {
         public AgentConfigSystem(AgentInterface agentInterface) : base(agentInterface.Pointer, agentInterface.Id) { }
 
+        /// <summary>
+        /// Apply Settings
+        /// </summary>
         public unsafe void ApplyGraphicSettings()
         {
             void OnToast(ref SeString message, ref ToastOptions options, ref bool handled)
@@ -35,6 +40,7 @@ internal static class GfxSettings
             Api.ToastGui.Toast += OnToast;
         }
 
+        #region Get/Restore config
         private static uint FPSInActive;
         private static uint originalObjQuantity;
         private static uint WaterWet_DX11;
@@ -66,18 +72,12 @@ internal static class GfxSettings
         private static uint SSAO_DX11;
         private static uint Glare_DX11;
         private static uint DistortionWater_DX11;
+        private static uint SoundEnabled;
 
-        public static bool CheckLowSettings()
-        {
-            return originalObjQuantity == 4      &&
-                   WaterWet_DX11 == 0            &&
-                   OcclusionCulling_DX11 == 1    &&
-                   ReflectionType_DX11 == 3      &&
-                   GrassQuality_DX11 == 3        &&
-                   SSAO_DX11 == 4;
-        }
-
-        public static unsafe void GetObjQuantity()
+        /// <summary>
+        /// Get the gfx settings and save them
+        /// </summary>
+        public static unsafe void GetSettings()
         {
             var configEntry = Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry;
 
@@ -112,46 +112,13 @@ internal static class GfxSettings
             SSAO_DX11                      = configEntry[(int)ConfigOption.SSAO_DX11].Value.UInt;
             Glare_DX11                     = configEntry[(int)ConfigOption.Glare_DX11].Value.UInt;
             DistortionWater_DX11           = configEntry[(int)ConfigOption.DistortionWater_DX11].Value.UInt;
+            SoundEnabled                   = configEntry[(int)ConfigOption.IsSndMaster].Value.UInt;
         }
 
-        public static unsafe void SetMinimalObjQuantity()
-        {
-            var configEntry = Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry;
-
-            configEntry[(int)ConfigOption.FPSInActive].SetValueUInt(0);
-            configEntry[(int)ConfigOption.DisplayObjectLimitType].SetValueUInt(4);
-            configEntry[(int)ConfigOption.WaterWet_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.OcclusionCulling_DX11].SetValueUInt( 1);
-            configEntry[(int)ConfigOption.LodType_DX11].SetValueUInt( 1);
-            configEntry[(int)ConfigOption.ReflectionType_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.AntiAliasing_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.TranslucentQuality_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.GrassQuality_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.ParallaxOcclusion_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.Tessellation_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.GlareRepresentation_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.MapResolution_DX11].SetValueUInt( 2);
-            configEntry[(int)ConfigOption.ShadowVisibilityTypeSelf_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.ShadowVisibilityTypeParty_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.ShadowVisibilityTypeOther_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.ShadowVisibilityTypeEnemy_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.ShadowLOD_DX11].SetValueUInt( 1);
-            configEntry[(int)ConfigOption.ShadowTextureSizeType_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.ShadowCascadeCountType_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.ShadowSoftShadowType_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.TextureFilterQuality_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.TextureAnisotropicQuality_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.PhysicsTypeSelf_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.PhysicsTypeParty_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.PhysicsTypeOther_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.PhysicsTypeEnemy_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.RadialBlur_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.SSAO_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.Glare_DX11].SetValueUInt( 0);
-            configEntry[(int)ConfigOption.DistortionWater_DX11].SetValueUInt( 0);
-        }
-
-        public static unsafe void RestoreObjQuantity()
+        /// <summary>
+        /// Restore the GFX settings
+        /// </summary>
+        public static unsafe void RestoreSettings()
         {
             var configEntry = Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry;
 
@@ -186,8 +153,83 @@ internal static class GfxSettings
             configEntry[(int)ConfigOption.SSAO_DX11].SetValueUInt(SSAO_DX11);
             configEntry[(int)ConfigOption.Glare_DX11].SetValueUInt(Glare_DX11);
             configEntry[(int)ConfigOption.DistortionWater_DX11].SetValueUInt(DistortionWater_DX11);
+            configEntry[(int)ConfigOption.IsSndMaster].SetValueUInt(SoundEnabled);
+        }
+        #endregion
+
+        #region GfxConfig
+        /// <summary>
+        /// Basic check if GFX settings are low
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckLowSettings()
+        {
+            return originalObjQuantity == 4 &&
+                   WaterWet_DX11 == 0 &&
+                   OcclusionCulling_DX11 == 1 &&
+                   ReflectionType_DX11 == 3 &&
+                   GrassQuality_DX11 == 3 &&
+                   SSAO_DX11 == 4;
         }
 
+        /// <summary>
+        /// Set the GFX to minimal
+        /// </summary>
+        public static unsafe void SetMinimalGfx()
+        {
+            var configEntry = Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry;
+
+            configEntry[(int)ConfigOption.FPSInActive].SetValueUInt(0);
+            configEntry[(int)ConfigOption.DisplayObjectLimitType].SetValueUInt(4);
+            configEntry[(int)ConfigOption.WaterWet_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.OcclusionCulling_DX11].SetValueUInt(1);
+            configEntry[(int)ConfigOption.LodType_DX11].SetValueUInt(1);
+            configEntry[(int)ConfigOption.ReflectionType_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.AntiAliasing_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.TranslucentQuality_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.GrassQuality_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.ParallaxOcclusion_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.Tessellation_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.GlareRepresentation_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.MapResolution_DX11].SetValueUInt(2);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeSelf_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeParty_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeOther_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.ShadowVisibilityTypeEnemy_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.ShadowLOD_DX11].SetValueUInt(1);
+            configEntry[(int)ConfigOption.ShadowTextureSizeType_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.ShadowCascadeCountType_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.ShadowSoftShadowType_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.TextureFilterQuality_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.TextureAnisotropicQuality_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.PhysicsTypeSelf_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.PhysicsTypeParty_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.PhysicsTypeOther_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.PhysicsTypeEnemy_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.RadialBlur_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.SSAO_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.Glare_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.DistortionWater_DX11].SetValueUInt(0);
+        }
+        #endregion
+
+        #region Mute/Unmute MasterSound
+        /// <summary>
+        /// Mutes/Unmutes the sound
+        /// </summary>
+        /// <param name="unmute"></param>
+        public static unsafe void SetMasterSoundEnable(bool enabled)
+        {
+            Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry[(int)ConfigOption.IsSndMaster].SetValueUInt((uint)(enabled ? 0 : 1));
+        }
+
+        public static unsafe bool GetMasterSoundEnable()
+        {
+            if (Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry[(int)ConfigOption.IsSndMaster].Value.UInt == 0)
+                PluginLog.Debug("Enabled");
+            return (Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry[(int)ConfigOption.IsSndMaster].Value.UInt == 0);
+        }
+        #endregion
     }
 }
 

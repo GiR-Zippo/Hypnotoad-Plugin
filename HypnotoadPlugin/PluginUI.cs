@@ -1,19 +1,17 @@
-﻿using System;
+﻿/*
+ * Copyright(c) 2023 GiR-Zippo, Meowchestra 
+ * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Timers;
-using Dalamud.Game.ClientState.Objects.SubKinds;
-using Dalamud.Game.ClientState.Resolvers;
 using Dalamud.Logging;
-using Dalamud.Plugin;
-using H.Formatters;
-using H.Pipes;
 using H.Pipes.Args;
 using HypnotoadPlugin.Offsets;
 using ImGuiNET;
-using ImGuiScene;
 
 namespace HypnotoadPlugin;
 
@@ -31,9 +29,6 @@ class PluginUI : IDisposable
     private Timer _reconnectTimer { get; set; } = new();
     private Queue<Message> qt = new();
     private Configuration configuration;
-
-    private bool performanceModeOpen { get; set; } = false;
-
 
     // this extra bool exists for ImGui, since you can't ref a property
     private bool visible;
@@ -83,9 +78,14 @@ class PluginUI : IDisposable
         {
             msgType    = MessageType.SetGfx,
             msgChannel = 0,
-            message    = Environment.ProcessId + ":" + GfxSettings.AgentConfigSystem.CheckLowSettings()
+            message    = Environment.ProcessId + ":" + GameSettings.AgentConfigSystem.CheckLowSettings().ToString()
         });
 
+        Pipe.Client.WriteAsync(new Message
+        {
+            msgType = MessageType.SetSoundOnOff,
+            message = Environment.ProcessId + ":" + GameSettings.AgentConfigSystem.GetMasterSoundEnable().ToString()
+        });
         Collector.Instance.UpdateClientStats();
     }
 
@@ -144,6 +144,7 @@ class PluginUI : IDisposable
             case MessageType.Instrument:
             case MessageType.AcceptReply:
             case MessageType.SetGfx:
+            case MessageType.SetSoundOnOff:
             case MessageType.StartEnsemble:
                 qt.Enqueue(inMsg);
                 break;
@@ -254,17 +255,20 @@ class PluginUI : IDisposable
                         PerformActions.ConfirmReceiveReadyCheck();
                         break;
                     case MessageType.SetGfx:
-                        if (Convert.ToUInt32(msg.message) == 1)
+                        if (Convert.ToBoolean(msg.message))
                         {
-                            GfxSettings.AgentConfigSystem.GetObjQuantity();
-                            GfxSettings.AgentConfigSystem.SetMinimalObjQuantity();
+                            GameSettings.AgentConfigSystem.GetSettings();
+                            GameSettings.AgentConfigSystem.SetMinimalGfx();
                             Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                         }
                         else
                         {
-                            GfxSettings.AgentConfigSystem.RestoreObjQuantity();
+                            GameSettings.AgentConfigSystem.RestoreSettings();
                             Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                         }
+                        break;
+                    case MessageType.SetSoundOnOff:
+                        GameSettings.AgentConfigSystem.SetMasterSoundEnable(Convert.ToBoolean(msg.message));
                         break;
                     case MessageType.StartEnsemble:
                         PerformActions.BeginReadyCheck();

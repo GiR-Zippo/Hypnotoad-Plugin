@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿/*
+ * Copyright(c) 2023 GiR-Zippo, Meowchestra 
+ * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
+ */
+
 using Dalamud.Data;
 using Dalamud.Game;
 using Dalamud.Game.ClientState;
@@ -9,7 +13,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using HypnotoadPlugin.Network;
 using HypnotoadPlugin.Offsets;
-using static HypnotoadPlugin.Offsets.GfxSettings;
+using static HypnotoadPlugin.Offsets.GameSettings;
 
 namespace HypnotoadPlugin;
 
@@ -52,7 +56,7 @@ public class Hypnotoad : IDalamudPlugin
 
         Collector.Instance.Initialize(data, clientState, partyList);
 
-        AgentConfigSystem.GetObjQuantity();
+        AgentConfigSystem.GetSettings();
 
         //NetworkReader.Initialize();
 
@@ -66,7 +70,7 @@ public class Hypnotoad : IDalamudPlugin
     public void Dispose()
     {
         //NetworkReader.Dispose();
-        AgentConfigSystem.RestoreObjQuantity();
+        AgentConfigSystem.RestoreSettings();
         AgentConfigSystem.ApplyGraphicSettings();
         EnsembleManager.Dispose();
         Collector.Instance.Dispose();

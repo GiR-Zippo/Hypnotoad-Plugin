@@ -255,7 +255,13 @@ class PluginUI : IDisposable
                         PerformActions.ConfirmReceiveReadyCheck();
                         break;
                     case MessageType.SetGfx:
-                        if (Convert.ToBoolean(msg.message))
+                        //TODO remove me after 3 version init: 1.0.5.4
+                        bool lowGfx;
+                        if (Char.IsNumber(msg.message, 0))
+                            lowGfx = (Convert.ToUInt32(msg.message) == 1);
+                        else
+                            lowGfx = Convert.ToBoolean(msg.message);
+                        if (lowGfx)
                         {
                             GameSettings.AgentConfigSystem.GetSettings();
                             GameSettings.AgentConfigSystem.SetMinimalGfx();

@@ -108,6 +108,9 @@ public class Api
     //[RequiredVersion("1.0")]
     public static IPluginLog PluginLog { get; private set; }
 
+    [PluginService]
+    public static IGameConfig GameConfig { get; private set; }
+
     private static PluginCommandManager<IDalamudPlugin> _pluginCommandManager;
 
     public Api() { }

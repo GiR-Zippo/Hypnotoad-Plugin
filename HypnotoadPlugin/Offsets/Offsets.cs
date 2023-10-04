@@ -78,7 +78,7 @@ internal class EnsembleManager : IDisposable
     internal EnsembleManager()
     {
         //Get the ensemble start
-        NetworkEnsembleHook = Hook<sub_NetworkEnsemble>.FromAddress(Offsets.NetworkEnsembleStart, (a1, a2) =>
+        NetworkEnsembleHook = Api.GameInteropProvider.HookFromAddress<sub_NetworkEnsemble>(Offsets.NetworkEnsembleStart, (a1, a2) =>
         {
             //and pipe it
             if (Pipe.Client != null && Pipe.Client.IsConnected)

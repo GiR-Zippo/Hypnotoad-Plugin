@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using Dalamud.Game.Network;
-using Dalamud.Logging;
 using HypnotoadPlugin.Offsets;
 
 namespace HypnotoadPlugin.Network
@@ -90,11 +87,11 @@ namespace HypnotoadPlugin.Network
 
                 /*if (opCode == 1234)
                 {
-                    PluginLog.Debug("NET: " + Convert.ToString(opCode));
-                    PluginLog.Debug(BitConverter.ToString(ti));
-                    PluginLog.Debug(hexString);
-                    PluginLog.Debug(sourceActorId.ToString());
-                    PluginLog.Debug(targetActorId.ToString());
+                    Api.PluginLog.Debug("NET: " + Convert.ToString(opCode));
+                    Api.PluginLog.Debug(BitConverter.ToString(ti));
+                    Api.PluginLog.Debug(hexString);
+                    Api.PluginLog.Debug(sourceActorId.ToString());
+                    Api.PluginLog.Debug(targetActorId.ToString());
                 }*/
 
                 if (checkPattern(EnsembleStart, inPacket))

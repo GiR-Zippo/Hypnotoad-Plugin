@@ -8,13 +8,12 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Dalamud.Game;
-using Dalamud.Logging;
 
 namespace HypnotoadPlugin.Offsets;
 
 public static class OffsetManager
 {
-    public static void Setup(SigScanner scanner)
+    public static void Setup(ISigScanner scanner)
     {
         var props = typeof(Offsets).GetProperties(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
             .Select(i => (prop: i, Attribute: i.GetCustomAttribute<SigAttribute>())).Where(i => i.Attribute != null);
@@ -43,7 +42,7 @@ public static class OffsetManager
                         address += sigAttribute.Offset;
                         var structure = Marshal.PtrToStructure(address, propertyInfo.PropertyType);
                         propertyInfo.SetValue(null, structure);
-                        PluginLog.Information($"[{nameof(OffsetManager)}][{propertyInfo.Name}] {propertyInfo.PropertyType.FullName} {structure}");
+                        Api.PluginLog.Information($"[{nameof(OffsetManager)}][{propertyInfo.Name}] {propertyInfo.PropertyType.FullName} {structure}");
                         continue;
                     }
                     default:
@@ -52,12 +51,12 @@ public static class OffsetManager
 
                 address += sigAttribute.Offset;
                 propertyInfo.SetValue(null, address);
-                PluginLog.Information($"[{nameof(OffsetManager)}][{propertyInfo.Name}] {address.ToInt64():X}");
-                PluginLog.Information($"[{nameof(OffsetManager)}][{propertyInfo.Name}] {PerformActions.MainModuleRva(address)}");
+                Api.PluginLog.Information($"[{nameof(OffsetManager)}][{propertyInfo.Name}] {address.ToInt64():X}");
+                Api.PluginLog.Information($"[{nameof(OffsetManager)}][{propertyInfo.Name}] {PerformActions.MainModuleRva(address)}");
             }
             catch (Exception e)
             {
-                PluginLog.Error(e, $"[{nameof(OffsetManager)}][{propertyInfo?.Name}] failed to find sig : {sigAttribute?.SigString}");
+                Api.PluginLog.Error(e, $"[{nameof(OffsetManager)}][{propertyInfo?.Name}] failed to find sig : {sigAttribute?.SigString}");
                 exceptions.Add(e);
             }
         }

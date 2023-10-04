@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright(c) 2022 Ori @MidiBard2
+ * Copyright(c) 2023 Meowchestra, 2022 Ori @MidiBard2
  */
 
 using System;

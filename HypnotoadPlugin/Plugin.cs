@@ -1,17 +1,13 @@
 ﻿/*
- * Copyright(c) 2023 GiR-Zippo, Meowchestra 
+ * Copyright(c) 2023 GiR-Zippo, Meowchestra
  * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
  */
 
-using Dalamud.Data;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using HypnotoadPlugin.Network;
+using Dalamud.Plugin.Services;
 using HypnotoadPlugin.Offsets;
 using static HypnotoadPlugin.Offsets.GameSettings;
 
@@ -25,7 +21,7 @@ public class Hypnotoad : IDalamudPlugin
     private const string commandName = "/hypnotoad";
 
     private DalamudPluginInterface PluginInterface { get; init; }
-    private CommandManager CommandManager { get; init; }
+    private ICommandManager CommandManager { get; init; }
     private Configuration Configuration { get; init; }
     private PluginUI PluginUi { get; init; }
     internal static AgentConfigSystem AgentConfigSystem { get; set; }
@@ -33,9 +29,9 @@ public class Hypnotoad : IDalamudPlugin
     internal static EnsembleManager EnsembleManager { get; set; }
 
     [PluginService]
-    public static SigScanner SigScanner { get; private set; }
+    public static ISigScanner SigScanner { get; private set; }
 
-    public Hypnotoad(DalamudPluginInterface pluginInterface, ChatGui chatGui, DataManager data, CommandManager commandManager, ClientState clientState, PartyList partyList)
+    public Hypnotoad(DalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
     {
         Api.Initialize(this, pluginInterface);
         PluginInterface = pluginInterface;

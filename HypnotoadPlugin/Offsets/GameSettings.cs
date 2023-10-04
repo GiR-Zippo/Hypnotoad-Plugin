@@ -7,9 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Dalamud.Game.Config;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
@@ -217,17 +217,17 @@ internal static class GameSettings
         /// <summary>
         /// Mutes/Unmutes the sound
         /// </summary>
-        /// <param name="unmute"></param>
-        public static unsafe void SetMasterSoundEnable(bool enabled)
+        /// <param name="enabled"></param>
+        /// TODO: Swap back to IsSndMaster once enum is updated for patch 6.5 (off-by-one)
+        /// https://raw.githubusercontent.com/aers/FFXIVClientStructs/main/FFXIVClientStructs/FFXIV/Client/UI/Misc/ConfigOption.cs
+        public static void SetMasterSoundEnable(bool enabled)
         {
-            Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry[(int)ConfigOption.IsSndMaster].SetValueUInt((uint)(enabled ? 0 : 1));
+            Api.GameConfig.Set(SystemConfigOption.IsSndMaster, !enabled);
         }
 
-        public static unsafe bool GetMasterSoundEnable()
+        public static bool GetMasterSoundEnable()
         {
-            if (Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry[(int)ConfigOption.IsSndMaster].Value.UInt == 0)
-                PluginLog.Debug("Enabled");
-            return (Framework.Instance()->SystemConfig.CommonSystemConfig.ConfigBase.ConfigEntry[(int)ConfigOption.IsSndMaster].Value.UInt == 0);
+            return Api.GameConfig.TryGet(SystemConfigOption.IsSndMaster, out bool isSndMaster) && isSndMaster;
         }
         #endregion
     }
@@ -269,7 +269,7 @@ internal unsafe class AgentManager
         }
         catch (Exception e)
         {
-            PluginLog.Error(e.ToString());
+            Api.PluginLog.Error(e.ToString());
         }
     }
 

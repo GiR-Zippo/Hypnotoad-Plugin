@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Dalamud.Logging;
-using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace HypnotoadPlugin.Offsets;
@@ -20,13 +18,13 @@ public class PerformActions
     private static DoPerformActionDelegate doPerformAction { get; } = Marshal.GetDelegateForFunctionPointer<DoPerformActionDelegate>(Offsets.DoPerformAction);
     public static void DoPerformAction(uint instrumentId)
     {
-        PluginLog.Information($"[DoPerformAction] instrumentId: {instrumentId}");
+        Api.PluginLog.Information($"[DoPerformAction] instrumentId: {instrumentId}");
         doPerformAction(Offsets.PerformanceStructPtr, instrumentId);
     }
 
     private PerformActions() { }
     private static unsafe nint GetWindowByName(string s) => (nint)AtkStage.GetSingleton()->RaptureAtkUnitManager->GetAddonByName(s);
-    public static void init() => SignatureHelper.Initialise(new PerformActions());
+    public static void init() => Api.GameInteropProvider.InitializeFromAttributes(new PerformActions());
     public static void SendAction(nint ptr, params ulong[] param)
     {
         if (param.Length % 2 != 0) 

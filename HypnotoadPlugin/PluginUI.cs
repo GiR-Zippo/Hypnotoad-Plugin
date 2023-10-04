@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
 using System.Timers;
-using Dalamud.Logging;
 using H.Pipes.Args;
 using HypnotoadPlugin.Offsets;
 using ImGuiNET;
@@ -128,7 +127,7 @@ class PluginUI : IDisposable
                 {
                     ManuallyDisconnected = true;
                     Pipe.Client.DisconnectAsync();
-                    PluginLog.LogError($"Hypnotoad is out of date and cannot work with the running bard program.");
+                    Api.PluginLog.Error($"Hypnotoad is out of date and cannot work with the running bard program.");
                 }
                 break;
             case MessageType.NoteOn:
@@ -284,7 +283,7 @@ class PluginUI : IDisposable
             }
             catch (Exception ex)
             {
-                PluginLog.LogError($"exception: {ex}");
+                Api.PluginLog.Error($"exception: {ex}");
             }
         }
     }

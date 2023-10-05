@@ -218,8 +218,6 @@ internal static class GameSettings
         /// Mutes/Unmutes the sound
         /// </summary>
         /// <param name="enabled"></param>
-        /// TODO: Swap back to IsSndMaster once enum is updated for patch 6.5 (off-by-one)
-        /// https://raw.githubusercontent.com/aers/FFXIVClientStructs/main/FFXIVClientStructs/FFXIV/Client/UI/Misc/ConfigOption.cs
         public static void SetMasterSoundEnable(bool enabled)
         {
             Api.GameConfig.Set(SystemConfigOption.IsSndMaster, !enabled);

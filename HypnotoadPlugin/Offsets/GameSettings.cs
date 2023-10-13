@@ -227,6 +227,48 @@ internal static class GameSettings
         {
             return Api.GameConfig.TryGet(SystemConfigOption.IsSndMaster, out bool isSndMaster) && isSndMaster;
         }
+
+        /// <summary>
+        /// Gets/Sets the master-volume
+        /// </summary>
+        /// <param name="enabled"></param>
+        public static void SetMasterSoundVolume(short value)
+        {
+            Api.GameConfig.Set(SystemConfigOption.SoundMaster, (uint)value);
+        }
+
+        public static int GetMasterSoundVolume()
+        {
+            return Api.GameConfig.TryGet(SystemConfigOption.SoundMaster, out uint isSndMaster) ? (int)isSndMaster : -1;
+        }
+
+        /// <summary>
+        /// Mutes/Unmutes the voices
+        /// </summary>
+        /// <param name="enabled"></param>
+        public static void SetVoiceSoundEnable(bool enabled)
+        {
+            Api.GameConfig.Set(SystemConfigOption.IsSndVoice, !enabled);
+        }
+
+        public static bool GetVoiceSoundEnable()
+        {
+            return Api.GameConfig.TryGet(SystemConfigOption.IsSndVoice, out bool isSndMaster) && isSndMaster;
+        }
+
+        /// <summary>
+        /// Mutes/Unmutes the sound effects
+        /// </summary>
+        /// <param name="enabled"></param>
+        public static void SetEffectsSoundEnable(bool enabled)
+        {
+            Api.GameConfig.Set(SystemConfigOption.IsSndSe, !enabled);
+        }
+
+        public static bool GetEffectsSoundEnable()
+        {
+            return Api.GameConfig.TryGet(SystemConfigOption.IsSndSe, out bool isSndMaster) && isSndMaster;
+        }
         #endregion
     }
 }

@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Reflection;
 using System.Timers;
@@ -73,18 +74,10 @@ class PluginUI : IDisposable
             message = Environment.ProcessId + ":" + Assembly.GetExecutingAssembly().GetName().Version.ToString()
         });
 
-        Pipe.Client.WriteAsync(new Message
-        {
-            msgType    = MessageType.SetGfx,
-            msgChannel = 0,
-            message    = Environment.ProcessId + ":" + GameSettings.AgentConfigSystem.CheckLowSettings().ToString()
-        });
+        Pipe.Write(MessageType.SetGfx, 0, GameSettings.AgentConfigSystem.CheckLowSettings());
+        Pipe.Write(MessageType.MasterSoundState, 0, GameSettings.AgentConfigSystem.GetMasterSoundEnable());
+        Pipe.Write(MessageType.MasterVolume, 0, GameSettings.AgentConfigSystem.GetMasterSoundVolume());
 
-        Pipe.Client.WriteAsync(new Message
-        {
-            msgType = MessageType.SetSoundOnOff,
-            message = Environment.ProcessId + ":" + GameSettings.AgentConfigSystem.GetMasterSoundEnable().ToString()
-        });
         Collector.Instance.UpdateClientStats();
     }
 
@@ -143,8 +136,12 @@ class PluginUI : IDisposable
             case MessageType.Instrument:
             case MessageType.AcceptReply:
             case MessageType.SetGfx:
-            case MessageType.SetSoundOnOff:
+            case MessageType.MasterSoundState:
+            case MessageType.MasterVolume:
+            case MessageType.VoiceSoundState:
+            case MessageType.EffectsSoundState:
             case MessageType.StartEnsemble:
+            case MessageType.ExitGame:
                 qt.Enqueue(inMsg);
                 break;
         }
@@ -272,8 +269,28 @@ class PluginUI : IDisposable
                             Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                         }
                         break;
-                    case MessageType.SetSoundOnOff:
+                    case MessageType.MasterSoundState:
                         GameSettings.AgentConfigSystem.SetMasterSoundEnable(Convert.ToBoolean(msg.message));
+                        break;
+                    case MessageType.MasterVolume:
+                        if ((short)Convert.ToInt16(msg.message) == -1)
+                        {
+                            Pipe.Write(MessageType.MasterVolume, 0, GameSettings.AgentConfigSystem.GetMasterSoundVolume());
+                            Pipe.Write(MessageType.MasterSoundState, 0, GameSettings.AgentConfigSystem.GetMasterSoundEnable());
+                            Pipe.Write(MessageType.VoiceSoundState, 0, GameSettings.AgentConfigSystem.GetVoiceSoundEnable());
+                            Pipe.Write(MessageType.EffectsSoundState, 0, GameSettings.AgentConfigSystem.GetEffectsSoundEnable());
+                        }
+                        else
+                            GameSettings.AgentConfigSystem.SetMasterSoundVolume(Convert.ToInt16(msg.message));
+                        break;
+                    case MessageType.VoiceSoundState:
+                        GameSettings.AgentConfigSystem.SetVoiceSoundEnable(Convert.ToBoolean(msg.message));
+                        break;
+                    case MessageType.EffectsSoundState:
+                        GameSettings.AgentConfigSystem.SetEffectsSoundEnable(Convert.ToBoolean(msg.message));
+                        break;
+                    case MessageType.ExitGame:
+                        Process.GetCurrentProcess().Kill();
                         break;
                     case MessageType.StartEnsemble:
                         PerformActions.BeginReadyCheck();

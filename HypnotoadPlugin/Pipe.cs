@@ -1,6 +1,5 @@
 ﻿using H.Formatters;
 using H.Pipes;
-using HypnotoadPlugin.Offsets;
 using System;
 
 namespace HypnotoadPlugin

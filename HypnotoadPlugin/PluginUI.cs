@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Numerics;
 using System.Reflection;
 using System.Timers;
@@ -55,6 +56,8 @@ class PluginUI : IDisposable
         _reconnectTimer.Enabled     =  configuration.Autoconnect;
 
         Visible = false;
+
+        GameSettings.AgentConfigSystem.LoadConfig();
     }
 
     private void pipeClient_Connected(object sender, ConnectionEventArgs<Message> e)
@@ -74,7 +77,7 @@ class PluginUI : IDisposable
             message = Environment.ProcessId + ":" + Assembly.GetExecutingAssembly().GetName().Version.ToString()
         });
 
-        Pipe.Write(MessageType.SetGfx, 0, GameSettings.AgentConfigSystem.CheckLowSettings());
+        Pipe.Write(MessageType.SetGfx, 0, GameSettings.AgentConfigSystem.CheckLowSettings(GameSettingsTables.Instance.CustomTable));
         Pipe.Write(MessageType.MasterSoundState, 0, GameSettings.AgentConfigSystem.GetMasterSoundEnable());
         Pipe.Write(MessageType.MasterVolume, 0, GameSettings.AgentConfigSystem.GetMasterSoundVolume());
 
@@ -209,8 +212,22 @@ class PluginUI : IDisposable
 
                     ManuallyDisconnected = true;
                 }
-
                 ImGui.Text($"Is connected: {Pipe.Client.IsConnected}");
+
+                //PlayerConfig Save/Erase
+                ImGui.NewLine();
+                ImGui.Text($"Player configuration");
+                ImGui.BeginGroup();
+                if (ImGui.Button("Save"))
+                {
+                    GameSettings.AgentConfigSystem.SaveConfig();
+                }
+                ImGui.SameLine();
+                if (ImGui.Button("Erase"))
+                {
+                    File.Delete($"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.ClientState.LocalPlayer.Name}-({Api.ClientState.LocalPlayer.HomeWorld.GameData.Name}).json");
+                }
+                ImGui.EndGroup();
             }
             ImGui.End();
         }
@@ -259,13 +276,13 @@ class PluginUI : IDisposable
                             lowGfx = Convert.ToBoolean(msg.message);
                         if (lowGfx)
                         {
-                            GameSettings.AgentConfigSystem.GetSettings();
+                            GameSettings.AgentConfigSystem.GetSettings(GameSettingsTables.Instance.CustomTable);
                             GameSettings.AgentConfigSystem.SetMinimalGfx();
                             Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                         }
                         else
                         {
-                            GameSettings.AgentConfigSystem.RestoreSettings();
+                            GameSettings.AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.CustomTable);
                             Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                         }
                         break;

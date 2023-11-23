@@ -52,8 +52,8 @@ public class Hypnotoad : IDalamudPlugin
 
         Collector.Instance.Initialize(data, clientState, partyList);
 
-        AgentConfigSystem.GetSettings();
-
+        AgentConfigSystem.GetSettings(GameSettingsTables.Instance.StartupTable);
+        AgentConfigSystem.GetSettings(GameSettingsTables.Instance.CustomTable);
         //NetworkReader.Initialize();
 
         // you might normally want to embed resources and load them from the manifest stream
@@ -61,12 +61,28 @@ public class Hypnotoad : IDalamudPlugin
 
         PluginInterface.UiBuilder.Draw += DrawUI;
         PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+
+        Api.ClientState.Login += OnLogin;
+        Api.ClientState.Logout += OnLogout;
+    }
+
+    private void OnLogin()
+    {
+        AgentConfigSystem.LoadConfig();
+    }
+
+    private void OnLogout()
+    {
+        AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.StartupTable);
+        AgentConfigSystem.ApplyGraphicSettings();
     }
 
     public void Dispose()
     {
+        Api.ClientState.Login -= OnLogin;
+        Api.ClientState.Logout -= OnLogout;
         //NetworkReader.Dispose();
-        AgentConfigSystem.RestoreSettings();
+        AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.StartupTable);
         AgentConfigSystem.ApplyGraphicSettings();
         EnsembleManager.Dispose();
         Collector.Instance.Dispose();

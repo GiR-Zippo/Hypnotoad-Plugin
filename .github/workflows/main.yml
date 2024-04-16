@@ -54,19 +54,19 @@ jobs:
         run: echo $TIME $R_TIME $F_TIME $YEAR $DAY
 
       - name: remove old pluginmaster file
-        run: Remove-Item ./plugindir/* -Force -Recurse
+        run: Remove-Item ./PluginDir/* -Force -Recurse
 
       - name: copy pluginmaster file
-        run: Copy-Item ./configs/* ./plugindir -Force
+        run: Copy-Item ./configs/* ./PluginDir -Force
           
       - name: Set version in pluginmaster
-        run: sed -i 's/iRELEASE/${{steps.get-version.outputs.version}}/g' ./plugindir/pluginmaster.json
+        run: sed -i 's/iRELEASE/${{steps.get-version.outputs.version}}/g' ./PluginDir/pluginmaster.json
       
       - name: Set time in pluginmaster
-        run: sed -i 's/iTIME/${{steps.current-time.outputs.formattedTime}}/g' ./plugindir/pluginmaster.json
+        run: sed -i 's/iTIME/${{steps.current-time.outputs.formattedTime}}/g' ./PluginDir/pluginmaster.json
       
       - name: Set version in HypnotoadPlugin
-        run: sed -i 's/iRELEASE/${{steps.get-version.outputs.version}}/g' ./plugindir/HypnotoadPlugin.json
+        run: sed -i 's/iRELEASE/${{steps.get-version.outputs.version}}/g' ./PluginDir/HypnotoadPlugin.json
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v3.0.3
@@ -85,14 +85,14 @@ jobs:
         run: |
           dotnet build --no-restore --configuration Release --nologo
 
-      - name: Commit latest build
+      - name: Commit latest build to repo
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update Build"
-          file_pattern: "./plugindir/*.json"
+          file_pattern: "./PluginDir/*.json"
 
       - name: Move latest build to Release
-        run: Move-Item -Path ./HypnotoadPlugin/bin/x64/Release/HypnotoadPlugin/* -Destination ./plugindir/ -Force
+        run: Move-Item -Path ./HypnotoadPlugin/bin/x64/Release/HypnotoadPlugin/* -Destination ./PluginDir/ -Force
         
       - name: Upload Release Asset
         id: upload-release-asset 
@@ -101,6 +101,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{steps.create-new-release.outputs.upload_url }}
-          asset_path: ./plugindir/latest.zip
+          asset_path: ./PluginDir/latest.zip
           asset_name: latest.zip
           asset_content_type: application/zip

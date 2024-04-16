@@ -9,6 +9,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using HypnotoadPlugin.Offsets;
+using System;
 using static HypnotoadPlugin.Offsets.GameSettings;
 
 namespace HypnotoadPlugin;
@@ -54,13 +55,15 @@ public class Hypnotoad : IDalamudPlugin
 
         AgentConfigSystem.GetSettings(GameSettingsTables.Instance.StartupTable);
         AgentConfigSystem.GetSettings(GameSettingsTables.Instance.CustomTable);
+
         //NetworkReader.Initialize();
 
         // you might normally want to embed resources and load them from the manifest stream
         PluginUi = new PluginUI(Configuration);
 
         PluginInterface.UiBuilder.Draw += DrawUI;
-        PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+        PluginInterface.UiBuilder.OpenConfigUi += UiBuilder_DrawConfigUI;
+        PluginInterface.UiBuilder.OpenMainUi += UiBuilder_OpenMainUi;
 
         Api.ClientState.Login += OnLogin;
         Api.ClientState.Logout += OnLogout;
@@ -102,7 +105,12 @@ public class Hypnotoad : IDalamudPlugin
         PluginUi.Draw();
     }
 
-    private void DrawConfigUI()
+    private void UiBuilder_OpenMainUi()
+    {
+        PluginUi.Visible = true;
+    }
+
+    private void UiBuilder_DrawConfigUI()
     {
         PluginUi.Visible = true;
     }

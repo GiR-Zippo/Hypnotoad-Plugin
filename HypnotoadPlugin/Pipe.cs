@@ -1,21 +1,33 @@
-﻿using H.Formatters;
+﻿/*
+ * Copyright(c) 2024 GiR-Zippo
+ * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
+ */
+
+using H.Formatters;
 using H.Pipes;
 using System;
 
 namespace HypnotoadPlugin
 {
+    public class IPCMessage
+    {
+        public MessageType msgType { get; init; } = MessageType.None;
+        public int msgChannel { get; init; }
+        public string message { get; init; } = "";
+    }
+
     internal static class Pipe
     {
-        internal static PipeClient<Message> Client { get; private set; }
+        internal static PipeClient<IPCMessage> Client { get; private set; }
 
         internal static void Initialize()
         {
-            Client = new PipeClient<Message>("Hypnotoad", formatter: new NewtonsoftJsonFormatter());
+            Client = new PipeClient<IPCMessage>("Hypnotoad", formatter: new NewtonsoftJsonFormatter());
         }
 
         internal static void Write(MessageType messageType, int channel, bool msg)
         {
-            Pipe.Client.WriteAsync(new Message
+            Pipe.Client.WriteAsync(new IPCMessage
             {
                 msgType = messageType,
                 msgChannel = channel,
@@ -25,7 +37,7 @@ namespace HypnotoadPlugin
 
         internal static void Write(MessageType messageType, int channel, float msg)
         {
-            Pipe.Client.WriteAsync(new Message
+            Pipe.Client.WriteAsync(new IPCMessage
             {
                 msgType = messageType,
                 msgChannel = channel,
@@ -35,7 +47,7 @@ namespace HypnotoadPlugin
 
         internal static void Write(MessageType messageType, int channel, int msg)
         {
-            Pipe.Client.WriteAsync(new Message
+            Pipe.Client.WriteAsync(new IPCMessage
             {
                 msgType = messageType,
                 msgChannel = channel,
@@ -45,7 +57,7 @@ namespace HypnotoadPlugin
 
         internal static void Dispose()
         {
-
+            Client.DisconnectAsync();
         }
     }
 }

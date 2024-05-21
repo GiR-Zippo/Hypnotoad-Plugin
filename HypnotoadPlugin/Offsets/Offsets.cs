@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright(c) 2023 GiR-Zippo, Meowchestra, akira0245 @MidiBard, Ori @MidiBard2
+ * Copyright(c) 2024 GiR-Zippo, Meowchestra, akira0245 @MidiBard, Ori @MidiBard2
  * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
 */
 
@@ -84,7 +84,7 @@ internal class EnsembleManager : IDisposable
             //and pipe it
             if (Pipe.Client != null && Pipe.Client.IsConnected)
             {
-                Pipe.Client.WriteAsync(new Message
+                Pipe.Client.WriteAsync(new IPCMessage
                 {
                     msgType = MessageType.StartEnsemble,
                     message = Environment.ProcessId + ":1"

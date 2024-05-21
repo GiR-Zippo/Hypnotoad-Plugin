@@ -1,48 +1,46 @@
 ﻿/*
- * Copyright(c) 2023 GiR-Zippo, Meowchestra
+ * Copyright(c) 2024 GiR-Zippo, Meowchestra
  * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
  */
 
-using Dalamud.Game;
 using Dalamud.Game.Command;
-using Dalamud.IoC;
+using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using HypnotoadPlugin.Offsets;
-using System;
+using HypnotoadPlugin.Windows;
 using static HypnotoadPlugin.Offsets.GameSettings;
 
 namespace HypnotoadPlugin;
 
 public class Hypnotoad : IDalamudPlugin
 {
-    //public static XivCommonBase CBase;
     public string Name => "Hypnotoad";
 
-    private const string commandName = "/hypnotoad";
+    //The windows
+    public WindowSystem WindowSystem = new("Hypnotoad");
+    private MainWindow PluginUi { get; init; }
+    private ConfigWindow ConfigUi { get; set; }
 
+    private const string commandName = "/hypnotoad";
     private DalamudPluginInterface PluginInterface { get; init; }
-    private ICommandManager CommandManager { get; init; }
     private Configuration Configuration { get; init; }
-    private PluginUI PluginUi { get; init; }
     internal static AgentConfigSystem AgentConfigSystem { get; set; }
     internal static AgentPerformance AgentPerformance { get; set; }
     internal static EnsembleManager EnsembleManager { get; set; }
 
-    [PluginService]
-    public static ISigScanner SigScanner { get; private set; }
+    public Api api { get; set; }
 
     public Hypnotoad(DalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
     {
-        Api.Initialize(this, pluginInterface);
+        api = pluginInterface.Create<Api>();
         PluginInterface = pluginInterface;
-        CommandManager  = commandManager;
 
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
-        OffsetManager.Setup(SigScanner);
+        OffsetManager.Setup(Api.SigScanner);
 
-        CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
+        Api.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
         {
             HelpMessage = "A useful message to display in /xlhelp"
         });
@@ -59,12 +57,17 @@ public class Hypnotoad : IDalamudPlugin
         //NetworkReader.Initialize();
 
         // you might normally want to embed resources and load them from the manifest stream
-        PluginUi = new PluginUI(Configuration);
+        PluginUi = new MainWindow(this, Configuration);
+        ConfigUi = new ConfigWindow(this);
+
+        WindowSystem.AddWindow(PluginUi);
+        WindowSystem.AddWindow(ConfigUi);
 
         PluginInterface.UiBuilder.Draw += DrawUI;
         PluginInterface.UiBuilder.OpenConfigUi += UiBuilder_DrawConfigUI;
         PluginInterface.UiBuilder.OpenMainUi += UiBuilder_OpenMainUi;
 
+        AgentConfigSystem.LoadConfig();
         Api.ClientState.Login += OnLogin;
         Api.ClientState.Logout += OnLogout;
     }
@@ -90,28 +93,32 @@ public class Hypnotoad : IDalamudPlugin
         EnsembleManager.Dispose();
         Collector.Instance.Dispose();
 
+        this.WindowSystem.RemoveAllWindows();
         PluginUi.Dispose();
-        CommandManager.RemoveHandler(commandName);
+        ConfigUi.Dispose();
+
+        Api.CommandManager.RemoveHandler(commandName);
     }
 
     private void OnCommand(string command, string args)
     {
         // in response to the slash command, just display our main ui
-        PluginUi.Visible = true;
+        PluginUi.IsOpen = !PluginUi.IsOpen;
     }
 
     private void DrawUI()
     {
-        PluginUi.Draw();
+        this.WindowSystem.Draw();
+        PluginUi.Update(); //update the mainwindow... for the msg queue
     }
 
     private void UiBuilder_OpenMainUi()
     {
-        PluginUi.Visible = true;
+        PluginUi.IsOpen = !PluginUi.IsOpen;
     }
 
     private void UiBuilder_DrawConfigUI()
     {
-        PluginUi.Visible = true;
+        ConfigUi.IsOpen = !ConfigUi.IsOpen;
     }
 }

@@ -107,7 +107,7 @@ namespace HypnotoadPlugin.Network
 
                 if (packet != null)
                 {
-                    Pipe.Client.WriteAsync(new Message
+                    Pipe.Client.WriteAsync(new IPCMessage
                     {
                         msgType = MessageType.NetworkPacket,
                         message = Environment.ProcessId + ":" + Convert.ToBase64String(packet)

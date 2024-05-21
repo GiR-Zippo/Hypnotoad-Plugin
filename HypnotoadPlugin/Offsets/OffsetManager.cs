@@ -1,5 +1,6 @@
 ﻿/*
- * Copyright(c) 2023 Meowchestra, 2022 Ori @MidiBard2
+ * Copyright(c) 2024 GiR-Zippo, Meowchestra, 2022 Ori @MidiBard2
+ * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
  */
 
 using System;

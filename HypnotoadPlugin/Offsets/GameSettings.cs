@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright(c) 2023 GiR-Zippo, Meowchestra, Ori@MidiBard2
+ * Copyright(c) 2024 GiR-Zippo, Meowchestra, Ori@MidiBard2
  * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
  */
 
@@ -8,11 +8,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.Config;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 
 namespace HypnotoadPlugin.Offsets;
@@ -304,12 +306,27 @@ internal static class GameSettings
         #endregion
 
 
-        public static void LoadConfig()
+        private static string GetCharConfigFilename()
         {
             if (!Api.ClientState.IsLoggedIn)
-                return;
+                return "";
 
-            string file = $"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.ClientState.LocalPlayer.Name}-({Api.ClientState.LocalPlayer.HomeWorld.GameData.Name}).json";
+            PlayerCharacter player = Api.ClientState.LocalPlayer;
+            if (player == null)
+                return "";
+
+            World world = player.HomeWorld.GameData;
+            if (world == null)
+                return "";
+
+            return $"{Api.PluginInterface.GetPluginConfigDirectory()}\\{player.Name.TextValue}-({world.Name.RawString}).json";
+        }
+
+        public static void LoadConfig()
+        {
+            string file = GetCharConfigFilename();
+            if (file == "")
+                return;
             if (!File.Exists(file))
                 return;
 
@@ -320,14 +337,14 @@ internal static class GameSettings
 
         public static void SaveConfig()
         {
-            if (!Api.ClientState.IsLoggedIn)
+            string file = GetCharConfigFilename();
+            if (file == "")
                 return;
 
             //Save the config
             GetSettings(GameSettingsTables.Instance.CustomTable);
             string jsonString = JsonConvert.SerializeObject(GameSettingsTables.Instance.CustomTable);
-            File.WriteAllText($"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.ClientState.LocalPlayer.Name}-({Api.ClientState.LocalPlayer.HomeWorld.GameData.Name}).json",
-                              JsonConvert.SerializeObject(GameSettingsTables.Instance.CustomTable));
+            File.WriteAllText(file, JsonConvert.SerializeObject(GameSettingsTables.Instance.CustomTable));
         }
     }
 }

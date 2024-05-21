@@ -1,8 +1,12 @@
 ﻿/*
- * Copyright(c) 2023 GiR-Zippo, Meowchestra 
+ * Copyright(c) 2024 GiR-Zippo, Meowchestra
  * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
  */
 
+using Dalamud.Interface.Windowing;
+using H.Pipes.Args;
+using HypnotoadPlugin.Offsets;
+using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,26 +14,15 @@ using System.IO;
 using System.Numerics;
 using System.Reflection;
 using System.Timers;
-using H.Pipes.Args;
-using HypnotoadPlugin.Offsets;
-using ImGuiNET;
 
-namespace HypnotoadPlugin;
 
-public class Message
-{
-    public MessageType msgType { get; init; } = MessageType.None;
-    public int msgChannel { get; init; }
-    public string message { get; init; } = "";
-}
+namespace HypnotoadPlugin.Windows;
 
-// It is good to have this be disposable in general, in case you ever need it
-// to do any cleanup
-class PluginUI : IDisposable
+public class MainWindow : Window, IDisposable
 {
     private Timer _reconnectTimer { get; set; } = new();
-    private Queue<Message> qt = new();
-    private Configuration configuration;
+    private Queue<IPCMessage> qt { get; set; } = new();
+    private Configuration configuration { get; init; }
 
     // this extra bool exists for ImGui, since you can't ref a property
     private bool visible;
@@ -41,36 +34,34 @@ class PluginUI : IDisposable
 
     public bool ManuallyDisconnected { get; set; }
 
-    // passing in the image here just for simplicity
-    public PluginUI(Configuration configuration)
+
+    public MainWindow(Hypnotoad plugin, Configuration configuration) : base(
+        "Hypnotoad", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
-        this.configuration          =  configuration;
+        this.configuration = configuration;
 
         Pipe.Initialize();
-        Pipe.Client.Connected       += pipeClient_Connected;
+        Pipe.Client.Connected += pipeClient_Connected;
         Pipe.Client.MessageReceived += pipeClient_MessageReceived;
-        Pipe.Client.Disconnected    += pipeClient_Disconnected;
-        _reconnectTimer.Elapsed     += reconnectTimer_Elapsed;
+        Pipe.Client.Disconnected += pipeClient_Disconnected;
+        _reconnectTimer.Elapsed += reconnectTimer_Elapsed;
 
-        _reconnectTimer.Interval    =  2000;
-        _reconnectTimer.Enabled     =  configuration.Autoconnect;
+        _reconnectTimer.Interval = 2000;
+        _reconnectTimer.Enabled = configuration.Autoconnect;
 
         Visible = false;
-
-        GameSettings.AgentConfigSystem.LoadConfig();
     }
-
-    private void pipeClient_Connected(object sender, ConnectionEventArgs<Message> e)
+    private void pipeClient_Connected(object sender, ConnectionEventArgs<IPCMessage> e)
     {
-        Pipe.Client.WriteAsync(new Message
+        Pipe.Client.WriteAsync(new IPCMessage
         {
-            msgType    = MessageType.Handshake,
+            msgType = MessageType.Handshake,
             msgChannel = 0,
-            message    = Environment.ProcessId.ToString()
+            message = Environment.ProcessId.ToString()
         });
 
 
-        Pipe.Client.WriteAsync(new Message
+        Pipe.Client.WriteAsync(new IPCMessage
         {
             msgType = MessageType.Version,
             msgChannel = 0,
@@ -84,13 +75,13 @@ class PluginUI : IDisposable
         Collector.Instance.UpdateClientStats();
     }
 
-    private void pipeClient_Disconnected(object sender, ConnectionEventArgs<Message> e)
+    private void pipeClient_Disconnected(object sender, ConnectionEventArgs<IPCMessage> e)
     {
         if (!configuration.Autoconnect)
             return;
 
         _reconnectTimer.Interval = 2000;
-        _reconnectTimer.Enabled  = configuration.Autoconnect;
+        _reconnectTimer.Enabled = configuration.Autoconnect;
     }
 
     private void reconnectTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -110,12 +101,12 @@ class PluginUI : IDisposable
         }
     }
 
-    private void pipeClient_MessageReceived(object sender, ConnectionMessageEventArgs<Message> e)
+    private void pipeClient_MessageReceived(object sender, ConnectionMessageEventArgs<IPCMessage> e)
     {
         var inMsg = e.Message;
         if (inMsg == null)
             return;
-            
+
         switch (inMsg.msgType)
         {
             case MessageType.Version:
@@ -164,88 +155,8 @@ class PluginUI : IDisposable
         Pipe.Dispose();
     }
 
-    public void Draw()
+    public override void Update()
     {
-        // This is our only draw handler attached to UIBuilder, so it needs to be
-        // able to draw any windows we might have open.
-        // Each method checks its own visibility/state to ensure it only draws when
-        // it actually makes sense.
-        // There are other ways to do this, but it is generally best to keep the number of
-        // draw delegates as low as possible.
-
-        DrawMainWindow();
-    }
-
-    public void DrawMainWindow()
-    {
-        if (Visible)
-        {
-            ImGui.SetNextWindowSize(new Vector2(300, 110), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(300, 110), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("Hypnotoad", ref visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
-            {
-                // can't ref a property, so use a local copy
-                var configValue = configuration.Autoconnect;
-                if (ImGui.Checkbox("Autoconnect", ref configValue))
-                {
-                    configuration.Autoconnect = configValue;
-                    // can save immediately on change, if you don't want to provide a "Save and Close" button
-                    configuration.Save();
-                }
-
-                //The connect Button
-                if (ImGui.Button("Connect"))
-                {
-                    if (configuration.Autoconnect)
-                        ManuallyDisconnected = false;
-                    _reconnectTimer.Interval = 500;
-                    _reconnectTimer.Enabled  = true;
-                }
-                ImGui.SameLine();
-                //The disconnect Button
-                if (ImGui.Button("Disconnect"))
-                {
-                    if (!Pipe.Client.IsConnected)
-                        return;
-
-                    Pipe.Client.DisconnectAsync();
-
-                    ManuallyDisconnected = true;
-                }
-                ImGui.Text($"Is connected: {Pipe.Client.IsConnected}");
-
-                //PlayerConfig Save/Erase
-                ImGui.NewLine();
-                ImGui.Text($"Player configuration");
-                ImGui.BeginGroup();
-                if (ImGui.Button("Save"))
-                {
-                    GameSettings.AgentConfigSystem.SaveConfig();
-                }
-                ImGui.SameLine();
-                if (ImGui.Button("Erase"))
-                {
-                    File.Delete($"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.ClientState.LocalPlayer.Name}-({Api.ClientState.LocalPlayer.HomeWorld.GameData.Name}).json");
-                }
-                ImGui.EndGroup();
-            }
-            ImGui.End();
-        }
-
-        //Check performance state
-        /*if (Hypnotoad.AgentPerformance.InPerformanceMode != performanceModeOpen)
-        {
-            performanceModeOpen = Hypnotoad.AgentPerformance.InPerformanceMode;
-            if (Pipe.Client != null && Pipe.Client.IsConnected)
-            {
-                Pipe.Client.WriteAsync(new Message
-                {
-                    msgType = MessageType.PerformanceModeState,
-                    message = Environment.ProcessId + ":" + Hypnotoad.AgentPerformance.Instrument.ToString()
-                });
-            }
-        }*/
-
         //Do the in queue
         while (qt.Count > 0)
         {
@@ -268,12 +179,7 @@ class PluginUI : IDisposable
                         PerformActions.ConfirmReceiveReadyCheck();
                         break;
                     case MessageType.SetGfx:
-                        //TODO remove me after 3 version init: 1.0.5.4
-                        bool lowGfx;
-                        if (Char.IsNumber(msg.message, 0))
-                            lowGfx = (Convert.ToUInt32(msg.message) == 1);
-                        else
-                            lowGfx = Convert.ToBoolean(msg.message);
+                        bool lowGfx = Convert.ToBoolean(msg.message);
                         if (lowGfx)
                         {
                             GameSettings.AgentConfigSystem.GetSettings(GameSettingsTables.Instance.CustomTable);
@@ -320,5 +226,59 @@ class PluginUI : IDisposable
                 Api.PluginLog.Error($"exception: {ex}");
             }
         }
+    }
+
+    public override void Draw()
+    {
+        ImGui.SetNextWindowSize(new Vector2(300, 110), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSizeConstraints(new Vector2(300, 110), new Vector2(float.MaxValue, float.MaxValue));
+        if (ImGui.Begin("Hypnotoad", ref visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+        {
+            // can't ref a property, so use a local copy
+            var configValue = configuration.Autoconnect;
+            if (ImGui.Checkbox("Autoconnect", ref configValue))
+            {
+                configuration.Autoconnect = configValue;
+                // can save immediately on change, if you don't want to provide a "Save and Close" button
+                configuration.Save();
+            }
+
+            //The connect Button
+            if (ImGui.Button("Connect"))
+            {
+                if (configuration.Autoconnect)
+                    ManuallyDisconnected = false;
+                _reconnectTimer.Interval = 500;
+                _reconnectTimer.Enabled = true;
+            }
+            ImGui.SameLine();
+            //The disconnect Button
+            if (ImGui.Button("Disconnect"))
+            {
+                if (!Pipe.Client.IsConnected)
+                    return;
+
+                Pipe.Client.DisconnectAsync();
+
+                ManuallyDisconnected = true;
+            }
+            ImGui.Text($"Is connected: {Pipe.Client.IsConnected}");
+
+            //PlayerConfig Save/Erase
+            ImGui.NewLine();
+            ImGui.Text($"Player configuration");
+            ImGui.BeginGroup();
+            if (ImGui.Button("Save"))
+            {
+                GameSettings.AgentConfigSystem.SaveConfig();
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("Erase"))
+            {
+                File.Delete($"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.ClientState.LocalPlayer.Name}-({Api.ClientState.LocalPlayer.HomeWorld.GameData.Name}).json");
+            }
+            ImGui.EndGroup();
+        }
+        ImGui.End();
     }
 }

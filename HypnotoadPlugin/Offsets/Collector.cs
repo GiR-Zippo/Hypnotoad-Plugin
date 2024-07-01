@@ -110,7 +110,7 @@ namespace HypnotoadPlugin.Offsets
             for (int i = 0; i < pCount; i++)
             {
                 IntPtr memberPtr = PartyList.GetPartyMemberAddress(i);
-                PartyMember member = PartyList.CreatePartyMemberReference(memberPtr);
+                IPartyMember member = PartyList.CreatePartyMemberReference(memberPtr);
                 tempName = member.Name.ToString();
                 tempWorld = ""; // worldNameFromByte((byte)member.World.Id);
                 tempRegion = ""; // regionFromWorld(tempWorld);

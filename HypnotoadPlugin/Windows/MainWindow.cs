@@ -184,12 +184,10 @@ public class MainWindow : Window, IDisposable
                         {
                             GameSettings.AgentConfigSystem.GetSettings(GameSettingsTables.Instance.CustomTable);
                             GameSettings.AgentConfigSystem.SetMinimalGfx();
-                            Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                         }
                         else
                         {
                             GameSettings.AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.CustomTable);
-                            Hypnotoad.AgentConfigSystem.ApplyGraphicSettings();
                         }
                         break;
                     case MessageType.MasterSoundState:

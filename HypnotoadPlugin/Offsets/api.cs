@@ -15,7 +15,7 @@ public class Api
 {
     [PluginService]
     //[RequiredVersion("1.0")]
-    public static DalamudPluginInterface PluginInterface { get; private set; }
+    public static IDalamudPluginInterface PluginInterface { get; private set; }
 
     [PluginService]
     //[RequiredVersion("1.0")]
@@ -75,10 +75,6 @@ public class Api
 
     [PluginService]
     //[RequiredVersion("1.0")]
-    public static ILibcFunction LibcFunction { get; private set; }
-
-    [PluginService]
-    //[RequiredVersion("1.0")]
     public static IObjectTable ObjectTable { get; private set; }
 
     [PluginService]
@@ -109,5 +105,5 @@ public class Api
     public static IGameConfig GameConfig { get; private set; }
 
     [PluginService]
-    public static IGameLifecycle GameLifecycle { get; private set; }
+    public static IGameLifecycle GameLifecycle { get; private set; }    
 }

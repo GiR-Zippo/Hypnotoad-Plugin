@@ -7,6 +7,7 @@ using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using HypnotoadPlugin.Offsets;
 using HypnotoadPlugin.Windows;
 using static HypnotoadPlugin.Offsets.GameSettings;
@@ -23,15 +24,14 @@ public class Hypnotoad : IDalamudPlugin
     private ConfigWindow ConfigUi { get; set; }
 
     private const string commandName = "/hypnotoad";
-    private DalamudPluginInterface PluginInterface { get; init; }
+    private static IDalamudPluginInterface PluginInterface { get; set; }
     private Configuration Configuration { get; init; }
-    internal static AgentConfigSystem AgentConfigSystem { get; set; }
     internal static AgentPerformance AgentPerformance { get; set; }
     internal static EnsembleManager EnsembleManager { get; set; }
 
     public Api api { get; set; }
 
-    public Hypnotoad(DalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
+    public Hypnotoad(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
     {
         api = pluginInterface.Create<Api>();
         PluginInterface = pluginInterface;
@@ -45,9 +45,8 @@ public class Hypnotoad : IDalamudPlugin
             HelpMessage = "A useful message to display in /xlhelp"
         });
 
-        AgentConfigSystem = new AgentConfigSystem(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.Offsets.AgentConfigSystem));
-        AgentPerformance  = new AgentPerformance(AgentManager.Instance.FindAgentInterfaceByVtable(Offsets.Offsets.AgentPerformance));
-        EnsembleManager   = new EnsembleManager();
+        AgentPerformance = new AgentPerformance(AgentId.PerformanceMode);
+        EnsembleManager = new EnsembleManager();
 
         Collector.Instance.Initialize(data, clientState, partyList);
 
@@ -80,7 +79,6 @@ public class Hypnotoad : IDalamudPlugin
     private void OnLogout()
     {
         AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.StartupTable);
-        AgentConfigSystem.ApplyGraphicSettings();
     }
 
     public void Dispose()
@@ -89,7 +87,6 @@ public class Hypnotoad : IDalamudPlugin
         Api.ClientState.Logout -= OnLogout;
         //NetworkReader.Dispose();
         AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.StartupTable);
-        AgentConfigSystem.ApplyGraphicSettings();
         EnsembleManager.Dispose();
         Collector.Instance.Dispose();
 

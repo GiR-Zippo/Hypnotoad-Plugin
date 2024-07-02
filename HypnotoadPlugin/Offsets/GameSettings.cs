@@ -188,9 +188,9 @@ internal static class GameSettings
         {
             return varTable.DisplayObjectLimitType == 4 &&
                    varTable.OcclusionCulling_DX11 == 1 &&
-                   varTable.ReflectionType_DX11 == 3 &&
-                   varTable.GrassQuality_DX11 == 3 &&
-                   varTable.SSAO_DX11 == 4;
+                   varTable.ReflectionType_DX11 == 0 &&
+                   varTable.GrassQuality_DX11 == 0 &&
+                   varTable.SSAO_DX11 == 0;
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ internal static class GameSettings
         {
             var configEntry = Framework.Instance()->SystemConfig.SystemConfigBase.ConfigBase.ConfigEntry;
 
-            configEntry[(int)ConfigOption.Fps].SetValueUInt(1);
+            configEntry[(int)ConfigOption.Fps].SetValueUInt(2);
             configEntry[(int)ConfigOption.FPSInActive].SetValueUInt(0);
             configEntry[(int)ConfigOption.DisplayObjectLimitType].SetValueUInt(4);
 

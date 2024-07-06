@@ -4,6 +4,7 @@
  */
 
 using Dalamud.Interface.Windowing;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using H.Pipes.Args;
 using HypnotoadPlugin.Offsets;
 using ImGuiNET;
@@ -110,12 +111,12 @@ public class MainWindow : Window, IDisposable
         switch (inMsg.msgType)
         {
             case MessageType.Version:
-                if (new Version(inMsg.message) > Assembly.GetEntryAssembly().GetName().Version)
+                /*if (new Version(inMsg.message) > Assembly.GetEntryAssembly().GetName().Version)
                 {
                     ManuallyDisconnected = true;
                     Pipe.Client.DisconnectAsync();
                     Api.PluginLog.Error($"Hypnotoad is out of date and cannot work with the running bard program.");
-                }
+                }*/
                 break;
             case MessageType.NoteOn:
                 PerformActions.PlayNote(Convert.ToInt16(inMsg.message), true);
@@ -136,6 +137,8 @@ public class MainWindow : Window, IDisposable
             case MessageType.EffectsSoundState:
             case MessageType.StartEnsemble:
             case MessageType.ExitGame:
+            case MessageType.PartyInvite:
+            case MessageType.PartyInviteAccept:
                 qt.Enqueue(inMsg);
                 break;
         }
@@ -173,7 +176,7 @@ public class MainWindow : Window, IDisposable
                             Chat.SendMessage(chatMessageChannelType.ChannelShortCut + " " + msg.message);
                         break;
                     case MessageType.Instrument:
-                        PerformActions.DoPerformAction(Convert.ToUInt32(msg.message));
+                        PerformActions.DoPerformActionOnTick(Convert.ToUInt32(msg.message));
                         break;
                     case MessageType.AcceptReply:
                         PerformActions.ConfirmReceiveReadyCheck();
@@ -210,12 +213,18 @@ public class MainWindow : Window, IDisposable
                     case MessageType.EffectsSoundState:
                         GameSettings.AgentConfigSystem.SetEffectsSoundEnable(Convert.ToBoolean(msg.message));
                         break;
-                    case MessageType.ExitGame:
-                        Process.GetCurrentProcess().Kill();
-                        break;
                     case MessageType.StartEnsemble:
                         PerformActions.BeginReadyCheck();
                         PerformActions.ConfirmBeginReadyCheck();
+                        break;
+                    case MessageType.ExitGame:
+                        Process.GetCurrentProcess().Kill();
+                        break;
+                    case MessageType.PartyInvite:
+                        Party.PartyInvite(msg.message);
+                        break;
+                    case MessageType.PartyInviteAccept:
+                        Party.AcceptPartyInviteEnable();
                         break;
                 }
             }

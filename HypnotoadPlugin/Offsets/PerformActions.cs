@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace HypnotoadPlugin.Offsets;
@@ -20,6 +21,14 @@ public class PerformActions
     {
         Api.PluginLog.Information($"[DoPerformAction] instrumentId: {instrumentId}");
         doPerformAction(Offsets.PerformanceStructPtr, instrumentId);
+    }
+
+    public static void DoPerformActionOnTick(uint instrumentId)
+    {
+        Api.Framework.RunOnTick(delegate
+        {
+            PerformActions.DoPerformAction(instrumentId);
+        }, default(TimeSpan), 0, default(CancellationToken));
     }
 
     private PerformActions() { }
@@ -46,7 +55,6 @@ public class PerformActions
     {
         var ptr = GetWindowByName(name);
         if (ptr == nint.Zero) return false;
-        Api.PluginLog.Debug(name);
         SendAction(ptr, param);
         return true;
     }

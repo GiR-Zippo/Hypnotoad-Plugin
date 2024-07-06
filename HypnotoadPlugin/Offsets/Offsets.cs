@@ -30,7 +30,6 @@ public static class Offsets
 
     [Function("40 53 48 83 EC 20 48 8B D9 48 83 C1 78 E8 ? ? ? ? 48 8D 8B ? ? ? ? E8 ? ? ? ? 48 8D 53 20")]
     public static IntPtr NetworkEnsembleStart { get; private set; }
-
 }
 
 internal class EnsembleManager : IDisposable

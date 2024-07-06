@@ -78,8 +78,8 @@ namespace HypnotoadPlugin.Offsets
         {
             if (ClientState?.LocalPlayer != null)
             {
-                var Name = ClientState.LocalPlayer.Name.TextValue;
-                var HomeWorld = ClientState.LocalPlayer.HomeWorld.GameData.RowId;
+                var Name = ClientState?.LocalPlayer.Name.TextValue;
+                var HomeWorld = ClientState?.LocalPlayer.HomeWorld.GameData.RowId;
 
                 if (Pipe.Client != null && Pipe.Client.IsConnected)
                 {

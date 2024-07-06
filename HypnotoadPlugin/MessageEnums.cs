@@ -34,7 +34,10 @@ public enum MessageType
     Chat                    = 40,
 
     NetworkPacket           = 50,
-    ExitGame                = 55
+    ExitGame                = 55,
+
+    PartyInvite             = 60,  //Set
+    PartyInviteAccept       = 61
 }
 
 public readonly struct ChatMessageChannelType

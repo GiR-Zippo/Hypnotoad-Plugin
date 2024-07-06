@@ -17,6 +17,9 @@ public class Api
     //[RequiredVersion("1.0")]
     public static IDalamudPluginInterface PluginInterface { get; private set; }
 
+    [PluginService] 
+    public static IAddonLifecycle AddonLifecycle { get; private set; }
+
     [PluginService]
     //[RequiredVersion("1.0")]
     public static IBuddyList BuddyList { get; private set; }

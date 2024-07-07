@@ -36,8 +36,9 @@ public enum MessageType
     NetworkPacket           = 50,
     ExitGame                = 55,
 
-    PartyInvite             = 60,  //Set
-    PartyInviteAccept       = 61
+    PartyInvite             = 60,   //Set           (name";"HomeWorldId)
+    PartyInviteAccept       = 61,
+    PartyPromote            = 62    //Set
 }
 
 public readonly struct ChatMessageChannelType

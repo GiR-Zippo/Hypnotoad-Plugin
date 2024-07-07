@@ -1,7 +1,8 @@
 ﻿using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
 using Dalamud.Memory;
-using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.Game.Group;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
@@ -37,7 +38,27 @@ namespace HypnotoadPlugin.Offsets
             YesNoAddon.Enable();
         }
 
-        public unsafe static void AcceptPartyInviteDisable()
+        public unsafe static void PromoteCharacter(string message)
+        {
+            Api.PluginLog.Debug(message);
+            if (YesNoAddon != null)
+                return;
+            Api.PluginLog.Debug("Create new AcceptPromote");
+            YesNoAddon = new AutoSelectYesNo();
+            YesNoAddon.Enable();
+
+            Api.PluginLog.Debug(message);
+            foreach (var i in GroupManager.Instance()->GetGroup()->PartyMembers)
+            {
+                if (i.NameString.StartsWith(message))
+                {
+                    AgentPartyMember.Instance()->Promote(message, 0, i.ContentId);
+                    return;
+                }
+            }
+        }
+
+        public unsafe static void AcceptDisable()
         {
             if (YesNoAddon == null)
                 return;
@@ -51,7 +72,12 @@ namespace HypnotoadPlugin.Offsets
             new Regex(@".*のパーティに参加します。よろしいですか？"),
             new Regex(@"Der Gruppe von .* beitreten\?"),
             new Regex(@"Rejoindre l'équipe de .*\?")
-            // if someone could add the chinese and korean translations that'd be nice
+        ];
+
+        public static readonly List<Regex> PromotePatterns =
+        [
+            new Regex(@"Promote .* to party leader\?"),
+            new Regex(@".* zum Gruppenanführer machen\?")
         ];
     }
 
@@ -78,10 +104,15 @@ namespace HypnotoadPlugin.Offsets
             if (Party.LfgPatterns.Any(r => r.IsMatch(text)))
             {
                 SelectYes(addon);
-                Party.AcceptPartyInviteDisable();
+                Party.AcceptDisable();
                 return;
             }
-
+            else if (Party.PromotePatterns.Any(r => r.IsMatch(text)))
+            {
+                SelectYes(addon);
+                Party.AcceptDisable();
+                return;
+            }
         }
 
         public static unsafe bool SelectYes(AtkUnitBase* addon)

@@ -139,6 +139,7 @@ public class MainWindow : Window, IDisposable
             case MessageType.ExitGame:
             case MessageType.PartyInvite:
             case MessageType.PartyInviteAccept:
+            case MessageType.PartyPromote:
                 qt.Enqueue(inMsg);
                 break;
         }
@@ -225,6 +226,9 @@ public class MainWindow : Window, IDisposable
                         break;
                     case MessageType.PartyInviteAccept:
                         Party.AcceptPartyInviteEnable();
+                        break;
+                    case MessageType.PartyPromote:
+                        Party.PromoteCharacter(msg.message);
                         break;
                 }
             }

@@ -1,87 +1,23 @@
-﻿using Dalamud.Game.Addon.Lifecycle;
+﻿/*
+ * Copyright(c) 2024 GiR-Zippo 
+ * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
+ */
+
 using Dalamud.Game.Addon.Lifecycle.AddonArgTypes;
+using Dalamud.Game.Addon.Lifecycle;
 using Dalamud.Memory;
-using FFXIVClientStructs.FFXIV.Client.Game.Group;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
+using HypnotoadPlugin.Offsets;
+using HypnotoadPlugin.GameFunctions;
 
-namespace HypnotoadPlugin.Offsets
+namespace HypnotoadPlugin.Utils;
+public class AutoSelect
 {
-    public static class Party
-    {
-        public static AutoSelectYesNo YesNoAddon { get; set; } = null;
-        public unsafe static void PartyInvite(string message)
-        {
-            if (message == "")
-            {
-                Party.AcceptPartyInviteEnable();
-                return;
-            }
-            string character = message.Split(';')[0];
-            ushort homeWorldId = System.Convert.ToUInt16(message.Split(';')[1]);
-            InfoProxyPartyInvite.Instance()->InviteToParty(0, character, (ushort)homeWorldId);
-        }
-
-        public unsafe static void AcceptPartyInviteEnable()
-        {
-            if (YesNoAddon != null)
-                return;
-            Api.PluginLog.Debug("Create new AcceptPartyInviteEnable");
-            YesNoAddon = new AutoSelectYesNo();
-            YesNoAddon.Enable();
-        }
-
-        public unsafe static void PromoteCharacter(string message)
-        {
-            Api.PluginLog.Debug(message);
-            if (YesNoAddon != null)
-                return;
-            Api.PluginLog.Debug("Create new AcceptPromote");
-            YesNoAddon = new AutoSelectYesNo();
-            YesNoAddon.Enable();
-
-            Api.PluginLog.Debug(message);
-            foreach (var i in GroupManager.Instance()->GetGroup()->PartyMembers)
-            {
-                if (i.NameString.StartsWith(message))
-                {
-                    AgentPartyMember.Instance()->Promote(message, 0, i.ContentId);
-                    return;
-                }
-            }
-        }
-
-        public unsafe static void AcceptDisable()
-        {
-            if (YesNoAddon == null)
-                return;
-            YesNoAddon.Disable();
-            YesNoAddon = null;
-        }
-
-        public static readonly List<Regex> LfgPatterns =
-        [
-            new Regex(@"Join .* party\?"),
-            new Regex(@".*のパーティに参加します。よろしいですか？"),
-            new Regex(@"Der Gruppe von .* beitreten\?"),
-            new Regex(@"Rejoindre l'équipe de .*\?")
-        ];
-
-        public static readonly List<Regex> PromotePatterns =
-        [
-            new Regex(@"Promote .* to party leader\?"),
-            new Regex(@".* zum Gruppenanführer machen\?")
-        ];
-    }
-
-    public class AutoSelectYesNo
+    public class AutoSelectYes
     {
         public void Enable()
         {
@@ -101,13 +37,19 @@ namespace HypnotoadPlugin.Offsets
                 return;
 
             var text = GetSeStringText(MemoryHelper.ReadSeStringNullTerminated(new nint(addon->AtkValues[0].String)));
-            if (Party.LfgPatterns.Any(r => r.IsMatch(text)))
+            if (Langstrings.LfgPatterns.Any(r => r.IsMatch(text)))
             {
                 SelectYes(addon);
                 Party.AcceptDisable();
                 return;
             }
-            else if (Party.PromotePatterns.Any(r => r.IsMatch(text)))
+            else if (Langstrings.PromotePatterns.Any(r => r.IsMatch(text)))
+            {
+                SelectYes(addon);
+                Party.AcceptDisable();
+                return;
+            }
+            else if (Langstrings.ConfirmHouseEntrance.Any(r => r.IsMatch(text)))
             {
                 SelectYes(addon);
                 Party.AcceptDisable();
@@ -173,16 +115,16 @@ namespace HypnotoadPlugin.Offsets
                 {
                     if (atkValues[i].Type == FFXIVClientStructs.FFXIV.Component.GUI.ValueType.String)
                     {
-                        Marshal.FreeHGlobal(new IntPtr(atkValues[i].String));
+                        Marshal.FreeHGlobal(new nint(atkValues[i].String));
                     }
                 }
-                Marshal.FreeHGlobal(new IntPtr(atkValues));
+                Marshal.FreeHGlobal(new nint(atkValues));
             }
         }
 
         internal static string GetSeStringText(Dalamud.Game.Text.SeStringHandling.SeString seString)
         {
-            var pieces = seString.Payloads.OfType< Dalamud.Game.Text.SeStringHandling.Payloads.TextPayload >().Select(t => t.Text);
+            var pieces = seString.Payloads.OfType<Dalamud.Game.Text.SeStringHandling.Payloads.TextPayload>().Select(t => t.Text);
             var text = string.Join(string.Empty, pieces).Replace('\n', ' ').Trim();
             return text;
         }
@@ -191,7 +133,7 @@ namespace HypnotoadPlugin.Offsets
         private struct AddonSelectYesNoOnSetupData
         {
             [FieldOffset(0x8)]
-            public IntPtr TextPtr;
+            public nint TextPtr;
         }
     }
 }

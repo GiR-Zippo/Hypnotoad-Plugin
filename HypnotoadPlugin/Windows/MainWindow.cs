@@ -6,6 +6,7 @@
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using H.Pipes.Args;
+using HypnotoadPlugin.GameFunctions;
 using HypnotoadPlugin.Offsets;
 using ImGuiNET;
 using System;
@@ -140,6 +141,7 @@ public class MainWindow : Window, IDisposable
             case MessageType.PartyInvite:
             case MessageType.PartyInviteAccept:
             case MessageType.PartyPromote:
+            case MessageType.PartyEnterHouse:
                 qt.Enqueue(inMsg);
                 break;
         }
@@ -229,6 +231,9 @@ public class MainWindow : Window, IDisposable
                         break;
                     case MessageType.PartyPromote:
                         Party.PromoteCharacter(msg.message);
+                        break;
+                    case MessageType.PartyEnterHouse:
+                        Party.EnterHouse();
                         break;
                 }
             }

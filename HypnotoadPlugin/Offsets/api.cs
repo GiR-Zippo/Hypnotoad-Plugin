@@ -108,5 +108,11 @@ public class Api
     public static IGameConfig GameConfig { get; private set; }
 
     [PluginService]
-    public static IGameLifecycle GameLifecycle { get; private set; }    
+    public static IGameLifecycle GameLifecycle { get; private set; }
+
+    [PluginService]
+    public static IObjectTable Objects { get; private set; }
+
+    [PluginService]
+    public static ITargetManager Targets { get; private set; }
 }

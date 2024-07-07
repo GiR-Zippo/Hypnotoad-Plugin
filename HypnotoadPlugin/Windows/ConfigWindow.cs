@@ -1,8 +1,12 @@
-﻿using Dalamud.Interface.Windowing;
+﻿using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.ClientState.Party;
+using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Group;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
@@ -10,15 +14,17 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using FFXIVClientStructs.FFXIV.Common.Math;
 using HypnotoadPlugin.Offsets;
 using ImGuiNET;
 using System;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
-using static FFXIVClientStructs.FFXIV.Client.UI.Misc.GroupPoseModule;
-using static Lumina.Data.Parsing.Layer.LayerCommon;
+using System.Threading;
 
 namespace HypnotoadPlugin.Windows;
 
@@ -51,6 +57,9 @@ public class ConfigWindow : Window, IDisposable
     static bool running = false;
     public unsafe static void TestCommand()
     {
+
+
+
         //Control.Instance()->CameraManager.Camera->FoV = (float)0.0; //100.0 for liath
         //Control.Instance()->CameraManager.Camera-> = 100000;
         //WindowSizer.SetWindowSize((nint)Device.Instance()->hWnd, 400, 200);
@@ -58,6 +67,7 @@ public class ConfigWindow : Window, IDisposable
         //Device.Instance()->NewWidth = 200;
 
     }
+
 
 
 

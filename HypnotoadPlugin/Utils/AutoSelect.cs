@@ -55,6 +55,12 @@ public class AutoSelect
                 Party.AcceptDisable();
                 return;
             }
+            else if (Langstrings.ConfirmGroupTeleport.Any(r => r.IsMatch(text)))
+            {
+                SelectYes(addon);
+                Party.AcceptDisable();
+                return;
+            }
         }
 
         public static unsafe bool SelectYes(AtkUnitBase* addon)

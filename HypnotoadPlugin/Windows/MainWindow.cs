@@ -142,6 +142,7 @@ public class MainWindow : Window, IDisposable
             case MessageType.PartyInviteAccept:
             case MessageType.PartyPromote:
             case MessageType.PartyEnterHouse:
+            case MessageType.PartyTeleport:
                 qt.Enqueue(inMsg);
                 break;
         }
@@ -234,6 +235,9 @@ public class MainWindow : Window, IDisposable
                         break;
                     case MessageType.PartyEnterHouse:
                         Party.EnterHouse();
+                        break;
+                    case MessageType.PartyTeleport:
+                        Party.Teleport(Convert.ToBoolean(msg.message));
                         break;
                 }
             }

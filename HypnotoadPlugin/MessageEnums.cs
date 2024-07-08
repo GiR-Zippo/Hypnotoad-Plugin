@@ -39,7 +39,8 @@ public enum MessageType
     PartyInvite             = 60,   //Set           (name";"HomeWorldId)
     PartyInviteAccept       = 61,
     PartyPromote            = 62,   //Set
-    PartyEnterHouse         = 63
+    PartyEnterHouse         = 63,
+    PartyTeleport           = 64    //Set           (host?show menu : accept TP)
 }
 
 public readonly struct ChatMessageChannelType

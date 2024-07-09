@@ -78,10 +78,6 @@ public class Api
 
     [PluginService]
     //[RequiredVersion("1.0")]
-    public static IObjectTable ObjectTable { get; private set; }
-
-    [PluginService]
-    //[RequiredVersion("1.0")]
     public static IPartyFinderGui PartyFinderGui { get; private set; }
 
     [PluginService]

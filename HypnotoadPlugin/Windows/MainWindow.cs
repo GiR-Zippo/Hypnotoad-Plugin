@@ -25,6 +25,7 @@ public class MainWindow : Window, IDisposable
     private Timer _reconnectTimer { get; set; } = new();
     private Queue<IPCMessage> qt { get; set; } = new();
     private Configuration configuration { get; init; }
+    private FollowSystem followSystem { get; set; } = null;
 
     // this extra bool exists for ImGui, since you can't ref a property
     private bool visible;
@@ -143,6 +144,7 @@ public class MainWindow : Window, IDisposable
             case MessageType.PartyPromote:
             case MessageType.PartyEnterHouse:
             case MessageType.PartyTeleport:
+            case MessageType.PartyFollow:
                 qt.Enqueue(inMsg);
                 break;
         }
@@ -160,6 +162,15 @@ public class MainWindow : Window, IDisposable
         Pipe.Client.DisconnectAsync();
         Pipe.Client.DisposeAsync();
         Pipe.Dispose();
+    }
+
+    private void StopFollow()
+    {
+        if (followSystem != null)
+        {
+            followSystem.Dispose();
+            followSystem = null;
+        }
     }
 
     public override void Update()
@@ -234,10 +245,28 @@ public class MainWindow : Window, IDisposable
                         Party.PromoteCharacter(msg.message);
                         break;
                     case MessageType.PartyEnterHouse:
+                        StopFollow();
                         Party.EnterHouse();
                         break;
                     case MessageType.PartyTeleport:
+                        StopFollow();
                         Party.Teleport(Convert.ToBoolean(msg.message));
+                        break;
+                    case MessageType.PartyFollow:
+                        if (msg.message == "")
+                            StopFollow();
+                        else
+                        {
+                            if (followSystem == null)
+                                followSystem = new FollowSystem(msg.message.Split(';')[0], Convert.ToUInt16(msg.message.Split(';')[1]));
+                            else 
+                            {
+                                StopFollow();
+                                followSystem = new FollowSystem(msg.message.Split(';')[0], Convert.ToUInt16(msg.message.Split(';')[1]));
+                            }
+
+                            followSystem.Follow = true;
+                        }
                         break;
                 }
             }

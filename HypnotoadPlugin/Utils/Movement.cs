@@ -1,4 +1,9 @@
-﻿using Dalamud.Game.ClientState.Conditions;
+﻿/*
+ * Copyright(c) 2024 GiR-Zippo, 2023 awgil
+ * Licensed under the BSD 3-Clause license. See https://github.com/awgil/ffxiv_bossmod/blob/master/LICENSE for full license information.
+ */
+
+using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Hooking;
 using Dalamud.Utility.Signatures;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;

@@ -8,6 +8,8 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using HypnotoadPlugin.GameFunctions;
+using HypnotoadPlugin.IPC;
 using HypnotoadPlugin.Offsets;
 using HypnotoadPlugin.Windows;
 using static HypnotoadPlugin.Offsets.GameSettings;
@@ -30,6 +32,7 @@ public class Hypnotoad : IDalamudPlugin
     internal static EnsembleManager EnsembleManager { get; set; }
 
     public Api api { get; set; }
+    private readonly IPCProvider _ipc;
 
     public Hypnotoad(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
     {
@@ -47,6 +50,7 @@ public class Hypnotoad : IDalamudPlugin
 
         AgentPerformance = new AgentPerformance(AgentId.PerformanceMode);
         EnsembleManager = new EnsembleManager();
+        Party.Instance.Initialize();
 
         Collector.Instance.Initialize(data, clientState, partyList);
 
@@ -69,6 +73,8 @@ public class Hypnotoad : IDalamudPlugin
         AgentConfigSystem.LoadConfig();
         Api.ClientState.Login += OnLogin;
         Api.ClientState.Logout += OnLogout;
+
+        _ipc = new IPCProvider(this);
     }
 
     private void OnLogin()
@@ -83,6 +89,8 @@ public class Hypnotoad : IDalamudPlugin
 
     public void Dispose()
     {
+        _ipc.Dispose();
+        Party.Instance.Dispose();
         Api.ClientState.Login -= OnLogin;
         Api.ClientState.Logout -= OnLogout;
         //NetworkReader.Dispose();

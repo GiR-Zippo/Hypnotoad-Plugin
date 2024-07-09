@@ -1,12 +1,7 @@
 ﻿using Dalamud.Interface.Windowing;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Common.Math;
-using HypnotoadPlugin.GameFunctions;
 using HypnotoadPlugin.Offsets;
 using ImGuiNET;
-using Microsoft.VisualBasic;
 using System;
-using System.Drawing;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;

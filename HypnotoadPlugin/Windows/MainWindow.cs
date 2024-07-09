@@ -4,7 +4,6 @@
  */
 
 using Dalamud.Interface.Windowing;
-using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using H.Pipes.Args;
 using HypnotoadPlugin.GameFunctions;
 using HypnotoadPlugin.Offsets;
@@ -25,7 +24,6 @@ public class MainWindow : Window, IDisposable
     private Timer _reconnectTimer { get; set; } = new();
     private Queue<IPCMessage> qt { get; set; } = new();
     private Configuration configuration { get; init; }
-    private FollowSystem followSystem { get; set; } = null;
 
     // this extra bool exists for ImGui, since you can't ref a property
     private bool visible;
@@ -164,15 +162,6 @@ public class MainWindow : Window, IDisposable
         Pipe.Dispose();
     }
 
-    private void StopFollow()
-    {
-        if (followSystem != null)
-        {
-            followSystem.Dispose();
-            followSystem = null;
-        }
-    }
-
     public override void Update()
     {
         //Do the in queue
@@ -197,16 +186,7 @@ public class MainWindow : Window, IDisposable
                         PerformActions.ConfirmReceiveReadyCheck();
                         break;
                     case MessageType.SetGfx:
-                        bool lowGfx = Convert.ToBoolean(msg.message);
-                        if (lowGfx)
-                        {
-                            GameSettings.AgentConfigSystem.GetSettings(GameSettingsTables.Instance.CustomTable);
-                            GameSettings.AgentConfigSystem.SetMinimalGfx();
-                        }
-                        else
-                        {
-                            GameSettings.AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.CustomTable);
-                        }
+                        GameSettings.AgentConfigSystem.SetGfx(Convert.ToBoolean(msg.message));
                         break;
                     case MessageType.MasterSoundState:
                         GameSettings.AgentConfigSystem.SetMasterSoundEnable(Convert.ToBoolean(msg.message));
@@ -236,37 +216,27 @@ public class MainWindow : Window, IDisposable
                         Process.GetCurrentProcess().Kill();
                         break;
                     case MessageType.PartyInvite:
-                        Party.PartyInvite(msg.message);
+                        Party.Instance.PartyInvite(msg.message);
                         break;
                     case MessageType.PartyInviteAccept:
-                        Party.AcceptPartyInviteEnable();
+                        Party.Instance.AcceptPartyInviteEnable();
                         break;
                     case MessageType.PartyPromote:
-                        Party.PromoteCharacter(msg.message);
+                        Party.Instance.PromoteCharacter(msg.message);
                         break;
                     case MessageType.PartyEnterHouse:
-                        StopFollow();
-                        Party.EnterHouse();
+                        FollowSystem.StopFollow();
+                        Party.Instance.EnterHouse();
                         break;
                     case MessageType.PartyTeleport:
-                        StopFollow();
-                        Party.Teleport(Convert.ToBoolean(msg.message));
+                        FollowSystem.StopFollow();
+                        Party.Instance.Teleport(Convert.ToBoolean(msg.message));
                         break;
                     case MessageType.PartyFollow:
                         if (msg.message == "")
-                            StopFollow();
+                            FollowSystem.StopFollow();
                         else
-                        {
-                            if (followSystem == null)
-                                followSystem = new FollowSystem(msg.message.Split(';')[0], Convert.ToUInt16(msg.message.Split(';')[1]));
-                            else 
-                            {
-                                StopFollow();
-                                followSystem = new FollowSystem(msg.message.Split(';')[0], Convert.ToUInt16(msg.message.Split(';')[1]));
-                            }
-
-                            followSystem.Follow = true;
-                        }
+                            FollowSystem.FollowCharacter(msg.message.Split(';')[0], Convert.ToUInt16(msg.message.Split(';')[1]));
                         break;
                 }
             }

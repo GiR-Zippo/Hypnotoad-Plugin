@@ -89,6 +89,19 @@ internal static class GameSettings
     /// </summary>
     internal class AgentConfigSystem
     {
+        public static void SetGfx(bool low)
+        {
+            if (low)
+            {
+                GetSettings(GameSettingsTables.Instance.CustomTable);
+                SetMinimalGfx();
+            }
+            else
+            {
+                RestoreSettings(GameSettingsTables.Instance.CustomTable);
+            }
+        }
+
         #region Get/Restore config
         /// <summary>
         /// Get the gfx settings and save them

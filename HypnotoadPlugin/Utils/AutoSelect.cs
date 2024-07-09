@@ -17,20 +17,34 @@ using HypnotoadPlugin.GameFunctions;
 namespace HypnotoadPlugin.Utils;
 public class AutoSelect
 {
-    public class AutoSelectYes
+    public class AutoSelectYes : IDisposable
     {
-        public void Enable()
+        public AutoSelectYes()
         {
             Api.AddonLifecycle.RegisterListener(AddonEvent.PostSetup, "SelectYesno", AddonSetup);
         }
 
-        public void Disable()
+        public void Dispose()
         {
             Api.AddonLifecycle.UnregisterListener(AddonSetup);
         }
 
+        public void Enable()
+        {
+            listen = true;
+        }
+
+        public void Disable()
+        {
+            listen = false;
+        }
+
+        private bool listen { get; set; } = false;
+
         protected unsafe void AddonSetup(AddonEvent eventType, AddonArgs addonInfo)
         {
+            if (!listen)
+                return;
             var addon = (AtkUnitBase*)addonInfo.Addon;
             var dataPtr = (AddonSelectYesNoOnSetupData*)addon;
             if (dataPtr == null)
@@ -40,25 +54,25 @@ public class AutoSelect
             if (Langstrings.LfgPatterns.Any(r => r.IsMatch(text)))
             {
                 SelectYes(addon);
-                Party.AcceptDisable();
+                Party.Instance.AcceptDisable();
                 return;
             }
             else if (Langstrings.PromotePatterns.Any(r => r.IsMatch(text)))
             {
                 SelectYes(addon);
-                Party.AcceptDisable();
+                Party.Instance.AcceptDisable();
                 return;
             }
             else if (Langstrings.ConfirmHouseEntrance.Any(r => r.IsMatch(text)))
             {
                 SelectYes(addon);
-                Party.AcceptDisable();
+                Party.Instance.AcceptDisable();
                 return;
             }
             else if (Langstrings.ConfirmGroupTeleport.Any(r => r.IsMatch(text)))
             {
                 SelectYes(addon);
-                Party.AcceptDisable();
+                Party.Instance.AcceptDisable();
                 return;
             }
         }

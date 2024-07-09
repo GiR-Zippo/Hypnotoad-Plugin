@@ -1,4 +1,9 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+﻿/*
+ * Copyright(c) 2024 GiR-Zippo
+ * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
+ */
+
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin.Services;
 using HypnotoadPlugin.Offsets;
 using System;
@@ -6,11 +11,36 @@ using System.Linq;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using HypnotoadPlugin.Utils;
 using Dalamud.Game.ClientState.Objects.SubKinds;
-using Dalamud.Game.Text.SeStringHandling.Payloads;
 
 namespace HypnotoadPlugin.GameFunctions;
 
-public class FollowSystem : IDisposable
+public static class FollowSystem
+{
+    static FollowSystemInternal followSystem = null;
+
+    public static void FollowCharacter(string targetName, uint homeWorldId)
+    {
+        if (followSystem == null)
+            followSystem = new FollowSystemInternal(targetName, homeWorldId);
+        else
+        {
+            followSystem.Follow = false;
+            followSystem = new FollowSystemInternal(targetName, homeWorldId);
+        }
+        followSystem.Follow = true;
+    }
+
+    public static void StopFollow()
+    {
+        if (followSystem != null)
+        {
+            followSystem.Dispose();
+            followSystem = null;
+        }
+    }
+}
+
+public class FollowSystemInternal : IDisposable
 {
     internal bool Follow = false;
     internal bool Following = false;
@@ -21,7 +51,7 @@ public class FollowSystem : IDisposable
     internal IPlayerCharacter TChar = null;
     private readonly OverrideMovement _overrideMovement;
 
-    public FollowSystem(string targetName, uint homeWorldId)
+    public FollowSystemInternal(string targetName, uint homeWorldId)
     {
         FollowTarget = targetName;
         HomeWorldId = homeWorldId;

@@ -32,6 +32,7 @@ public static class FollowSystem
 
     public static void StopFollow()
     {
+        followSystem.Follow = false;
         if (followSystem != null)
         {
             followSystem.Dispose();
@@ -43,8 +44,9 @@ public static class FollowSystem
 public class FollowSystemInternal : IDisposable
 {
     internal bool Follow = false;
+
     internal bool Following = false;
-    internal int FollowDistance = 2;
+    internal int FollowDistance = 1;
     internal string FollowTarget = "";
     internal uint HomeWorldId { get; set; } = 0;
     internal IGameObject FollowTargetObject = null;
@@ -97,6 +99,9 @@ public class FollowSystemInternal : IDisposable
 
     public void OnGameFrameworkUpdate(IFramework framework)
     {
+        if (_overrideMovement != null)
+            _overrideMovement.Enabled = Follow;
+
         //If follow is not enabled clear TextColored's and return
         if (!Follow)
         {
@@ -174,8 +179,8 @@ public class FollowSystemInternal : IDisposable
 
     private void Stop()
     {
-        if (_overrideMovement.DesiredPosition != null)
-            _overrideMovement.DesiredPosition = null;
+        if (_overrideMovement.Enabled)
+            _overrideMovement.Enabled = false;
     }
 
     public void Dispose()

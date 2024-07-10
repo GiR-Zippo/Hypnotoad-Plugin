@@ -12,11 +12,11 @@
             "other"
         ],
         "LoadPriority": 0,
-        "IconUrl": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/Data/toad.png",
+        "IconUrl": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/Data/icon.png",
         "Punchline": "Companion plugin for enhanced functionality.",
         "IsHide": "False",
         "IsTestingExclusive": "False",
-        "LastUpdate": "1720544580",
+        "LastUpdate": "1720569753",
         "DownloadLinkInstall": "https://github.com/GiR-Zippo/Hypnotoad-Plugin/releases/download/0.0.1.27/latest.zip",
         "DownloadLinkTesting": "https://github.com/GiR-Zippo/Hypnotoad-Plugin/releases/download/0.0.1.27/latest.zip",
         "DownloadLinkUpdate": "https://github.com/GiR-Zippo/Hypnotoad-Plugin/releases/download/0.0.1.27/latest.zip"

@@ -10,6 +10,14 @@ sealed class IPCProvider : IDisposable
 
     public IPCProvider(Hypnotoad toad)
     {
+        Register("SendChat", (string msg) =>
+        {
+            Api.Framework.RunOnTick(delegate
+            {
+                Chat.SendMessage(msg);
+            }, default(TimeSpan), 0, default(System.Threading.CancellationToken));
+        });
+
         Register("SetGfxLow", (bool state) => { GameSettings.AgentConfigSystem.SetGfx(state); });
 
         Register("PartyInvite", (string data) => { Party.Instance.PartyInvite(data); });

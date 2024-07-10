@@ -12,7 +12,7 @@
             "other"
         ],
         "LoadPriority": 0,
-        "IconUrl": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/Data/toad.png",
+        "IconUrl": "https://raw.githubusercontent.com/GiR-Zippo/Hypnotoad-Plugin/master/Data/icon.png",
         "Punchline": "Companion plugin for enhanced functionality.",
         "IsHide": "False",
         "IsTestingExclusive": "False",

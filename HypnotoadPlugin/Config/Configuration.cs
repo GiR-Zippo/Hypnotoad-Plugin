@@ -7,7 +7,7 @@ using System;
 using Dalamud.Configuration;
 using Dalamud.Plugin;
 
-namespace HypnotoadPlugin;
+namespace HypnotoadPlugin.Config;
 
 [Serializable]
 public class Configuration : IPluginConfiguration

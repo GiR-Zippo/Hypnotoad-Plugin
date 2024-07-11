@@ -20,6 +20,7 @@ public static class FollowSystem
 
     public static void FollowCharacter(string targetName, uint homeWorldId)
     {
+        MovementFactory.Instance.StopMovement();
         if (followSystem == null)
             followSystem = new FollowSystemInternal(targetName, homeWorldId);
         else

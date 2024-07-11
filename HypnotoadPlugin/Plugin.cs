@@ -8,6 +8,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using HypnotoadPlugin.Config;
 using HypnotoadPlugin.GameFunctions;
 using HypnotoadPlugin.IPC;
 using HypnotoadPlugin.Offsets;
@@ -75,6 +76,11 @@ public class Hypnotoad : IDalamudPlugin
         Api.ClientState.Logout += OnLogout;
 
         _ipc = new IPCProvider(this);
+
+#if DEBUG
+        UiBuilder_DrawConfigUI();
+#endif
+
     }
 
     private void OnLogin()
@@ -90,6 +96,7 @@ public class Hypnotoad : IDalamudPlugin
     public void Dispose()
     {
         _ipc.Dispose();
+        MovementFactory.Instance.Dispose();
         Party.Instance.Dispose();
         Api.ClientState.Login -= OnLogin;
         Api.ClientState.Logout -= OnLogout;

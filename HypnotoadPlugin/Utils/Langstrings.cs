@@ -30,8 +30,8 @@ public static class Langstrings
         new Regex(@"进入房屋"),
         new Regex(@"進入房屋"),
         new Regex(@"Eingang"),
-        new Regex(@"Entrée"),
-        new Regex(@"Entrance")
+        new Regex(@"Entrance"),
+        new Regex(@"Entrée")
     ];
 
     internal static readonly List<Regex> ConfirmHouseEntrance =

@@ -1,5 +1,4 @@
 ﻿using Dalamud.Interface.Windowing;
-using HypnotoadPlugin.Offsets;
 using ImGuiNET;
 using System;
 using System.Runtime.ConstrainedExecution;
@@ -12,7 +11,7 @@ public class ConfigWindow : Window, IDisposable
 {
     public ConfigWindow(Hypnotoad plugin) : base(
         "A Wonderful Configuration Window",
-        ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
     }
 
@@ -23,19 +22,15 @@ public class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (ImGui.Button("Connect"))
+        if (ImGui.Button("test"))
         {
-            Api.PluginLog.Debug("Connect");
-        }
-
-        if (ImGui.Button("Set"))
-        {
-            Api.PluginLog.Debug("Connect");
         }
     }
 
     public unsafe static void TestCommand()
     {
+        
+
         //ActionManager.Instance()->UseAction(ActionType.None, 0);
         //Control.Instance()->CameraManager.Camera->FoV = (float)0.0; //100.0 for liath
         //Control.Instance()->CameraManager.Camera-> = 100000;

@@ -5,6 +5,7 @@
 
 using Dalamud.Interface.Windowing;
 using H.Pipes.Args;
+using HypnotoadPlugin.Config;
 using HypnotoadPlugin.GameFunctions;
 using HypnotoadPlugin.Offsets;
 using ImGuiNET;

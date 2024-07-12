@@ -76,11 +76,6 @@ public class Hypnotoad : IDalamudPlugin
         Api.ClientState.Logout += OnLogout;
 
         _ipc = new IPCProvider(this);
-
-#if DEBUG
-        UiBuilder_DrawConfigUI();
-#endif
-
     }
 
     private void OnLogin()

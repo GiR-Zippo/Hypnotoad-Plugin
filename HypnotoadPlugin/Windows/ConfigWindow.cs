@@ -1,6 +1,7 @@
 ﻿using Dalamud.Interface.Windowing;
 using ImGuiNET;
 using System;
+using System.Numerics;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,7 +17,7 @@ public class ConfigWindow : Window, IDisposable
     }
 
     public void Dispose() 
-    { 
+    {
 
     }
 

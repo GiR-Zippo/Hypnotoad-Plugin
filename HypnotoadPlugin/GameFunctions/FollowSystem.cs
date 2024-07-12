@@ -33,9 +33,9 @@ public static class FollowSystem
 
     public static void StopFollow()
     {
-        followSystem.Follow = false;
         if (followSystem != null)
         {
+            followSystem.Follow = false;
             followSystem.Dispose();
             followSystem = null;
         }

@@ -21,7 +21,8 @@ public static class Langstrings
     public static readonly List<Regex> PromotePatterns =
     [
         new Regex(@"Promote .* to party leader\?"),
-        new Regex(@".* zum Gruppenanführer machen\?")
+        new Regex(@".* zum Gruppenanführer machen\?"),
+        new Regex(@"Promouvoir .* au rang de chef d'équipe \?")
     ];
 
     internal static readonly List<Regex> Entrance =
@@ -47,6 +48,8 @@ public static class Langstrings
     internal static readonly List<Regex> ConfirmGroupTeleport =
     [
         new Regex(@"Accept Teleport to .*\？"),
-        new Regex(@"Zum Ätheryten .* teleportieren lassen\?")
+        new Regex(@"Zum Ätheryten .* teleportieren lassen\?"),
+        new Regex(@"Voulez-vous vous téléporter vers la destination .* \?")
+
     ];
 }

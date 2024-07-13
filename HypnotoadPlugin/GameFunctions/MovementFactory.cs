@@ -2,7 +2,6 @@
 using HypnotoadPlugin.Utils;
 using Navmesh;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
@@ -64,14 +63,16 @@ public class MovementFactory : IDisposable
 
         //cam.DesiredAzimuth = DesiredRotation;
         //cam.Enabled = true;
-        
-        cancelMovementToken = new CancellationTokenSource();
-        Task.Factory.StartNew(() => RunMoveTask(cancelMovementToken.Token), TaskCreationOptions.LongRunning);
+
+        Api.Framework.RunOnTick(delegate
+        {
+            cancelMovementToken = new CancellationTokenSource();
+            Task.Factory.StartNew(() => RunMoveTask(cancelMovementToken.Token), TaskCreationOptions.LongRunning);
+        }, default(TimeSpan), 0, default(CancellationToken));
     }
 
     public void StopMovement()
     {
-        Api.PluginLog.Debug("stopping");
         cancelMovementToken.Cancel();
         cleanup();
     }
@@ -105,10 +106,18 @@ public class MovementFactory : IDisposable
                 {
                     // check if we stuck
                     var ldist = last_pos - Api.ClientState.LocalPlayer.Position;
-                    if (ldist.LengthSquared() <= move.Precision * move.Precision)
+                    ldist.Y = 0.0f;
+                    if (ldist.LengthSquared() <= 0.2f * 0.2f)
                     {
                         if (round == 0)
+                        {
+                            cam.DesiredAzimuth = DesiredRotation;
+                            cam.Enabled = true;
+                            move.Enabled = false;
+                            await Task.Delay(300, token).ContinueWith(static tsk => { }, token);
+                            cam.Enabled = false;
                             break;
+                        }
                         round -= 1;
                     }
                     else
@@ -116,11 +125,13 @@ public class MovementFactory : IDisposable
 
                     //check if we reached out position
                     var dist = move.DesiredPosition - Api.ClientState.LocalPlayer.Position;
+                    dist.Y = 0.0f;
                     if (dist.LengthSquared() <= move.Precision * move.Precision)
                     {
                         cam.DesiredAzimuth = DesiredRotation;
                         cam.Enabled = true;
                         move.Enabled = false;
+
                         await Task.Delay(300, token).ContinueWith(static tsk => { }, token);
                         cam.Enabled = false;
                         break;

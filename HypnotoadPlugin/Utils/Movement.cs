@@ -37,12 +37,12 @@ public unsafe class OverrideMovement : IDisposable
             if (value)
             {
                 _rmiWalkHook.Enable();
-                _rmiFlyHook.Enable();
+                //_rmiFlyHook.Enable();
             }
             else
             {
                 _rmiWalkHook.Disable();
-                _rmiFlyHook.Disable();
+               // _rmiFlyHook.Disable();
             }
         }
     }

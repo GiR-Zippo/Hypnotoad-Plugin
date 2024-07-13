@@ -21,6 +21,7 @@ public enum MessageType
     MasterVolume            = 13,   //Set<->Get
     VoiceSoundState         = 14,   //Set<->Get
     EffectsSoundState       = 15,   //Set<->Get
+    SetWindowRenderSize     = 16,
 
     Instrument              = 20,
     NoteOn                  = 21,

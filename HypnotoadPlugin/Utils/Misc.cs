@@ -4,6 +4,7 @@
  */
 
 using Dalamud.Game.ClientState.Objects.Types;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Common.Math;
 using HypnotoadPlugin.Offsets;
 using System.Linq;
@@ -12,6 +13,14 @@ namespace HypnotoadPlugin.Utils;
 
 static internal class Misc
 {
+    internal unsafe static void SetGameRenderSize(uint width, uint height)
+    {
+        Device* dev = Device.Instance();
+        dev->NewWidth = (uint)width;
+        dev->NewHeight = (uint)height;
+        dev->RequestResolutionChange = 1;
+    }
+
     internal static IGameObject GetNearestEntrance(out float Distance, bool bypassPredefined = false)
     {
         var currentDistance = float.MaxValue;

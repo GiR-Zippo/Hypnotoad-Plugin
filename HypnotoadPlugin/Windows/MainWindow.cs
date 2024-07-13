@@ -8,6 +8,7 @@ using H.Pipes.Args;
 using HypnotoadPlugin.Config;
 using HypnotoadPlugin.GameFunctions;
 using HypnotoadPlugin.Offsets;
+using HypnotoadPlugin.Utils;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
@@ -136,6 +137,7 @@ public class MainWindow : Window, IDisposable
             case MessageType.MasterVolume:
             case MessageType.VoiceSoundState:
             case MessageType.EffectsSoundState:
+            case MessageType.SetWindowRenderSize:
             case MessageType.StartEnsemble:
             case MessageType.ExitGame:
             case MessageType.PartyInvite:
@@ -208,6 +210,9 @@ public class MainWindow : Window, IDisposable
                         break;
                     case MessageType.EffectsSoundState:
                         GameSettings.AgentConfigSystem.SetEffectsSoundEnable(Convert.ToBoolean(msg.message));
+                        break;
+                    case MessageType.SetWindowRenderSize:
+                        Misc.SetGameRenderSize(Convert.ToUInt32(msg.message.Split(';')[0]), Convert.ToUInt32(msg.message.Split(';')[1]));
                         break;
                     case MessageType.StartEnsemble:
                         PerformActions.BeginReadyCheck();

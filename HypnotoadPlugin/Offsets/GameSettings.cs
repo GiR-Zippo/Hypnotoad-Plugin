@@ -51,7 +51,9 @@ public class GameSettingsVarTable
     public uint ParallaxOcclusion_DX11 { get; set; }
     public uint Tessellation_DX11 { get; set; }
     public uint GlareRepresentation_DX11 { get; set; }
-
+    public uint GraphicsRezoScale { get; set; }
+    public uint GraphicsRezoUpscaleType { get; set; }
+    
     //Sound
     public uint SoundEnabled { get; set; }
 }
@@ -143,6 +145,8 @@ internal static class GameSettings
             varTable.ParallaxOcclusion_DX11         = configEntry[(int)ConfigOption.ParallaxOcclusion_DX11].Value.UInt;
             varTable.Tessellation_DX11              = configEntry[(int)ConfigOption.Tessellation_DX11].Value.UInt;
             varTable.GlareRepresentation_DX11       = configEntry[(int)ConfigOption.GlareRepresentation_DX11].Value.UInt;
+            varTable.GraphicsRezoScale              = configEntry[(int)ConfigOption.GraphicsRezoScale].Value.UInt;
+            varTable.GraphicsRezoUpscaleType        = configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].Value.UInt;
 
             varTable.SoundEnabled                   = configEntry[(int)ConfigOption.IsSndMaster].Value.UInt;
         }
@@ -187,6 +191,8 @@ internal static class GameSettings
             configEntry[(int)ConfigOption.ParallaxOcclusion_DX11].SetValueUInt(varTable.ParallaxOcclusion_DX11);
             configEntry[(int)ConfigOption.Tessellation_DX11].SetValueUInt(varTable.Tessellation_DX11);
             configEntry[(int)ConfigOption.GlareRepresentation_DX11].SetValueUInt(varTable.GlareRepresentation_DX11);
+            configEntry[(int)ConfigOption.GraphicsRezoScale].SetValueUInt(varTable.GraphicsRezoScale);
+            configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].SetValueUInt(varTable.GraphicsRezoUpscaleType);
 
             configEntry[(int)ConfigOption.IsSndMaster].SetValueUInt(varTable.SoundEnabled);
         }
@@ -246,6 +252,9 @@ internal static class GameSettings
             configEntry[(int)ConfigOption.ParallaxOcclusion_DX11].SetValueUInt(0);
             configEntry[(int)ConfigOption.Tessellation_DX11].SetValueUInt(0);
             configEntry[(int)ConfigOption.GlareRepresentation_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.GraphicsRezoScale].SetValueUInt(50);
+            configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].SetValueUInt(0);
+
         }
         #endregion
 

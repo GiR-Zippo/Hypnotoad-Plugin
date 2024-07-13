@@ -62,8 +62,8 @@ public class MovementFactory : IDisposable
         move.Precision = 0.05f;
         move.DesiredPosition = DesiredPosition;
 
-        cam.DesiredAzimuth = DesiredRotation;
-        cam.Enabled = true;
+        //cam.DesiredAzimuth = DesiredRotation;
+        //cam.Enabled = true;
         
         cancelMovementToken = new CancellationTokenSource();
         Task.Factory.StartNew(() => RunMoveTask(cancelMovementToken.Token), TaskCreationOptions.LongRunning);
@@ -118,6 +118,8 @@ public class MovementFactory : IDisposable
                     var dist = move.DesiredPosition - Api.ClientState.LocalPlayer.Position;
                     if (dist.LengthSquared() <= move.Precision * move.Precision)
                     {
+                        cam.DesiredAzimuth = DesiredRotation;
+                        cam.Enabled = true;
                         move.Enabled = false;
                         await Task.Delay(300, token).ContinueWith(static tsk => { }, token);
                         cam.Enabled = false;

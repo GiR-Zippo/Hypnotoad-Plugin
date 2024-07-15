@@ -75,6 +75,18 @@ public class AutoSelect
                 Party.Instance.AcceptDisable();
                 return;
             }
+            else if (Langstrings.ConfirmLogout.Any(r => r.IsMatch(text)))
+            {
+                SelectYes(addon);
+                Party.Instance.AcceptDisable();
+                return;
+            }
+            else if (Langstrings.ConfirmShutdown.Any(r => r.IsMatch(text)))
+            {
+                SelectYes(addon);
+                Party.Instance.AcceptDisable();
+                return;
+            }
         }
 
         public static unsafe bool SelectYes(AtkUnitBase* addon)

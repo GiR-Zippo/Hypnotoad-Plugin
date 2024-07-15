@@ -129,6 +129,8 @@ public class MainWindow : Window, IDisposable
             case MessageType.ProgramChange:
                 PerformActions.GuitarSwitchTone(Convert.ToInt32(inMsg.message));
                 break;
+            case MessageType.ClientLogout:
+            case MessageType.GameShutdown:
             case MessageType.Chat:
             case MessageType.Instrument:
             case MessageType.AcceptReply:
@@ -175,6 +177,12 @@ public class MainWindow : Window, IDisposable
                 var msg = qt.Dequeue();
                 switch (msg.msgType)
                 {
+                    case MessageType.ClientLogout:
+                        MiscGameFunctions.CharacterLogout();
+                        break;
+                    case MessageType.GameShutdown:
+                        MiscGameFunctions.GameShutdown();
+                        break;
                     case MessageType.Chat:
                         var chatMessageChannelType = ChatMessageChannelType.ParseByChannelCode(msg.msgChannel);
                         if (chatMessageChannelType.Equals(ChatMessageChannelType.None))

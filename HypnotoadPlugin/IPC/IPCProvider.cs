@@ -29,6 +29,8 @@ sealed class IPCProvider : IDisposable
         Register("PartyUnFollow", () => FollowSystem.StopFollow());
         Register("MoveTo", (string data) => MovementFactory.Instance.MoveTo(data));
         Register("MoveStop", () => MovementFactory.Instance.StopMovement());
+        Register("CharacterLogout", () => MiscGameFunctions.CharacterLogout());
+        Register("GameShutdown", () => MiscGameFunctions.GameShutdown());
     }
 
     public void Dispose() => _disposeActions?.Invoke();

@@ -52,4 +52,16 @@ public static class Langstrings
         new Regex(@"Voulez-vous vous téléporter vers la destination .* \?")
 
     ];
+
+    internal static readonly List<Regex> ConfirmLogout =
+    [
+        new Regex(@"Zum Titelbildschirm zurückkehren\?"),
+        new Regex(@"Se déconnecter et retourner à l'écram titre \?")
+    ];
+
+    internal static readonly List<Regex> ConfirmShutdown =
+    [
+        new Regex(@"Das Spiel beenden\?"),
+        new Regex(@"Se déconnecter et quitter le jeu \?")
+    ];
 }

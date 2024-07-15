@@ -14,6 +14,11 @@ public enum MessageType
     None                    = 0,
     Handshake               = 1,
     Version                 = 2,
+    MoveCharToPosition      = 3,
+    StopMovement            = 4,
+
+    ClientLogout            = 5,
+    GameShutdown            = 6,
 
     SetGfx                  = 10,   //Get<->Set
     NameAndHomeWorld        = 11,   //Get
@@ -43,6 +48,7 @@ public enum MessageType
     PartyEnterHouse         = 63,
     PartyTeleport           = 64,   //Set           (host?show menu : accept TP)
     PartyFollow             = 65    //Set           (name";"HomeWorldId) | "" unfollow
+
 }
 
 public readonly struct ChatMessageChannelType

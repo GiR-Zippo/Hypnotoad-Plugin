@@ -42,11 +42,20 @@ public class MovementFactory : IDisposable
         Api.PluginLog.Debug(DesiredRotation.ToString());
     }
 
+    public Vector3 getVector3(string rString)
+    {
+        string[] temp = rString.Substring(1, rString.Length - 2).Split(',');
+        float x = float.Parse(temp[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+        float y = float.Parse(temp[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+        float z = float.Parse(temp[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+        Vector3 rValue = new Vector3(x, y, z);
+        return rValue;
+    }
+
     public void MoveTo(string data)
     {
-        float[] newPosCoordinates = data.Split(";")[0].Replace("<", "").Replace(">", "").Split(new string[] { ", " }, StringSplitOptions.None).Select(x => float.Parse(x)).ToArray();
-        Vector3 newpos = new Vector3(newPosCoordinates[0], newPosCoordinates[1], newPosCoordinates[2]);
-        float newRot = float.Parse(data.Split(";")[1]);
+        Vector3 newpos = getVector3(data.Split(";")[0]);
+        float newRot = float.Parse(data.Split(";")[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
         if (newpos == Api.ClientState.LocalPlayer.Position)
             return;
         DesiredPosition = newpos;

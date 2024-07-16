@@ -44,7 +44,7 @@ public class MovementFactory : IDisposable
 
     public void MoveTo(string data)
     {
-        float[] newPosCoordinates = data.Split(";")[0].Replace("<", "").Replace(">", "").Split(new string[] { ". " }, StringSplitOptions.None).Select(x => float.Parse(x)).ToArray();
+        float[] newPosCoordinates = data.Split(";")[0].Replace("<", "").Replace(">", "").Split(new string[] { ", " }, StringSplitOptions.None).Select(x => float.Parse(x)).ToArray();
         Vector3 newpos = new Vector3(newPosCoordinates[0], newPosCoordinates[1], newPosCoordinates[2]);
         float newRot = float.Parse(data.Split(";")[1]);
         if (newpos == Api.ClientState.LocalPlayer.Position)

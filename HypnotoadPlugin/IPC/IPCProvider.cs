@@ -23,6 +23,7 @@ sealed class IPCProvider : IDisposable
         Register("PartyInvite", (string data) => { Party.Instance.PartyInvite(data); });
         Register("PartyInviteAccept", () => Party.Instance.AcceptPartyInviteEnable());
         Register("PartySetLead", (string data) => Party.Instance.PromoteCharacter(data));
+        Register("PartyLeave", () => Party.Instance.PartyLeave());
         Register("PartyEnterHouse", () => Party.Instance.EnterHouse());
         Register("PartyTeleport", (bool showMenu) => Party.Instance.Teleport(showMenu));
         Register("PartyFollow", (string data) => FollowSystem.FollowCharacter(data.Split(';')[0], Convert.ToUInt16(data.Split(';')[1])));

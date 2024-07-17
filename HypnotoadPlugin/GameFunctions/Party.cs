@@ -9,13 +9,21 @@ using FFXIVClientStructs.FFXIV.Client.Game.Group;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Client.UI.Info;
+using HypnotoadPlugin.Offsets;
 using HypnotoadPlugin.Utils;
 using System;
+using System.Threading;
 
 namespace HypnotoadPlugin.GameFunctions;
 
 public class Party : IDisposable
 {
+    public enum AcceptFlags
+    { 
+        Accept_Teleport = 0b00000001,
+        Accept_GroupInv = 0b00000010,
+    }
+
     private static readonly Lazy<Party> LazyInstance = new(static () => new Party());
 
     private Party()
@@ -24,6 +32,9 @@ public class Party : IDisposable
     public static Party Instance => LazyInstance.Value;
 
     private AutoSelect.AutoSelectYes YesNoAddon { get; set; } = null;
+
+    private byte AcceptLock { get; set; } = 0;
+
 
     public void Initialize()
     {
@@ -36,11 +47,17 @@ public class Party : IDisposable
         YesNoAddon = null;
     }
 
+    public bool IsAcceptFlagSet(AcceptFlags flag) => ((AcceptFlags)AcceptLock & flag) == flag;
+
+    public void ClearFlags() => AcceptLock = 0;
+
+    public void SetFlag(AcceptFlags flag) => AcceptLock |= (byte)flag;
+
     public unsafe void PartyInvite(string message)
     {
         if (message == "")
         {
-            AcceptPartyInviteEnable();
+            YesNoAddon.Enable();
             return;
         }
         string character = message.Split(';')[0];
@@ -84,8 +101,19 @@ public class Party : IDisposable
             YesNoAddon.Enable();
     }
 
+    public unsafe void PartyLeave()
+    {
+        YesNoAddon.Enable();
+
+        Api.Framework.RunOnTick(delegate
+        {
+            Chat.SendMessage("/leave");
+        }, default(TimeSpan), 10, default(CancellationToken));
+    }
+
     public unsafe void AcceptDisable()
     {
-        YesNoAddon.Disable();
+        //if (AcceptLock == 0)
+            YesNoAddon.Disable();
     }
 }

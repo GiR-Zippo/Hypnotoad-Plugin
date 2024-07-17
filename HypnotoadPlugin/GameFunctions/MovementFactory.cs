@@ -38,8 +38,6 @@ public class MovementFactory : IDisposable
     {
         DesiredPosition = position;
         DesiredRotation = new Angle(rotation);
-
-        Api.PluginLog.Debug(DesiredRotation.ToString());
     }
 
     public Vector3 getVector3(string rString)
@@ -69,9 +67,6 @@ public class MovementFactory : IDisposable
 
         move.Precision = 0.05f;
         move.DesiredPosition = DesiredPosition;
-
-        //cam.DesiredAzimuth = DesiredRotation;
-        //cam.Enabled = true;
 
         Api.Framework.RunOnTick(delegate
         {
@@ -132,7 +127,7 @@ public class MovementFactory : IDisposable
                     else
                         round = 4; //4 rounds until we give up
 
-                    //check if we reached out position
+                    //check if we reached our position
                     var dist = move.DesiredPosition - Api.ClientState.LocalPlayer.Position;
                     dist.Y = 0.0f;
                     if (dist.LengthSquared() <= move.Precision * move.Precision)
@@ -141,7 +136,7 @@ public class MovementFactory : IDisposable
                         cam.Enabled = true;
                         move.Enabled = false;
 
-                        await Task.Delay(300, token).ContinueWith(static tsk => { }, token);
+                        await Task.Delay(800, token).ContinueWith(static tsk => { }, token);
                         cam.Enabled = false;
                         break;
                     }

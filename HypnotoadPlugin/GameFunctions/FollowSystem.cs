@@ -31,6 +31,19 @@ public static class FollowSystem
         followSystem.Follow = true;
     }
 
+    public static void FollowCharacter(ulong goId, string targetName, uint homeWorldId)
+    {
+        MovementFactory.Instance.StopMovement();
+        if (followSystem == null)
+            followSystem = new FollowSystemInternal(goId, targetName, homeWorldId);
+        else
+        {
+            followSystem.Follow = false;
+            followSystem = new FollowSystemInternal(goId, targetName, homeWorldId);
+        }
+        followSystem.Follow = true;
+    }
+
     public static void StopFollow()
     {
         if (followSystem != null)
@@ -48,6 +61,7 @@ public class FollowSystemInternal : IDisposable
 
     internal bool Following = false;
     internal int FollowDistance = 1;
+    internal ulong GameObjectId = 0;
     internal string FollowTarget = "";
     internal uint HomeWorldId { get; set; } = 0;
     internal IGameObject FollowTargetObject = null;
@@ -62,12 +76,28 @@ public class FollowSystemInternal : IDisposable
         Api.Framework.Update += OnGameFrameworkUpdate;
     }
 
-    private static IGameObject GetGameObjectFromName(string _objectName, uint _worldId)
+    public FollowSystemInternal(ulong goId, string targetName, uint homeWorldId)
     {
+        GameObjectId = goId;
+        FollowTarget = targetName;
+        HomeWorldId = homeWorldId;
+        _overrideMovement = new OverrideMovement();
+        Api.Framework.Update += OnGameFrameworkUpdate;
+    }
+
+    private static IGameObject GetGameObjectFromName(string _objectName, uint _worldId, ulong goId = 0)
+    {
+        Api.PluginLog.Debug(goId.ToString());
         var obj = Api.Objects.AsEnumerable().FirstOrDefault(s => s.Name.ToString().Equals(_objectName));
         var f = obj as IPlayerCharacter;
         if (f == null)
             return null;
+
+        if (goId != 0)
+            if (f.GameObjectId != goId)
+                return null;
+
+        Api.PluginLog.Debug("gotta go");
         if (f.HomeWorld.Id == _worldId)
             return obj;
         return null;
@@ -75,7 +105,7 @@ public class FollowSystemInternal : IDisposable
 
     public bool GetFollowTargetObject()
     {
-        var ftarget = GetGameObjectFromName(FollowTarget, HomeWorldId);
+        var ftarget = GetGameObjectFromName(FollowTarget, HomeWorldId, GameObjectId);
         if (ftarget == null)
         {
             FollowTargetObject = null;

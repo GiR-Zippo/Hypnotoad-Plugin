@@ -19,16 +19,15 @@ sealed class IPCProvider : IDisposable
         });
 
         Register("SetGfxLow", (bool state) => { GameSettings.AgentConfigSystem.SetGfx(state); });
-
-        Register("PartyInvite", (string data) => { Party.Instance.PartyInvite(data); });
+        Register("PartyInvite", (string character, ushort homeWorldId) => Party.Instance.PartyInvite(character, homeWorldId));
         Register("PartyInviteAccept", () => Party.Instance.AcceptPartyInviteEnable());
         Register("PartySetLead", (string data) => Party.Instance.PromoteCharacter(data));
         Register("PartyLeave", () => Party.Instance.PartyLeave());
         Register("PartyEnterHouse", () => Party.Instance.EnterHouse());
         Register("PartyTeleport", (bool showMenu) => Party.Instance.Teleport(showMenu));
-        Register("PartyFollow", (string data) => FollowSystem.FollowCharacter(Convert.ToUInt64(data.Split(';')[0]), data.Split(';')[1], Convert.ToUInt16(data.Split(';')[2])));
+        Register("PartyFollow", (ulong goId, string name, ushort worldId) => FollowSystem.FollowCharacter(goId, name, worldId));
         Register("PartyUnFollow", () => FollowSystem.StopFollow());
-        Register("MoveTo", (string data) => MovementFactory.Instance.MoveTo(data));
+        Register("MoveTo", (float x, float y, float z, float rot) => MovementFactory.Instance.MoveTo(x, y, z, rot));
         Register("MoveStop", () => MovementFactory.Instance.StopMovement());
         Register("CharacterLogout", () => MiscGameFunctions.CharacterLogout());
         Register("GameShutdown", () => MiscGameFunctions.GameShutdown());
@@ -60,6 +59,27 @@ sealed class IPCProvider : IDisposable
     private void Register<T1>(string name, Action<T1> func)
     {
         var p = Api.PluginInterface.GetIpcProvider<T1, object>("HypnoToad." + name);
+        p.RegisterAction(func);
+        _disposeActions += p.UnregisterAction;
+    }
+
+    private void Register<T1, T2>(string name, Action<T1, T2> func)
+    {
+        var p = Api.PluginInterface.GetIpcProvider<T1, T2, object>("HypnoToad." + name);
+        p.RegisterAction(func);
+        _disposeActions += p.UnregisterAction;
+    }
+
+    private void Register<T1, T2, T3>(string name, Action<T1, T2, T3> func)
+    {
+        var p = Api.PluginInterface.GetIpcProvider<T1, T2, T3, object>("HypnoToad." + name);
+        p.RegisterAction(func);
+        _disposeActions += p.UnregisterAction;
+    }
+
+    private void Register<T1, T2, T3, T4>(string name, Action<T1, T2, T3, T4> func)
+    {
+        var p = Api.PluginInterface.GetIpcProvider<T1, T2, T3, T4, object>("HypnoToad." + name);
         p.RegisterAction(func);
         _disposeActions += p.UnregisterAction;
     }

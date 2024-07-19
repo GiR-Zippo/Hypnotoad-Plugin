@@ -40,24 +40,13 @@ public class MovementFactory : IDisposable
         DesiredRotation = new Angle(rotation);
     }
 
-    public Vector3 getVector3(string rString)
+    public void MoveTo(float x, float y, float z, float rot)
     {
-        string[] temp = rString.Substring(1, rString.Length - 2).Split(',');
-        float x = float.Parse(temp[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-        float y = float.Parse(temp[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-        float z = float.Parse(temp[2], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-        Vector3 rValue = new Vector3(x, y, z);
-        return rValue;
-    }
-
-    public void MoveTo(string data)
-    {
-        Vector3 newpos = getVector3(data.Split(";")[0]);
-        float newRot = float.Parse(data.Split(";")[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
-        if (newpos == Api.ClientState.LocalPlayer.Position)
+        Vector3 newPos = new Vector3() { X = x, Y = y, Z = z };
+        if (newPos == Api.ClientState.LocalPlayer.Position)
             return;
-        DesiredPosition = newpos;
-        DesiredRotation = new Angle(newRot);
+        DesiredPosition = newPos;
+        DesiredRotation = new Angle(rot);
         Move();
     }
 

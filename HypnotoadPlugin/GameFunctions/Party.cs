@@ -62,6 +62,11 @@ public class Party : IDisposable
         }
         string character = message.Split(';')[0];
         ushort homeWorldId = Convert.ToUInt16(message.Split(';')[1]);
+        PartyInvite(character, homeWorldId);
+    }
+
+    public unsafe void PartyInvite(string character, ushort homeWorldId)
+    {
         InfoProxyPartyInvite.Instance()->InviteToParty(0, character, homeWorldId);
     }
 

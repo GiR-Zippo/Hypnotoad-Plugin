@@ -56,12 +56,14 @@ public static class Langstrings
     internal static readonly List<Regex> ConfirmLogout =
     [
         new Regex(@"Zum Titelbildschirm zurückkehren\?"),
-        new Regex(@"Se déconnecter et retourner à l'écram titre \?")
+        new Regex(@"Se déconnecter et retourner à l'écram titre \?"),
+        new Regex(@"Log out and return to the title screen\?")
     ];
 
     internal static readonly List<Regex> ConfirmShutdown =
     [
         new Regex(@"Das Spiel beenden\?"),
-        new Regex(@"Se déconnecter et quitter le jeu \?")
+        new Regex(@"Se déconnecter et quitter le jeu \?"),
+        new Regex(@"Log out and exit the game\?")
     ];
 }

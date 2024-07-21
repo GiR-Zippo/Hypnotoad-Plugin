@@ -57,6 +57,12 @@ public class AutoSelect
                 Party.Instance.AcceptDisable();
                 return;
             }
+            if (Langstrings.LeavePartyPatterns.Any(r => r.IsMatch(text)))
+            {
+                SelectYes(addon);
+                Party.Instance.AcceptDisable();
+                return;
+            }
             else if (Langstrings.PromotePatterns.Any(r => r.IsMatch(text)))
             {
                 SelectYes(addon);

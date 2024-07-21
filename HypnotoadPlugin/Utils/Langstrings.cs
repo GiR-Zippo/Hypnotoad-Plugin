@@ -18,6 +18,12 @@ public static class Langstrings
         new Regex(@"Rejoindre l'équipe de .*\?")
     ];
 
+    public static readonly List<Regex> LeavePartyPatterns =
+    [
+        new Regex(@"Die Gruppe verlassen\?"),
+        new Regex(@"Leave party\?")
+    ];
+    
     public static readonly List<Regex> PromotePatterns =
     [
         new Regex(@"Promote .* to party leader\?"),
@@ -47,7 +53,7 @@ public static class Langstrings
 
     internal static readonly List<Regex> ConfirmGroupTeleport =
     [
-        new Regex(@"Accept Teleport to .*\？"),
+        new Regex(@"Accept Teleport to .*\?"),
         new Regex(@"Zum Ätheryten .* teleportieren lassen\?"),
         new Regex(@"Voulez-vous vous téléporter vers la destination .* \?")
 

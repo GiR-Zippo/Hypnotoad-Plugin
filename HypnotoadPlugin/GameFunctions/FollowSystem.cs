@@ -93,11 +93,11 @@ public class FollowSystemInternal : IDisposable
         if (f == null)
             return null;
 
+        //check if we got a goId
         if (goId != 0)
             if (f.GameObjectId != goId)
                 return null;
 
-        Api.PluginLog.Debug("gotta go");
         if (f.HomeWorld.Id == _worldId)
             return obj;
         return null;

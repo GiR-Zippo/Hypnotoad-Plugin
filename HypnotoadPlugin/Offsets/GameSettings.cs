@@ -151,6 +151,13 @@ internal static class GameSettings
             varTable.SoundEnabled                   = configEntry[(int)ConfigOption.IsSndMaster].Value.UInt;
         }
 
+        public static unsafe bool AreConfigsEqual(GameSettingsVarTable start, GameSettingsVarTable current)
+        {
+            if (start == current)
+                return true;
+            return false;
+        }
+
         /// <summary>
         /// Restore the GFX settings
         /// </summary>

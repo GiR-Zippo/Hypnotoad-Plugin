@@ -1,8 +1,7 @@
 ﻿using Dalamud.Interface.Windowing;
-using HypnotoadPlugin.Utils;
+using HypnotoadPlugin.Offsets;
 using ImGuiNET;
 using System;
-using System.Numerics;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -26,6 +25,10 @@ public class ConfigWindow : Window, IDisposable
     {
         if (ImGui.Button("test"))
         {
+            if (GameSettings.AgentConfigSystem.AreConfigsEqual(GameSettingsTables.Instance.StartupTable, GameSettingsTables.Instance.CustomTable))
+                Api.PluginLog.Debug("Same");
+            else
+                Api.PluginLog.Debug("Not Same");
         }
     }
 

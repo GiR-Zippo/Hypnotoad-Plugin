@@ -4,6 +4,7 @@
  */
 
 using Dalamud.Interface.Windowing;
+using Dalamud.Utility;
 using H.Pipes.Args;
 using HypnotoadPlugin.Config;
 using HypnotoadPlugin.GameFunctions;
@@ -327,7 +328,7 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
             if (ImGui.Button("Erase"))
             {
-                File.Delete($"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.ClientState.LocalPlayer.Name}-({Api.ClientState.LocalPlayer.HomeWorld.GameData.Name}).json");
+                File.Delete($"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.ClientState.LocalPlayer.Name}-({Api.ClientState.LocalPlayer.HomeWorld.ValueNullable?.Name.ToDalamudString().TextValue}).json");
             }
             ImGui.EndGroup();
         }

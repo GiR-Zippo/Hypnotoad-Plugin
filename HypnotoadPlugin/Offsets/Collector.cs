@@ -79,8 +79,7 @@ namespace HypnotoadPlugin.Offsets
             if (ClientState?.LocalPlayer != null)
             {
                 var Name = ClientState?.LocalPlayer.Name.TextValue;
-                var HomeWorld = ClientState?.LocalPlayer.HomeWorld.GameData.RowId;
-
+                var HomeWorld = ClientState?.LocalPlayer.HomeWorld.ValueNullable?.RowId;
                 if (Pipe.Client != null && Pipe.Client.IsConnected)
                 {
                     Pipe.Client.WriteAsync(new IPCMessage
@@ -92,7 +91,7 @@ namespace HypnotoadPlugin.Offsets
             }
         }
 
-        private void ClientState_Logout()
+        private void ClientState_Logout(int type, int code)
         {
         }
 

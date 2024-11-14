@@ -13,6 +13,7 @@ using HypnotoadPlugin.GameFunctions;
 using HypnotoadPlugin.IPC;
 using HypnotoadPlugin.Offsets;
 using HypnotoadPlugin.Windows;
+
 using static HypnotoadPlugin.Offsets.GameSettings;
 
 namespace HypnotoadPlugin;
@@ -83,7 +84,7 @@ public class Hypnotoad : IDalamudPlugin
         AgentConfigSystem.LoadConfig();
     }
 
-    private void OnLogout()
+    private void OnLogout(int type, int code)
     {
         AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.StartupTable);
     }

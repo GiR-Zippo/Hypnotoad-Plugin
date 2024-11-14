@@ -23,17 +23,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="2.1.13" />
-    <PackageReference Include="Fody" Version="6.8.1" PrivateAssets="all" />
-    <PackageReference Include="H.Formatters" Version="2.0.59" />
-    <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="13.0.59" />
-    <PackageReference Include="H.Pipes" Version="2.0.59" />
-    <PackageReference Include="H.Pipes.AccessControl" Version="2.0.59" />
-    <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
+    <PackageReference Include="DalamudPackager" Version="11.0.0" />
+    <PackageReference Include="Fody" Version="6.8.2" PrivateAssets="all" />
+    <PackageReference Include="H.Formatters" Version="14.0.0" />
+    <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="14.0.0" />
+    <PackageReference Include="H.Pipes" Version="14.0.0" />
+    <PackageReference Include="H.Pipes.AccessControl" Version="14.0.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Resourcer.Fody" Version="1.8.1" PrivateAssets="all" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
-    <PackageReference Include="TinyIpc" Version="4.3.1" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
+    <PackageReference Include="TinyIpc" Version="4.3.3" />
     <PackageReference Include="XivCommon" Version="9.0.0" />
   </ItemGroup>
 

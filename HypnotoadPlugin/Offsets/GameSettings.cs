@@ -5,12 +5,13 @@
 
 using System;
 using System.IO;
-using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.Config;
+using Dalamud.Game.ClientState.Objects.SubKinds;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
+using Dalamud.Utility;
 
 namespace HypnotoadPlugin.Offsets;
 
@@ -334,11 +335,11 @@ internal static class GameSettings
             if (player == null)
                 return "";
 
-            World world = player.HomeWorld.GameData;
+            World? world = player.HomeWorld.ValueNullable;
             if (world == null)
                 return "";
 
-            return $"{Api.PluginInterface.GetPluginConfigDirectory()}\\{player.Name.TextValue}-({world.Name.RawString}).json";
+            return $"{Api.PluginInterface.GetPluginConfigDirectory()}\\{player.Name.TextValue}-({world.Value.Name.ToDalamudString().TextValue}).json";
         }
 
         public static void LoadConfig()

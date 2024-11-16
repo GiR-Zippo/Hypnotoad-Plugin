@@ -10,7 +10,7 @@
 
     <Description>BardMusicPlayer &amp; LightAmp companion for enhanced functionality.</Description>
     <PackageProjectUrl>https://github.com/GiR-Zippo/Hypnotoad-Plugin</PackageProjectUrl>
-    <Version>0.0.1.44</Version>
+    <Version>0.0.1.45</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="11.0.0" />
-    <PackageReference Include="Fody" Version="6.8.2" PrivateAssets="all" />
+    <PackageReference Include="Fody" Version="6.9.0" PrivateAssets="all" />
     <PackageReference Include="H.Formatters" Version="14.0.0" />
     <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="14.0.0" />
     <PackageReference Include="H.Pipes" Version="14.0.0" />
@@ -34,7 +34,6 @@
     <PackageReference Include="Resourcer.Fody" Version="1.8.1" PrivateAssets="all" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
     <PackageReference Include="TinyIpc" Version="4.3.3" />
-    <PackageReference Include="XivCommon" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

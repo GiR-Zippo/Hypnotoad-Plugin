@@ -32,6 +32,7 @@ public class GameSettingsVarTable
     public uint DepthOfField_DX11 { get; set; }
     public uint RadialBlur_DX11 { get; set; }
     public uint GrassQuality_DX11 { get; set; }
+    public uint GrassEnableDynamicInterference { get; set; }
     public uint TranslucentQuality_DX11 { get; set; }
     public uint ShadowSoftShadowType_DX11 { get; set; }
     public uint ShadowTextureSizeType_DX11 { get; set; }
@@ -54,6 +55,8 @@ public class GameSettingsVarTable
     public uint GlareRepresentation_DX11 { get; set; }
     public uint GraphicsRezoScale { get; set; }
     public uint GraphicsRezoUpscaleType { get; set; }
+    public uint TextureRezoType { get; set; }
+
     
     //Sound
     public uint SoundEnabled { get; set; }
@@ -125,6 +128,7 @@ internal static class GameSettings
             varTable.DistortionWater_DX11           = configEntry[(int)ConfigOption.DistortionWater_DX11].Value.UInt;
             varTable.DepthOfField_DX11              = configEntry[(int)ConfigOption.DepthOfField_DX11].Value.UInt;
             varTable.RadialBlur_DX11                = configEntry[(int)ConfigOption.RadialBlur_DX11].Value.UInt;
+            varTable.GrassEnableDynamicInterference = configEntry[(int)ConfigOption.GrassEnableDynamicInterference].Value.UInt;
             varTable.GrassQuality_DX11              = configEntry[(int)ConfigOption.GrassQuality_DX11].Value.UInt;
             varTable.TranslucentQuality_DX11        = configEntry[(int)ConfigOption.TranslucentQuality_DX11].Value.UInt;
             varTable.ShadowSoftShadowType_DX11      = configEntry[(int)ConfigOption.ShadowSoftShadowType_DX11].Value.UInt;
@@ -148,7 +152,8 @@ internal static class GameSettings
             varTable.GlareRepresentation_DX11       = configEntry[(int)ConfigOption.GlareRepresentation_DX11].Value.UInt;
             varTable.GraphicsRezoScale              = configEntry[(int)ConfigOption.GraphicsRezoScale].Value.UInt;
             varTable.GraphicsRezoUpscaleType        = configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].Value.UInt;
-
+            varTable.TextureRezoType                = configEntry[(int)ConfigOption.TextureRezoType].Value.UInt;
+            
             varTable.SoundEnabled                   = configEntry[(int)ConfigOption.IsSndMaster].Value.UInt;
         }
 
@@ -179,6 +184,7 @@ internal static class GameSettings
             configEntry[(int)ConfigOption.DepthOfField_DX11].SetValueUInt(varTable.DepthOfField_DX11);
             configEntry[(int)ConfigOption.RadialBlur_DX11].SetValueUInt(varTable.RadialBlur_DX11);
             configEntry[(int)ConfigOption.GrassQuality_DX11].SetValueUInt(varTable.GrassQuality_DX11);
+            configEntry[(int)ConfigOption.GrassEnableDynamicInterference].SetValueUInt(varTable.GrassEnableDynamicInterference);
             configEntry[(int)ConfigOption.TranslucentQuality_DX11].SetValueUInt(varTable.TranslucentQuality_DX11);
             configEntry[(int)ConfigOption.ShadowSoftShadowType_DX11].SetValueUInt(varTable.ShadowSoftShadowType_DX11);
             configEntry[(int)ConfigOption.ShadowTextureSizeType_DX11].SetValueUInt(varTable.ShadowTextureSizeType_DX11);
@@ -201,7 +207,7 @@ internal static class GameSettings
             configEntry[(int)ConfigOption.GlareRepresentation_DX11].SetValueUInt(varTable.GlareRepresentation_DX11);
             configEntry[(int)ConfigOption.GraphicsRezoScale].SetValueUInt(varTable.GraphicsRezoScale);
             configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].SetValueUInt(varTable.GraphicsRezoUpscaleType);
-
+            configEntry[(int)ConfigOption.TextureRezoType].SetValueUInt(varTable.TextureRezoType);
             configEntry[(int)ConfigOption.IsSndMaster].SetValueUInt(varTable.SoundEnabled);
         }
         #endregion
@@ -240,6 +246,7 @@ internal static class GameSettings
             configEntry[(int)ConfigOption.DepthOfField_DX11].SetValueUInt(0);
             configEntry[(int)ConfigOption.RadialBlur_DX11].SetValueUInt(0);
             configEntry[(int)ConfigOption.GrassQuality_DX11].SetValueUInt(0);
+            configEntry[(int)ConfigOption.GrassEnableDynamicInterference].SetValueUInt(0);
             configEntry[(int)ConfigOption.TranslucentQuality_DX11].SetValueUInt(0);
             configEntry[(int)ConfigOption.ShadowSoftShadowType_DX11].SetValueUInt(0);
             configEntry[(int)ConfigOption.ShadowTextureSizeType_DX11].SetValueUInt(0);
@@ -262,7 +269,7 @@ internal static class GameSettings
             configEntry[(int)ConfigOption.GlareRepresentation_DX11].SetValueUInt(0);
             configEntry[(int)ConfigOption.GraphicsRezoScale].SetValueUInt(50);
             configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].SetValueUInt(0);
-
+            configEntry[(int)ConfigOption.TextureRezoType].SetValueUInt(0);
         }
         #endregion
 

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net9.0-windows7.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Platforms>x64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -10,7 +10,7 @@
 
     <Description>BardMusicPlayer &amp; LightAmp companion for enhanced functionality.</Description>
     <PackageProjectUrl>https://github.com/GiR-Zippo/Hypnotoad-Plugin</PackageProjectUrl>
-    <Version>0.0.1.45</Version>
+    <Version>0.0.1.46</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,17 +23,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="11.0.0" />
-    <PackageReference Include="Fody" Version="6.9.0" PrivateAssets="all" />
-    <PackageReference Include="H.Formatters" Version="14.0.0" />
-    <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="14.0.0" />
-    <PackageReference Include="H.Pipes" Version="14.0.0" />
-    <PackageReference Include="H.Pipes.AccessControl" Version="14.0.0" />
+    <PackageReference Include="DalamudPackager" Version="12.0.0" />
+    <PackageReference Include="Fody" Version="6.9.2" PrivateAssets="all" />
+    <PackageReference Include="H.Formatters" Version="15.0.0" />
+    <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="15.0.0" />
+    <PackageReference Include="H.Pipes" Version="15.0.0" />
+    <PackageReference Include="H.Pipes.AccessControl" Version="15.0.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Resourcer.Fody" Version="1.8.1" PrivateAssets="all" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
-    <PackageReference Include="TinyIpc" Version="4.3.3" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.3" />
+    <PackageReference Include="TinyIpc" Version="5.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +41,7 @@
     <Reference Include="FFXIVClientStructs" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\FFXIVClientStructs.dll" Private="false" />
     <Reference Include="ImGui.NET" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\ImGui.NET.dll" Private="false" />
     <Reference Include="ImGuiScene" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\ImGuiScene.dll" Private="false" />
+    <Reference Include="InteropGenerator.Runtime" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\InteropGenerator.Runtime.dll" Private="false" />
     <Reference Include="Lumina" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.dll" Private="false" />
     <Reference Include="Lumina.Excel" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Lumina.Excel.dll" Private="false" />
     <Reference Include="Newtonsoft.Json" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Newtonsoft.Json.dll" Private="false" />

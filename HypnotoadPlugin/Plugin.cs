@@ -23,12 +23,14 @@ public class Hypnotoad : IDalamudPlugin
     public string Name => "Hypnotoad";
 
     //The windows
-    public WindowSystem WindowSystem = new("Hypnotoad");
+    public WindowSystem WindowSystem { get; init; } = new("Hypnotoad");
     private MainWindow PluginUi { get; init; }
     private ConfigWindow ConfigUi { get; set; }
 
     private const string commandName = "/hypnotoad";
     private static IDalamudPluginInterface PluginInterface { get; set; }
+    private static IClientState ClientState { get; set; }
+
     private Configuration Configuration { get; init; }
     internal static AgentPerformance AgentPerformance { get; set; }
     internal static EnsembleManager EnsembleManager { get; set; }
@@ -38,12 +40,14 @@ public class Hypnotoad : IDalamudPlugin
 
     public Hypnotoad(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
     {
-        api = pluginInterface.Create<Api>();
-        PluginInterface = pluginInterface;
+        Api.Safe(() => Api.Init(pluginInterface));
+        OffsetManager.Setup(Api.SigScanner);
 
+        PluginInterface = pluginInterface;
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
-        OffsetManager.Setup(Api.SigScanner);
+
+        ClientState = clientState;
 
         Api.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
         {

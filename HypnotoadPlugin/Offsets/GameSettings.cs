@@ -335,13 +335,11 @@ internal static class GameSettings
         private unsafe static string GetCharConfigFilename()
         {
             if (!Api.ClientState.IsLoggedIn) return "";
+            if (Api.GetLocalPlayer() == null) return "";
 
-            if (Api.ClientState.LocalPlayer is null) return "";
-
-            IPlayerCharacter player = Api.ClientState.LocalPlayer;
+            IPlayerCharacter player = Api.GetLocalPlayer();
             if (player == null)
                 return "";
-
             World? world = player.HomeWorld.ValueNullable;
             if (world == null)
                 return "";

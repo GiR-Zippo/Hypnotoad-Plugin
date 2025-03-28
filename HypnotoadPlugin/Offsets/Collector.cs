@@ -76,10 +76,10 @@ namespace HypnotoadPlugin.Offsets
         /// <param name="e"></param>
         private void ClientState_Login()
         {
-            if (ClientState?.LocalPlayer != null)
+            if (Api.GetLocalPlayer() != null)
             {
-                var Name = ClientState?.LocalPlayer.Name.TextValue;
-                var HomeWorld = ClientState?.LocalPlayer.HomeWorld.ValueNullable?.RowId;
+                var Name = Api.GetLocalPlayer().Name.TextValue;
+                var HomeWorld = Api.GetLocalPlayer().HomeWorld.ValueNullable?.RowId;
                 if (Pipe.Client != null && Pipe.Client.IsConnected)
                 {
                     Pipe.Client.WriteAsync(new IPCMessage

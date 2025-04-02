@@ -6,7 +6,7 @@
         "AssemblyVersion": "iRELEASE",
         "Description": "LightAmp companion for enhanced functionality.",
         "ApplicableVersion": "any",
-        "RepoUrl": "https://github.com/GiR-Zippo/Hypnotoad-Plugin",
+        "RepoUrl": "iPLUGINURL",
         "CategoryTags": [
             "utility",
             "other"
@@ -17,8 +17,8 @@
         "IsHide": "False",
         "IsTestingExclusive": "False",
         "LastUpdate": "iTIME",
-        "DownloadLinkInstall": "https://github.com/GiR-Zippo/Hypnotoad-Plugin/releases/download/iRELEASE/latest.zip",
-        "DownloadLinkTesting": "https://github.com/GiR-Zippo/Hypnotoad-Plugin/releases/download/iRELEASE/latest.zip",
-        "DownloadLinkUpdate": "https://github.com/GiR-Zippo/Hypnotoad-Plugin/releases/download/iRELEASE/latest.zip"
+        "DownloadLinkInstall": "iPLUGINURL/releases/download/iRELEASE/latest.zip",
+        "DownloadLinkTesting": "iPLUGINURL/releases/download/iRELEASE/latest.zip",
+        "DownloadLinkUpdate": "iPLUGINURL/releases/download/iRELEASE/latest.zip"
     }
 ]

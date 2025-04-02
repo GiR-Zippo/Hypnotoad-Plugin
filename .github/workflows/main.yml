@@ -64,6 +64,9 @@ jobs:
       
       - name: Set time in pluginmaster
         run: sed -i 's/iTIME/${{steps.current-time.outputs.formattedTime}}/g' ./PluginDir/pluginmaster.json
+
+      - name: Set plogonUrl in pluginmaster
+        run: sed -i 's/iPLUGINURL/${{ github.server_url }}/${{ github.repository }}/g' ./PluginDir/pluginmaster.json
       
       - name: Set version in HypnotoadPlugin
         run: sed -i 's/iRELEASE/${{steps.get-version.outputs.version}}/g' ./PluginDir/HypnotoadPlugin.json

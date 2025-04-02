@@ -29,13 +29,10 @@ public class Hypnotoad : IDalamudPlugin
 
     private const string commandName = "/hypnotoad";
     private static IDalamudPluginInterface PluginInterface { get; set; }
-    private static IClientState ClientState { get; set; }
-
     private Configuration Configuration { get; init; }
     internal static AgentPerformance AgentPerformance { get; set; }
     internal static EnsembleManager EnsembleManager { get; set; }
 
-    public Api api { get; set; }
     private readonly IPCProvider _ipc;
 
     public Hypnotoad(IDalamudPluginInterface pluginInterface, IChatGui chatGui, IDataManager data, ICommandManager commandManager, IClientState clientState, IPartyList partyList)
@@ -46,8 +43,6 @@ public class Hypnotoad : IDalamudPlugin
         PluginInterface = pluginInterface;
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
-
-        ClientState = clientState;
 
         Api.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
         {
@@ -62,8 +57,6 @@ public class Hypnotoad : IDalamudPlugin
 
         AgentConfigSystem.GetSettings(GameSettingsTables.Instance.StartupTable);
         AgentConfigSystem.GetSettings(GameSettingsTables.Instance.CustomTable);
-
-        //NetworkReader.Initialize();
 
         // you might normally want to embed resources and load them from the manifest stream
         PluginUi = new MainWindow(this, Configuration);
@@ -100,7 +93,6 @@ public class Hypnotoad : IDalamudPlugin
         Party.Instance.Dispose();
         Api.ClientState.Login -= OnLogin;
         Api.ClientState.Logout -= OnLogout;
-        //NetworkReader.Dispose();
         AgentConfigSystem.RestoreSettings(GameSettingsTables.Instance.StartupTable);
         EnsembleManager.Dispose();
         Collector.Instance.Dispose();

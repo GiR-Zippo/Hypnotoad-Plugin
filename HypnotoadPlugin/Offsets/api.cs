@@ -81,7 +81,7 @@ public class Api
         {
             pi.Create<Api>();
         }
-        catch (Exception ex)
+        catch
         {
             PluginLog.Error("Services already initialized, skipping");
         }

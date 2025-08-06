@@ -28,7 +28,6 @@ public class Api
     [PluginService] public static IFlyTextGui FlyText { get; private set; }
     [PluginService] public static IFramework Framework { get; private set; }
     [PluginService] public static IGameGui GameGui { get; private set; }
-    [PluginService] public static IGameNetwork GameNetwork { get; private set; }
     [PluginService] public static IJobGauges Gauges { get; private set; }
     [PluginService] public static IKeyState KeyState { get; private set; }
     [PluginService] public static IObjectTable Objects { get; private set; }

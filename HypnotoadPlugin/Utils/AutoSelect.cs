@@ -43,7 +43,7 @@ public class AutoSelect
             if (!listen)
                 return;
 
-            var addon = (FFXIVClientStructs.FFXIV.Component.GUI.AtkUnitBase*)addonInfo.Addon;
+            var addon = (FFXIVClientStructs.FFXIV.Component.GUI.AtkUnitBase*)addonInfo.Addon.Address;
             var text = addon->AtkValues[0].GetValueAsString();
             if (Langstrings.LfgPatterns.Any(r => r.IsMatch(text)))
             {

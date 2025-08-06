@@ -1,10 +1,6 @@
-﻿using Dalamud.Interface.Windowing;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
-using HypnotoadPlugin.GameFunctions;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Windowing;
 using HypnotoadPlugin.Offsets;
-using HypnotoadPlugin.Utils;
-using ImGuiNET;
 using System;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
@@ -468,8 +464,8 @@ public sealed class WndHandler : IDisposable
 public class ConfigWindow : Window, IDisposable
 {
     public ConfigWindow(Hypnotoad plugin) : base(
-        "A Wonderful Configuration Window",
-        ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
+        "A Wonderful Configuration Window")
+        //ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse)
     {
     }
 

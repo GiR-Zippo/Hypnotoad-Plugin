@@ -3,6 +3,7 @@
  * Licensed under the GPL v3 license. See https://github.com/GiR-Zippo/LightAmp/blob/main/LICENSE for full license information.
  */
 
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
 using H.Pipes.Args;
@@ -10,7 +11,6 @@ using HypnotoadPlugin.Config;
 using HypnotoadPlugin.GameFunctions;
 using HypnotoadPlugin.Offsets;
 using HypnotoadPlugin.Utils;
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

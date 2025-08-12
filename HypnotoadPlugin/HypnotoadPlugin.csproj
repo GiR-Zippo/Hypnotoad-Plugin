@@ -10,7 +10,7 @@
 
     <Description>BardMusicPlayer &amp; LightAmp companion for enhanced functionality.</Description>
     <PackageProjectUrl>https://github.com/GiR-Zippo/Hypnotoad-Plugin</PackageProjectUrl>
-    <Version>0.0.1.50</Version>
+    <Version>0.0.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>

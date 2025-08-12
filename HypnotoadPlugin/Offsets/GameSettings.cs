@@ -56,8 +56,9 @@ public class GameSettingsVarTable
     public uint GraphicsRezoScale { get; set; }
     public uint GraphicsRezoUpscaleType { get; set; }
     public uint TextureRezoType { get; set; }
+    public uint DynamicAroundRangeMode { get; set; }
 
-    
+
     //Sound
     public uint SoundEnabled { get; set; }
 }
@@ -153,7 +154,9 @@ internal static class GameSettings
             varTable.GraphicsRezoScale              = configEntry[(int)ConfigOption.GraphicsRezoScale].Value.UInt;
             varTable.GraphicsRezoUpscaleType        = configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].Value.UInt;
             varTable.TextureRezoType                = configEntry[(int)ConfigOption.TextureRezoType].Value.UInt;
-            
+            varTable.DynamicAroundRangeMode         = configEntry[(int)ConfigOption.DynamicAroundRangeMode].Value.UInt;
+
+
             varTable.SoundEnabled                   = configEntry[(int)ConfigOption.IsSndMaster].Value.UInt;
         }
 
@@ -208,6 +211,7 @@ internal static class GameSettings
             configEntry[(int)ConfigOption.GraphicsRezoScale].SetValueUInt(varTable.GraphicsRezoScale);
             configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].SetValueUInt(varTable.GraphicsRezoUpscaleType);
             configEntry[(int)ConfigOption.TextureRezoType].SetValueUInt(varTable.TextureRezoType);
+            configEntry[(int)ConfigOption.DynamicAroundRangeMode].SetValueUInt(varTable.DynamicAroundRangeMode);
             configEntry[(int)ConfigOption.IsSndMaster].SetValueUInt(varTable.SoundEnabled);
         }
         #endregion
@@ -270,6 +274,7 @@ internal static class GameSettings
             configEntry[(int)ConfigOption.GraphicsRezoScale].SetValueUInt(50);
             configEntry[(int)ConfigOption.GraphicsRezoUpscaleType].SetValueUInt(0);
             configEntry[(int)ConfigOption.TextureRezoType].SetValueUInt(0);
+            configEntry[(int)ConfigOption.DynamicAroundRangeMode].SetValueUInt(0);
         }
         #endregion
 

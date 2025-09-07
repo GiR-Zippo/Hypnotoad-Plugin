@@ -16,8 +16,6 @@ public class Configuration : IPluginConfiguration
 
     public bool Autoconnect { get; set; } = true;
 
-    public bool ConnectToBMP { get; set; } = false;
-
 
     [NonSerialized]
     private IDalamudPluginInterface pluginInterface;

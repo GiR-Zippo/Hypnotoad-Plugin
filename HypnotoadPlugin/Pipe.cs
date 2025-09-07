@@ -20,9 +20,9 @@ namespace HypnotoadPlugin
     {
         internal static PipeClient<IPCMessage> Client { get; private set; }
 
-        internal static void Initialize(bool connectBMP = false)
+        internal static void Initialize()
         {
-            Client = new PipeClient<IPCMessage>(connectBMP? "DalamudDoot" : "Hypnotoad", formatter: new NewtonsoftJsonFormatter());
+            Client = new PipeClient<IPCMessage>("Hypnotoad", formatter: new NewtonsoftJsonFormatter());
         }
 
         internal static void Write(MessageType messageType, int channel, bool msg)

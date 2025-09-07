@@ -43,7 +43,7 @@ public class MainWindow : Window, IDisposable
     {
         this.configuration = configuration;
 
-        Pipe.Initialize(this.configuration.ConnectToBMP);
+        Pipe.Initialize();
         Pipe.Client.Connected += pipeClient_Connected;
         Pipe.Client.MessageReceived += pipeClient_MessageReceived;
         Pipe.Client.Disconnected += pipeClient_Disconnected;
@@ -261,7 +261,6 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    bool showModal = false;
     public override void Draw()
     {
         ImGui.SetNextWindowSize(new Vector2(300, 110), ImGuiCond.FirstUseEver);
@@ -299,23 +298,6 @@ public class MainWindow : Window, IDisposable
             ImGui.Text($"Is connected: {Pipe.Client.IsConnected}");
 
             ImGui.NewLine();
-            var bmpValue = configuration.ConnectToBMP;
-            if (ImGui.Checkbox("Use BMP", ref bmpValue))
-            {
-                configuration.ConnectToBMP = bmpValue;
-                configuration.Save();
-                showModal = true;
-            }
-
-            if (showModal)
-            {
-                if (ImGui.Begin("##modal"))
-                {
-                    ImGui.Text("Please restart the plugin.");
-                    ImGui.Text("I'm staying here until you did it :P");
-                    ImGui.End();
-                }
-            }
 
             //PlayerConfig Save/Erase
             ImGui.NewLine();

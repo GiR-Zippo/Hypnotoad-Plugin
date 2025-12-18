@@ -30,7 +30,7 @@ static internal class Misc
         {
             if (x.IsTargetable && Langstrings.Entrance.Any(r => r.IsMatch(x.Name.TextValue)))
             {
-                var distance = Vector3.Distance(Api.ClientState.LocalPlayer.Position, x.Position);
+                var distance = Vector3.Distance(Api.GetLocalPlayer().Position, x.Position);
                 if (distance < currentDistance)
                 {
                     currentDistance = distance;

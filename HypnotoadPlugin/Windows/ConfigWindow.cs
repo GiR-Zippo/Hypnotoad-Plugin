@@ -229,7 +229,6 @@ public static class SystemHelper
       [In] int SystemInformationLength,
       out int ReturnLength);
 
-    [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool CloseHandle([In] IntPtr hObject);

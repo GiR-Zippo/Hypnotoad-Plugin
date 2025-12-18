@@ -310,7 +310,7 @@ public class MainWindow : Window, IDisposable
             ImGui.SameLine();
             if (ImGui.Button("Erase"))
             {
-                File.Delete($"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.ClientState.LocalPlayer.Name}-({Api.ClientState.LocalPlayer.HomeWorld.ValueNullable?.Name.ToDalamudString().TextValue}).json");
+                File.Delete($"{Api.PluginInterface.GetPluginConfigDirectory()}\\{Api.PlayerState.CharacterName}-({Api.PlayerState.HomeWorld.ValueNullable?.Name.ToDalamudString().TextValue}).json");
             }
             ImGui.EndGroup();
         }

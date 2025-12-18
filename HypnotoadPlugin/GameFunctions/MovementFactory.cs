@@ -43,7 +43,7 @@ public class MovementFactory : IDisposable
     public void MoveTo(float x, float y, float z, float rot)
     {
         Vector3 newPos = new Vector3() { X = x, Y = y, Z = z };
-        if (newPos == Api.ClientState.LocalPlayer.Position)
+        if (newPos == Api.GetLocalPlayer().Position)
             return;
         DesiredPosition = newPos;
         DesiredRotation = new Angle(rot);
@@ -84,7 +84,7 @@ public class MovementFactory : IDisposable
     private async Task RunMoveTask(CancellationToken token)
     {
         round = 4; //4 rounds until we give up
-        last_pos = Api.ClientState.LocalPlayer.Position;
+        last_pos = Api.GetLocalPlayer().Position;
 
         if (!move.Enabled)
             move.Enabled = true;
@@ -98,7 +98,7 @@ public class MovementFactory : IDisposable
                 if (move.Enabled)
                 {
                     // check if we stuck
-                    var ldist = last_pos - Api.ClientState.LocalPlayer.Position;
+                    var ldist = last_pos - Api.GetLocalPlayer().Position;
                     ldist.Y = 0.0f;
                     if (ldist.LengthSquared() <= 0.2f * 0.2f)
                     {
@@ -117,7 +117,7 @@ public class MovementFactory : IDisposable
                         round = 4; //4 rounds until we give up
 
                     //check if we reached our position
-                    var dist = move.DesiredPosition - Api.ClientState.LocalPlayer.Position;
+                    var dist = move.DesiredPosition - Api.GetLocalPlayer().Position;
                     dist.Y = 0.0f;
                     if (dist.LengthSquared() <= move.Precision * move.Precision)
                     {
@@ -131,7 +131,7 @@ public class MovementFactory : IDisposable
                     }
                 }
 
-            last_pos = Api.ClientState.LocalPlayer.Position;
+            last_pos = Api.GetLocalPlayer().Position;
             await Task.Delay(50, token).ContinueWith(static tsk => { }, token);
         }
         cleanup();

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows10.0.26100.0</TargetFramework>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Platforms>x64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -10,7 +10,7 @@
 
     <Description>BardMusicPlayer &amp; LightAmp companion for enhanced functionality.</Description>
     <PackageProjectUrl>https://github.com/GiR-Zippo/Hypnotoad-Plugin</PackageProjectUrl>
-    <Version>0.0.2.1</Version>
+    <Version>0.0.3.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,23 +23,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="13.0.0" />
-    <PackageReference Include="Fody" Version="6.9.2" PrivateAssets="all" />
+    <PackageReference Include="DalamudPackager" Version="14.0.0" />
+    <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="all" />
     <PackageReference Include="H.Formatters" Version="15.0.0" />
     <PackageReference Include="H.Formatters.Newtonsoft.Json" Version="15.0.0" />
     <PackageReference Include="H.Pipes" Version="15.0.0" />
     <PackageReference Include="H.Pipes.AccessControl" Version="15.0.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Resourcer.Fody" Version="1.8.1" PrivateAssets="all" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.8" />
-    <PackageReference Include="TinyIpc" Version="5.1.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.1" />
+    <PackageReference Include="TinyIpc" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Dalamud" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.dll" Private="false" />
-    <Reference Include="Dalamud.Bindings.ImGui" HintPath ="$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.Bindings.ImGui.dll" Private="false" />
-    <Reference Include="Dalamud.Bindings.ImGuizmo" HintPath ="$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.Bindings.ImGuizmo.dll" Private="false" />
+    <Reference Include="Dalamud.Bindings.ImGui" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.Bindings.ImGui.dll" Private="false" />
+    <Reference Include="Dalamud.Bindings.ImGuizmo" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.Bindings.ImGuizmo.dll" Private="false" />
     <Reference Include="Dalamud.Bindings.ImPlot" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\Dalamud.Bindings.ImPlot.dll" Private="false" />
     <Reference Include="FFXIVClientStructs" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\FFXIVClientStructs.dll" Private="false" />
     <Reference Include="ImGuiScene" HintPath="$(AppData)\XIVLauncher\addon\Hooks\dev\ImGuiScene.dll" Private="false" />
